@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/ui/input';
 import Button from '@/components/ui/button';
+import { API_ROUTES } from '@/config/api';
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,31 +24,53 @@ export default function AdminLoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 临时管理员账号校验
-    if (username === 'admin' && password === '168') {
-      localStorage.setItem('admin', JSON.stringify({ username: 'admin' }));
-      router.push('/admin/dashboard');
-      return;
-    }
-    setError('账号或密码错误');
-    // 后期可恢复后端API校验
-    /*
+    setError('');
+    setIsLoading(true);
+    
     try {
-      const response = await fetch('/api/admin/login', {
+      // 发送登录请求，完全匹配后端接口期望的格式
+      const response = await fetch(API_ROUTES.LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ 
+          username, 
+          password
+          // 移除role字段，后端不需要
+        }),
       });
+      
+      const data = await response.json();
+      
       if (response.ok) {
-        router.push('/admin/dashboard');
+        // 检查用户角色是否为admin
+        const isAdmin = data.data && 
+                       (data.data.user ? data.data.user.role === 'admin' : data.data.role === 'admin');
+        
+        if (isAdmin) {
+          // 确认是管理员角色，保存到localStorage
+          localStorage.setItem('admin', JSON.stringify({
+            username: data.data.user ? data.data.user.username : (data.data.username || username),
+            token: data.token
+          }));
+          router.push('/admin/dashboard');
+        } else {
+          setError('此账号不是管理员账号，请使用管理员账号登录');
+        }
       } else {
-        const data = await response.json();
-        setError(data.message || '登录失败');
+        console.error('登录请求失败:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: response.url,
+          response: data
+        });
+        setError(data.message || '登录失败，请确认账号和密码');
       }
     } catch (err) {
+      console.error('登录错误:', err);
       setError('网络错误，请稍后重试');
+    } finally {
+      setIsLoading(false);
     }
-    */
   };
 
   return (
@@ -83,7 +107,13 @@ export default function AdminLoginPage() {
               placeholder="请输入密码"
             />
           </div>
-          <Button type="submit" className="w-full bg-[#FF6F61] hover:bg-[#ff8a75] text-white border-none">登录</Button>
+          <Button 
+            type="submit" 
+            className="w-full bg-[#FF6F61] hover:bg-[#ff8a75] text-white border-none"
+            disabled={isLoading}
+          >
+            {isLoading ? '登录中...' : '登录'}
+          </Button>
         </form>
       </div>
     </div>
