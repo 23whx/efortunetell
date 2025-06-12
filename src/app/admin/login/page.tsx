@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/ui/input';
-import Button from '@/components/ui/button';
+import Button from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { API_ROUTES } from '@/config/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AdminLoginPage() {
+  const { t } = useLanguage();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -28,14 +30,13 @@ export default function AdminLoginPage() {
     setIsLoading(true);
     
     try {
-      // 发送登录请求，完全匹配后端接口期望的格式
-      const response = await fetch(API_ROUTES.LOGIN, {
+      // 使用本地API代理
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           username, 
           password
-          // 移除role字段，后端不需要
         }),
       });
       
@@ -48,10 +49,16 @@ export default function AdminLoginPage() {
         
         if (isAdmin) {
           // 确认是管理员角色，保存到localStorage
-          localStorage.setItem('admin', JSON.stringify({
+          const adminData = {
             username: data.data.user ? data.data.user.username : (data.data.username || username),
-            token: data.token
-          }));
+            token: data.token,
+            role: 'admin'  // 明确指定角色为admin
+          };
+          
+          // 添加调试信息
+          console.log('保存管理员信息到localStorage:', adminData);
+          
+          localStorage.setItem('admin', JSON.stringify(adminData));
           router.push('/admin/dashboard');
         } else {
           setError('此账号不是管理员账号，请使用管理员账号登录');
@@ -63,11 +70,11 @@ export default function AdminLoginPage() {
           url: response.url,
           response: data
         });
-        setError(data.message || '登录失败，请确认账号和密码');
+        setError(data.message || t('user.login.error'));
       }
     } catch (err) {
       console.error('登录错误:', err);
-      setError('网络错误，请稍后重试');
+      setError(t('error.networkError'));
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +83,7 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center mt-[-50px] bg-[#FFFACD]">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border border-[#FF6F61]">
-        <h1 className="text-2xl font-bold mb-6 text-center text-[#FF6F61]">管理员登录</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-[#FF6F61]">{t('admin.login.title')}</h1>
         {error && (
           <div className="mb-4 p-2 bg-[#FF6F61]/10 text-[#FF6F61] text-sm rounded border border-[#FF6F61]">
             {error}
@@ -84,7 +91,7 @@ export default function AdminLoginPage() {
         )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="admin-username">用户名</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="admin-username">{t('common.username')}</label>
             <Input
               id="admin-username"
               type="text"
@@ -96,7 +103,7 @@ export default function AdminLoginPage() {
             />
           </div>
           <div className="mb-6 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="admin-password">密码</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="admin-password">{t('common.password')}</label>
             <Input
               id="admin-password"
               type="password"
@@ -112,7 +119,7 @@ export default function AdminLoginPage() {
             className="w-full bg-[#FF6F61] hover:bg-[#ff8a75] text-white border-none"
             disabled={isLoading}
           >
-            {isLoading ? '登录中...' : '登录'}
+            {isLoading ? t('common.loading') + '...' : t('common.login')}
           </Button>
         </form>
       </div>

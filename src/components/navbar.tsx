@@ -2,15 +2,22 @@
 
 import { Search, User, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
-import { useState, useEffect } from 'react';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
+import { useState, useEffect, FormEvent } from 'react';
 import { API_ROUTES, getAuthHeaders } from '@/config/api';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getAvatarPath, getDisplayName } from '@/utils/avatar';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { t } = useLanguage();
   const [user, setUser] = useState<{ username: string } | null>(null);
   const [admin, setAdmin] = useState<{ username: string } | null>(null);
+  const [searchValue, setSearchValue] = useState('');
 
   // 同步用户和管理员登录状态
   useEffect(() => {
@@ -37,6 +44,14 @@ export default function Navbar() {
     return () => window.removeEventListener('storage', syncUserAndAdmin);
   }, [pathname]);
 
+  // 处理搜索
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+    if (searchValue.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchValue.trim())}`);
+    }
+  };
+
   // 普通用户退出登录
   const handleUserLogout = async () => {
     try {
@@ -52,7 +67,7 @@ export default function Navbar() {
       localStorage.removeItem('user');
       setUser(null);
       if (pathname.startsWith('/user/')) {
-        window.location.href = '/';
+        window.location.href = '/blog';
       } else {
         window.location.reload();
       }
@@ -73,7 +88,7 @@ export default function Navbar() {
       // 无论接口是否成功，前端都清除登录状态
       localStorage.removeItem('admin');
       setAdmin(null);
-      window.location.href = '/';
+      window.location.href = '/blog';
     }
   };
 
@@ -81,9 +96,15 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 pt-6 pb-4 px-4 shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-full" />
-            <span className="text-xl font-bold text-gray-900 font-sans tracking-widest">易学</span>
+          <Link href="/blog" className="flex items-center gap-2">
+            <Image
+              src="/icon.png"
+              alt="Rolley的玄学命理小站图标"
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
+            <span className="text-xl font-bold text-gray-900 font-sans tracking-widest">{t('common.siteTitle')}</span>
           </Link>
         </div>
         
@@ -95,22 +116,26 @@ export default function Navbar() {
                 href="/blog" 
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/blog' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
               >
-                博客
+                {t('nav.blog')}
               </Link>
               <Link 
                 href="/fortune" 
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/fortune' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
               >
-                玄学预测服务
+                {t('nav.fortune')}
               </Link>
-              <div className="relative">
+              <form onSubmit={handleSearch} className="relative">
                 <input 
                   type="text" 
-                  placeholder="搜索文章或服务..."
+                  placeholder={t('common.search') + '...'}
                   className="bg-gray-100 text-gray-900 px-4 py-2 pl-10 rounded-lg w-64 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary font-sans"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
                 />
-                <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
-              </div>
+                <button type="submit" className="absolute left-3 top-2.5 text-gray-400 hover:text-gray-600 transition-colors">
+                  <Search className="w-5 h-5" />
+                </button>
+              </form>
             </>
           )}
           
@@ -121,22 +146,13 @@ export default function Navbar() {
                 href="/admin/dashboard" 
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/admin/dashboard' ? 'bg-[#FF6F61] text-white' : 'text-gray-900 hover:bg-gray-100'}`}
               >
-                管理面板
-              </Link>
-              <Link 
-                href="/admin/users" 
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/admin/users' ? 'bg-[#FF6F61] text-white' : 'text-gray-900 hover:bg-gray-100'}`}
-              >
-                用户管理
-              </Link>
-              <Link 
-                href="/admin/content" 
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/admin/content' ? 'bg-[#FF6F61] text-white' : 'text-gray-900 hover:bg-gray-100'}`}
-              >
-                内容管理
+                {t('common.dashboard')}
               </Link>
             </>
           )}
+          
+          {/* 语言切换器 */}
+          <LanguageSwitcher />
           
           {/* 登录状态显示区域 */}
           {admin ? (
@@ -147,10 +163,17 @@ export default function Navbar() {
                 onClick={handleAdminLogout}
               >
                 <LogOut className="w-4 h-4" />
-                管理员退出
+                {t('common.logout')}
               </Button>
-              <Link href="/admin/dashboard" className="w-10 h-10 rounded-full bg-[#FF6F61] flex items-center justify-center text-white font-bold text-lg cursor-pointer select-none hover:opacity-80" title="管理后台">
-                {admin.username.charAt(0).toUpperCase()}
+              <Link href="/admin/dashboard" className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#FF6F61] hover:opacity-80" title={t('nav.admin')}>
+                <Image
+                  src={getAvatarPath(admin)}
+                  alt="管理员头像"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                  unoptimized={true}
+                />
               </Link>
             </div>
           ) : user ? (
@@ -160,20 +183,27 @@ export default function Navbar() {
                 className="bg-black text-white hover:bg-gray-800 font-sans border-black border" 
                 onClick={handleUserLogout}
               >
-                退出登录
+                {t('common.logout')}
               </Button>
-              <Link href="/user/profile" className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white font-bold text-lg cursor-pointer select-none hover:opacity-80" title="个人中心">
-                {user.username.charAt(0).toUpperCase()}
+              <Link href="/user/profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-black hover:opacity-80" title={t('nav.profile')}>
+                <Image
+                  src={getAvatarPath(user)}
+                  alt="用户头像"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                  unoptimized={true}
+                />
               </Link>
             </div>
           ) : (
             // 未登录状态显示
             <>
               <Link href="/user/login">
-                <Button className="bg-black text-white hover:bg-gray-800 font-sans border-black border">登录</Button>
+                <Button className="bg-black text-white hover:bg-gray-800 font-sans border-black border">{t('nav.login')}</Button>
               </Link>
               <Link href="/user/register">
-                <Button className="bg-black text-white hover:bg-gray-800 font-sans border-black border">注册</Button>
+                <Button className="bg-black text-white hover:bg-gray-800 font-sans border-black border">{t('common.register')}</Button>
               </Link>
             </>
           )}
@@ -181,6 +211,7 @@ export default function Navbar() {
         
         {/* 移动端导航菜单按钮 */}
         <div className="md:hidden flex items-center gap-2">
+          <LanguageSwitcher />
           <Button className="text-gray-900 hover:bg-gray-100">
             <User className="w-5 h-5" />
           </Button>

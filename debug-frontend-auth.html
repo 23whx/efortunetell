@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端认证调试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 前端认证状态调试</h1>
+    
+    <div class="section info">
+        <h3>📋 localStorage 数据检查</h3>
+        <button onclick="checkLocalStorage()">检查 localStorage</button>
+        <div id="localStorage-result"></div>
+    </div>
+    
+    <div class="section info">
+        <h3>🔑 认证头部测试</h3>
+        <button onclick="testAuthHeaders()">测试 getAuthHeaders()</button>
+        <div id="auth-headers-result"></div>
+    </div>
+    
+    <div class="section info">
+        <h3>🧪 用户登录测试</h3>
+        <input type="text" id="username" placeholder="用户名" value="testuser">
+        <input type="password" id="password" placeholder="密码" value="test123">
+        <button onclick="testLogin()">测试登录</button>
+        <div id="login-result"></div>
+    </div>
+    
+    <div class="section info">
+        <h3>⭐ 收藏功能测试</h3>
+        <input type="text" id="articleId" placeholder="文章ID" value="680b070c5f0723d19c1eb1b2">
+        <button onclick="testBookmark()">测试收藏</button>
+        <div id="bookmark-result"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        
+        // 检查localStorage数据
+        function checkLocalStorage() {
+            const result = document.getElementById('localStorage-result');
+            const data = {
+                token: localStorage.getItem('token'),
+                user: localStorage.getItem('user'),
+                admin: localStorage.getItem('admin')
+            };
+            
+            let html = '<h4>localStorage 内容:</h4>';
+            for (const [key, value] of Object.entries(data)) {
+                html += `<p><strong>${key}:</strong> ${value || '(空)'}</p>`;
+                if (value) {
+                    try {
+                        const parsed = JSON.parse(value);
+                        html += `<pre>${JSON.stringify(parsed, null, 2)}</pre>`;
+                    } catch (e) {
+                        html += `<pre>${value}</pre>`;
+                    }
+                }
+            }
+            result.innerHTML = html;
+        }
+        
+        // 模拟getAuthHeaders函数
+        function getAuthHeaders() {
+            try {
+                let token = '';
+                
+                // 首先尝试直接从token字段获取
+                const directToken = localStorage.getItem('token');
+                if (directToken) {
+                    token = directToken;
+                }
+                
+                // 如果直接token不存在，尝试从用户信息中获取token
+                if (!token) {
+                    const userJson = localStorage.getItem('user');
+                    if (userJson) {
+                        const user = JSON.parse(userJson);
+                        if (user && user.token) {
+                            token = user.token;
+                        }
+                    }
+                }
+                
+                // 如果用户token不存在，尝试从管理员信息中获取
+                if (!token) {
+                    const adminJson = localStorage.getItem('admin');
+                    if (adminJson) {
+                        const admin = JSON.parse(adminJson);
+                        if (admin && admin.token) {
+                            token = admin.token;
+                        }
+                    }
+                }
+                
+                return {
+                    'Content-Type': 'application/json',
+                    'Authorization': token ? `Bearer ${token}` : '',
+                };
+            } catch (error) {
+                console.error('读取用户令牌失败:', error);
+                return {
+                    'Content-Type': 'application/json',
+                    'Authorization': '',
+                };
+            }
+        }
+        
+        // 测试认证头部
+        function testAuthHeaders() {
+            const result = document.getElementById('auth-headers-result');
+            const headers = getAuthHeaders();
+            
+            result.innerHTML = `
+                <h4>认证头部结果:</h4>
+                <pre>${JSON.stringify(headers, null, 2)}</pre>
+                <p><strong>状态:</strong> ${headers.Authorization ? '✅ 有token' : '❌ 无token'}</p>
+            `;
+        }
+        
+        // 测试登录
+        async function testLogin() {
+            const result = document.getElementById('login-result');
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            result.innerHTML = '<p>🔄 正在登录...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // 保存token和用户信息
+                    if (data.token) {
+                        localStorage.setItem('token', data.token);
+                    }
+                    if (data.data && data.data.user) {
+                        localStorage.setItem('user', JSON.stringify({
+                            username: data.data.user.username,
+                            _id: data.data.user._id
+                        }));
+                    }
+                    
+                    result.innerHTML = `
+                        <div class="success">
+                            <h4>✅ 登录成功!</h4>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = `
+                        <div class="error">
+                            <h4>❌ 登录失败</h4>
+                            <p>错误: ${data.message}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                result.innerHTML = `
+                    <div class="error">
+                        <h4>❌ 网络错误</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 测试收藏功能
+        async function testBookmark() {
+            const result = document.getElementById('bookmark-result');
+            const articleId = document.getElementById('articleId').value;
+            
+            result.innerHTML = '<p>🔄 正在测试收藏...</p>';
+            
+            try {
+                const headers = getAuthHeaders();
+                const response = await fetch(`${API_BASE_URL}/api/articles/${articleId}/bookmark`, {
+                    method: 'PUT',
+                    headers
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    result.innerHTML = `
+                        <div class="success">
+                            <h4>✅ 收藏操作成功!</h4>
+                            <p>收藏状态: ${data.bookmarked ? '已收藏' : '已取消收藏'}</p>
+                            <p>收藏数: ${data.bookmarks}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = `
+                        <div class="error">
+                            <h4>❌ 收藏操作失败</h4>
+                            <p>状态码: ${response.status}</p>
+                            <p>错误: ${data.message}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                result.innerHTML = `
+                    <div class="error">
+                        <h4>❌ 网络错误</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 页面加载时自动检查localStorage
+        window.onload = function() {
+            checkLocalStorage();
+            testAuthHeaders();
+        };
+    </script>
+</body>
+</html> 

@@ -2,15 +2,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import Button from '@/components/ui/button';
 import { API_ROUTES } from '@/config/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function RegisterPage() {
+  const { t } = useLanguage();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [avatar, setAvatar] = useState<File | null>(null);
   const [error, setError] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -74,7 +75,6 @@ export default function RegisterPage() {
     formData.append('username', username);
     formData.append('password', password);
     formData.append('email', email);
-    if (avatar) formData.append('avatar', avatar);
 
     // 输出FormData内容以调试
     for (let [key, value] of formData.entries()) {
@@ -92,26 +92,20 @@ export default function RegisterPage() {
       if (response.ok) {
         router.push('/user/profile');
       } else {
-        setError(data.message || '注册失败，请重试');
+        setError(data.message || t('user.register.error'));
       }
     } catch (err) {
       console.error('注册错误:', err);
-      setError('网络错误，请稍后重试');
+      setError(t('error.networkError'));
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setAvatar(e.target.files[0]);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center mt-[-50px] bg-[#FFFACD]">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border border-[#FF6F61]">
-        <h1 className="text-2xl font-bold mb-6 text-center text-[#FF6F61]">用户注册</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-[#FF6F61]">{t('user.register.title')}</h1>
         {error && (
           <div className="mb-4 p-2 bg-[#FF6F61]/10 text-[#FF6F61] text-sm rounded border border-[#FF6F61]">
             {error}
@@ -119,7 +113,7 @@ export default function RegisterPage() {
         )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="username"><span className="text-red-500">*</span>用户名</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="username"><span className="text-red-500">*</span>{t('user.register.username')}</label>
             <Input
               id="username"
               type="text"
@@ -136,7 +130,7 @@ export default function RegisterPage() {
             </div>
           )}
           <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="password"><span className="text-red-500">*</span>密码</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="password"><span className="text-red-500">*</span>{t('user.register.password')}</label>
             <Input
               id="password"
               type="password"
@@ -153,7 +147,7 @@ export default function RegisterPage() {
             </div>
           )}
           <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email">邮箱</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email">{t('user.register.email')}</label>
             <Input
               id="email"
               type="email"
@@ -163,22 +157,12 @@ export default function RegisterPage() {
               placeholder="请输入邮箱地址"
             />
           </div>
-          <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="avatar">头像</label>
-            <input
-              id="avatar"
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarChange}
-              className="border-[#FF6F61] focus:ring-[#FF6F61] focus:border-[#FF6F61] flex-1"
-            />
-          </div>
           <Button 
             type="submit" 
             className="w-full bg-[#FF6F61] hover:bg-[#ff8a75] text-white border-none"
             disabled={isLoading}
           >
-            {isLoading ? '注册中...' : '注册'}
+            {isLoading ? t('common.loading') + '...' : t('user.register.submit')}
           </Button>
         </form>
         <div className="mt-4 flex justify-between" style={{ display: 'none' }}>

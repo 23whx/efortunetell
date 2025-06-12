@@ -3,12 +3,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import { Menu } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AdminSidebarProps {
-  activeItem: 'articles' | 'comments' | 'appointments';
+  activeItem: 'articles' | 'comments' | 'appointments' | 'images';
 }
 
 export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
+  const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
 
@@ -18,7 +20,7 @@ export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
       <button
         className="fixed top-4 left-4 z-30 md:hidden bg-[#FF6F61] text-white p-2 rounded-full shadow-lg focus:outline-none"
         onClick={() => setSidebarOpen(true)}
-        aria-label="展开侧边栏"
+        aria-label={t('admin.sidebar.expand')}
         style={{ display: sidebarOpen ? 'none' : 'block' }}
       >
         <Menu size={24} />
@@ -46,19 +48,25 @@ export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
           className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'articles' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
           onClick={() => { router.push('/admin/articles'); setSidebarOpen(false); }}
         >
-          文章管理
+          {t('common.articles')}
         </Button>
         <Button
           className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'comments' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
           onClick={() => { router.push('/admin/comments'); setSidebarOpen(false); }}
         >
-          评论管理
+          {t('common.comments')}
         </Button>
         <Button
           className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'appointments' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
           onClick={() => { router.push('/admin/appointments'); setSidebarOpen(false); }}
         >
-          预约管理
+          {t('common.appointments')}
+        </Button>
+        <Button
+          className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'images' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
+          onClick={() => { router.push('/admin/images'); setSidebarOpen(false); }}
+        >
+          {t('admin.sidebar.images')}
         </Button>
         
         <div className="mt-auto">
@@ -66,7 +74,7 @@ export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
             className="w-full bg-white !text-black border border-[#FF6F61] font-semibold transition-all duration-300 rounded-lg py-2"
             onClick={() => router.push('/admin/dashboard')}
           >
-            返回面板
+            {t('common.back')}
           </Button>
         </div>
       </aside>

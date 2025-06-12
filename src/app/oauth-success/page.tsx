@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function OAuthSuccessPage() {
+// 拆分出使用 useSearchParams 的组件
+function OAuthSuccessContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const router = useRouter();
@@ -69,27 +70,47 @@ export default function OAuthSuccessPage() {
   }, [router, searchParams]);
 
   return (
+    <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border border-[#FF6F61] text-center">
+      {isLoading ? (
+        <>
+          <h1 className="text-2xl font-bold mb-4 text-[#FF6F61]">登录成功</h1>
+          <p className="mb-4">正在获取您的信息，即将跳转...</p>
+          <div className="w-10 h-10 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin mx-auto"></div>
+        </>
+      ) : error ? (
+        <>
+          <h1 className="text-2xl font-bold mb-4 text-[#FF6F61]">登录失败</h1>
+          <p className="text-red-500 mb-4">{error}</p>
+          <button 
+            onClick={() => router.push('/user/login')} 
+            className="px-4 py-2 bg-[#FF6F61] text-white rounded hover:bg-[#ff8a75]"
+          >
+            返回登录页
+          </button>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+// 显示在 Suspense 加载过程中的加载状态
+function LoadingFallback() {
+  return (
+    <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border border-[#FF6F61] text-center">
+      <h1 className="text-2xl font-bold mb-4 text-[#FF6F61]">正在处理</h1>
+      <p className="mb-4">请稍候...</p>
+      <div className="w-10 h-10 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin mx-auto"></div>
+    </div>
+  );
+}
+
+// 主页面组件
+export default function OAuthSuccessPage() {
+  return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFFACD]">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border border-[#FF6F61] text-center">
-        {isLoading ? (
-          <>
-            <h1 className="text-2xl font-bold mb-4 text-[#FF6F61]">登录成功</h1>
-            <p className="mb-4">正在获取您的信息，即将跳转...</p>
-            <div className="w-10 h-10 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin mx-auto"></div>
-          </>
-        ) : error ? (
-          <>
-            <h1 className="text-2xl font-bold mb-4 text-[#FF6F61]">登录失败</h1>
-            <p className="text-red-500 mb-4">{error}</p>
-            <button 
-              onClick={() => router.push('/user/login')} 
-              className="px-4 py-2 bg-[#FF6F61] text-white rounded hover:bg-[#ff8a75]"
-            >
-              返回登录页
-            </button>
-          </>
-        ) : null}
-      </div>
+      <Suspense fallback={<LoadingFallback />}>
+        <OAuthSuccessContent />
+      </Suspense>
     </div>
   );
 } 

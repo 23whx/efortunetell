@@ -1,11 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import Button from '@/components/ui/button';
 import { API_ROUTES } from '@/config/api';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function UserLoginPage() {
+  const { t } = useLanguage();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -27,18 +29,45 @@ export default function UserLoginPage() {
       const data = await response.json();
       
       if (response.ok) {
-        // 保存用户信息到localStorage
+        // 保存token和用户信息到localStorage
+        console.log('登录成功，后端返回数据:', data);
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          console.log('已写入token到localStorage:', data.token);
+        } else {
+          console.warn('后端未返回token');
+        }
+        if (data.data && data.data.user) {
+          localStorage.setItem('user', JSON.stringify({
+            username: data.data.user.username,
+            _id: data.data.user._id
+          }));
+          console.log('已写入user到localStorage:', {
+            username: data.data.user.username,
+            _id: data.data.user._id
+          });
+        } else if (data.data && data.data.username) {
+          localStorage.setItem('user', JSON.stringify({
+            username: data.data.username
+          }));
+          console.log('已写入user到localStorage:', { 
+            username: data.data.username
+          });
+        } else {
         localStorage.setItem('user', JSON.stringify({ 
-          username: data.data.user ? data.data.user.username : (data.data.username || username),
-          token: data.token
+            username: username
         }));
+          console.log('已写入user到localStorage:', { 
+            username
+          });
+        }
         router.push('/user/profile');
       } else {
-        setError(data.message || '登录失败');
+        setError(data.message || t('user.login.error'));
       }
     } catch (err) {
       console.error('登录错误:', err);
-      setError('网络错误，请稍后重试');
+      setError(t('error.networkError'));
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +76,7 @@ export default function UserLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center mt-[-50px] bg-[#FFFACD]">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border border-[#FF6F61]">
-        <h1 className="text-2xl font-bold mb-6 text-center text-[#FF6F61]">用户登录</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-[#FF6F61]">{t('user.login.title')}</h1>
         
         {error && (
           <div className="mb-4 p-2 bg-[#FF6F61]/10 text-[#FF6F61] text-sm rounded border border-[#FF6F61]">
@@ -57,7 +86,7 @@ export default function UserLoginPage() {
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="username">用户名</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="username">{t('user.login.username')}</label>
             <Input
               id="username"
               type="text"
@@ -69,7 +98,7 @@ export default function UserLoginPage() {
             />
           </div>
           <div className="mb-6 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="password">密码</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="password">{t('user.login.password')}</label>
             <Input
               id="password"
               type="password"
@@ -87,7 +116,7 @@ export default function UserLoginPage() {
               className="bg-[#FF6F61] hover:bg-[#ff8a75] text-white border-none px-8"
               disabled={isLoading}
             >
-              {isLoading ? '登录中...' : '登录'}
+              {isLoading ? t('common.loading') + '...' : t('user.login.submit')}
             </Button>
             <a href="/user/forgot-password" className="text-[#FF6F61] text-sm hover:underline whitespace-nowrap">忘记密码</a>
           </div>

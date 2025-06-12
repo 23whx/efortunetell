@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import Button from '@/components/ui/button';
 import { API_ROUTES } from '@/config/api';
 
