@@ -377,22 +377,33 @@ export default function ArticleManagement() {
                   {pagedArticles.map(article => (
                     <li key={article._id} className="border border-[#FF6F61] rounded p-4 bg-[#FFFACD] flex">
                       {/* 封面图片 - 只有当确实有有效的封面图片时才显示 */}
-                      {(article.coverImage || article.cover) &&
-                        (
-                          String(article.coverImage || article.cover).startsWith('/images/') ||
-                          String(article.coverImage || article.cover).startsWith('/uploads/') ||
-                          String(article.coverImage || article.cover).startsWith('http')
-                        ) && (
-                        <div className="w-24 h-24 mr-4 flex-shrink-0 overflow-hidden rounded border border-[#FF6F61]">
-                          <Image
-                            src={article.cover || '/images/default-cover.jpg'}
-                            alt={article.title}
-                            width={80}
-                            height={60}
-                            className="w-20 h-15 object-cover rounded"
-                          />
-                        </div>
-                      )}
+                      {(() => {
+                        const coverImage = article.coverImage || article.cover;
+                        const isValidImage = coverImage && (
+                          String(coverImage).startsWith('/images/') ||
+                          String(coverImage).startsWith('/uploads/') ||
+                          String(coverImage).startsWith('http')
+                        );
+                        
+                        if (!isValidImage) return null;
+                        
+                        return (
+                          <div className="w-24 h-24 mr-4 flex-shrink-0 overflow-hidden rounded border border-[#FF6F61]">
+                            <Image
+                              src={coverImage}
+                              alt={`${article.title}的封面图片`}
+                              width={96}
+                              height={96}
+                              className="w-full h-full object-cover"
+                              unoptimized={true}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        );
+                      })()}
                       
                       {/* 文章内容 */}
                       <div className="flex-1">
