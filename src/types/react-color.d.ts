@@ -3,15 +3,32 @@ declare module 'react-color' {
 
   export interface ColorResult {
     hex: string;
-    rgb: { r: number; g: number; b: number; a?: number };
-    hsl: { h: number; s: number; l: number; a?: number };
+    rgb: {
+      r: number;
+      g: number;
+      b: number;
+      a?: number;
+    };
+    hsl: {
+      h: number;
+      s: number;
+      l: number;
+      a?: number;
+    };
   }
 
-  export interface ColorPickerProps {
-    color?: string | { [key: string]: any };
-    onChange?: (color: ColorResult) => void;
-    onChangeComplete?: (color: ColorResult) => void;
+  export interface ColorChangeHandler {
+    (color: ColorResult): void;
   }
 
-  export class SketchPicker extends React.Component<ColorPickerProps> {}
+  export interface SketchPickerProps {
+    color?: string | ColorResult;
+    onChange?: ColorChangeHandler;
+    onChangeComplete?: ColorChangeHandler;
+    disableAlpha?: boolean;
+    presetColors?: string[];
+    width?: string | number;
+  }
+
+  export const SketchPicker: React.ComponentType<SketchPickerProps>;
 } 

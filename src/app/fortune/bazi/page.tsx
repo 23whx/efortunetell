@@ -3,17 +3,24 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import { Calendar, Mail, CreditCard, Check, Send, X, RefreshCw, Globe } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
+
 import { getAuthHeaders, fetchWithAuth } from '@/config/api';
 import TimezoneSelector from '@/components/ui/TimezoneSelector';
 import { 
   DEFAULT_TIMEZONE, 
-  getDateInTimezone, 
   formatDateWithTimezone, 
   getRelativeTime,
-  standardizeDate,
   toChinaDateString
 } from '@/utils/dateUtils';
+
+interface Appointment {
+  id: string;
+  date: string;
+  time: string;
+  service: string;
+  status: string;
+  birthDateTime?: string;
+}
 
 export default function BaziBookingPage() {
   // 用户状态
@@ -28,7 +35,7 @@ export default function BaziBookingPage() {
   const [showPayment, setShowPayment] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [isSendingToAdmin, setIsSendingToAdmin] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [adminNotified, setAdminNotified] = useState(false);
@@ -40,7 +47,7 @@ export default function BaziBookingPage() {
   // 当前日历视图和数据
   const [currentDate, setCurrentDate] = useState(new Date());
   const [availabilityData, setAvailabilityData] = useState<{[date: string]: boolean}>({});
-  const [userAppointments, setUserAppointments] = useState<any[]>([]);
+  const [userAppointments, setUserAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0); // 强制刷新触发器
   
@@ -48,8 +55,7 @@ export default function BaziBookingPage() {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [appointmentToCancel, setAppointmentToCancel] = useState<string | null>(null);
 
-  // 新增：选中日期的预约详情状态
-  const [selectedDetailDate, setSelectedDetailDate] = useState<string | null>(null);
+
 
   // 支付方式选项
   const paymentOptions = [
@@ -113,10 +119,7 @@ export default function BaziBookingPage() {
     fetchData();
   }, [user, refreshTrigger]);
   
-  // 格式化日期为 YYYY-MM-DD 格式（中国时区）
-  const formatDateToYYYYMMDD = (date: Date) => {
-    return toChinaDateString(date.toISOString());
-  };
+
   
   // 生成本月所有日期的日历数据
   const generateCalendarDays = (year: number, month: number) => {
@@ -279,7 +282,7 @@ export default function BaziBookingPage() {
   const createAppointment = async () => {
     if (!user) return false;
     
-    setIsSendingToAdmin(true);
+
     setError(null);
     
     try {
@@ -324,7 +327,7 @@ export default function BaziBookingPage() {
       setError(err instanceof Error ? err.message : '创建预约失败，请稍后重试');
       return false;
     } finally {
-      setIsSendingToAdmin(false);
+
     }
   };
   
@@ -463,7 +466,7 @@ export default function BaziBookingPage() {
   // 计算倒计时
   const calculateCountdown = (date: string) => {
     if (!date) return '';
-    return getRelativeTime(date, selectedTimezone);
+    return getRelativeTime(date);
   };
   
   // 如果用户未登录，返回 null (useEffect 会重定向)
@@ -752,7 +755,7 @@ export default function BaziBookingPage() {
             <p className="text-gray-700 mb-2">预约人: {user.username}</p>
             <p className="text-gray-700 mb-2">出生时间: {birthDateTime}</p>
             <p className="text-gray-700 mb-2">邮箱地址: {email}</p>
-            <p className="text-gray-700 mb-2">预约日期: {formatDisplayTime(selectedDate!)}</p>
+            <p className="text-gray-700 mb-2">预约日期: {formatDisplayTime(selectedDate!, '19:00-21:00')}</p>
             <div className="mb-6 mt-2 bg-yellow-50 border border-yellow-200 p-2 rounded text-xs text-yellow-800">
               <Globe size={12} className="inline mr-1" /> 预约日期和时间以中国时间 (UTC+8) 为准
             </div>

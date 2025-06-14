@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
       } else {
         setError(data.message || '发送验证码失败');
       }
-    } catch (err) {
+    } catch {
       setError('网络错误，请稍后重试');
     } finally {
       setIsLoading(false);
@@ -89,7 +89,7 @@ export default function ForgotPasswordPage() {
       } else {
         setError(data.message || '验证码或密码错误');
       }
-    } catch (err) {
+    } catch {
       setError('网络错误，请稍后重试');
     } finally {
       setIsLoading(false);

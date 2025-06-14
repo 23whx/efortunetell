@@ -110,8 +110,8 @@ export async function apiRequest(url: string, options: RequestInit = {}) {
   }
 }
 
-// 记录认证失败次数，按URL分别记录
-const authFailureCounts: Record<string, number> = {};
+// 认证失败计数器（用于防止频繁重试）
+// let authFailureCounts = 0;
 
 /**
  * 包含认证的fetch请求

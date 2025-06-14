@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import AdminSidebar from '@/components/shared/AdminSidebar';
-import { getAuthHeaders, fetchWithAuth, API_BASE_URL, getImageUrl } from '@/config/api';
+import { API_BASE_URL, getAuthHeaders, fetchWithAuth } from '@/config/api';
+import Image from 'next/image';
 
 // 定义文章类型接口
 interface Article {
@@ -18,12 +19,45 @@ interface Article {
   likes: number;
   views: number;
   bookmarks: number;
-  comments: any[];
+  comments: Comment[];
   createdAt: string;
   publishedAt: string;
-  author: any;
+  author: Author;
   coverImage?: string; // 可选
   cover?: string; // 向下兼容
+}
+
+interface Comment {
+  _id: string;
+  content: string;
+  author: string;
+  createdAt: string;
+}
+
+interface Author {
+  _id: string;
+  username: string;
+  email?: string;
+}
+
+interface ApiArticle {
+  _id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  content: string;
+  category: string;
+  tags: string[];
+  status: string;
+  likes: number;
+  views: number;
+  bookmarks: number;
+  comments: Comment[];
+  createdAt: string;
+  publishedAt: string;
+  author: Author;
+  coverImage?: string;
+  cover?: string;
 }
 
 export default function ArticleManagement() {
@@ -59,7 +93,7 @@ export default function ArticleManagement() {
       
       if (data.success && Array.isArray(data.data)) {
         // 将API返回的cover字段适配为coverImage字段，并处理绝对路径
-        const adaptedArticles = data.data.map((article: any) => {
+        const adaptedArticles = data.data.map((article: ApiArticle) => {
           // 处理图片路径，将本地绝对路径转换为相对URL
           let coverImagePath = article.coverImage || article.cover || null;
           
@@ -200,20 +234,20 @@ export default function ArticleManagement() {
   const pagedArticles = filteredArticles.slice((articlePage-1)*articlePageSize, articlePage*articlePageSize);
 
   // 文章操作
-  const handleDeleteArticle = async (id: string) => {
+  const handleDeleteArticle = async (articleId: string) => {
     if (!confirm('确定要删除这篇文章吗？此操作不可撤销。')) {
       return;
     }
     
     try {
-      const response = await fetchWithAuth(`${API_BASE_URL}/api/articles/${id}`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/api/articles/${articleId}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
       
       if (response.ok) {
         // 删除成功，更新列表
-        setArticles(articles.filter(a => a._id !== id));
+        setArticles(articles.filter(a => a._id !== articleId));
         alert('文章已删除');
       } else {
         const errorData = await response.json();
@@ -245,7 +279,7 @@ export default function ArticleManagement() {
       
       if (response.ok) {
         // 编辑成功，更新列表
-        const updatedData = await response.json();
+
         setArticles(arts => arts.map(a => 
           a._id === editingId ? { ...a, title: editTitle, content: editContent } : a
         ));
@@ -261,28 +295,6 @@ export default function ArticleManagement() {
       console.error('更新文章错误:', err);
       alert(err instanceof Error ? err.message : '更新文章失败，请重试');
     }
-  };
-
-  // 获取封面图片URL，支持新的路径格式
-  const getCoverImage = (article: Article) => {
-    if (!article.coverImage) {
-      return '/images/default-image.svg';
-    }
-    
-    // 过滤掉已知的无效或默认图片
-    if (article.coverImage === 'default-cover.jpg' || 
-        article.coverImage === '/default-cover.jpg' ||
-        article.coverImage === 'http://26.26.26.1:3000/default-cover.jpg') {
-      return '/images/default-image.svg';
-    }
-    
-    // 过滤掉 blob URLs
-    if (article.coverImage.startsWith('blob:')) {
-      return '/images/default-image.svg';
-    }
-    
-    // 使用统一的图片URL处理函数
-    return getImageUrl(article.coverImage);
   };
 
   if (!admin) return null;
@@ -372,15 +384,12 @@ export default function ArticleManagement() {
                           String(article.coverImage || article.cover).startsWith('http')
                         ) && (
                         <div className="w-24 h-24 mr-4 flex-shrink-0 overflow-hidden rounded border border-[#FF6F61]">
-                          <img 
-                            src={getCoverImage(article)} 
-                            alt={article.title} 
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.onerror = null;
-                              target.src = '/images/default-image.svg';
-                            }}
+                          <Image
+                            src={article.cover || '/images/default-cover.jpg'}
+                            alt={article.title}
+                            width={80}
+                            height={60}
+                            className="w-20 h-15 object-cover rounded"
                           />
                         </div>
                       )}

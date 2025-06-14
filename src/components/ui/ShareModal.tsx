@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { X, Copy, Check } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -104,7 +104,6 @@ const sharePlatforms: SharePlatform[] = [
 ];
 
 export default function ShareModal({ isOpen, onClose, title, summary, url, coverImage }: ShareModalProps) {
-  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [hasNativeShare, setHasNativeShare] = useState(false);
 
@@ -126,24 +125,10 @@ export default function ShareModal({ isOpen, onClose, title, summary, url, cover
     window.open(shareUrl, '_blank', 'width=600,height=400');
   };
 
-  const handleCopyLink = async () => {
-    try {
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(url);
-      } else {
-        // 降级方案
-        const textArea = document.createElement('textarea');
-        textArea.value = url;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-      }
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error('复制失败:', error);
-    }
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleNativeShare = async () => {
@@ -179,10 +164,13 @@ export default function ShareModal({ isOpen, onClose, title, summary, url, cover
           <div className="flex space-x-3">
             {coverImage && (
               <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                <img
+                <Image
                   src={coverImage}
                   alt={title}
+                  width={64}
+                  height={64}
                   className="w-full h-full object-cover"
+                  unoptimized={true}
                 />
               </div>
             )}

@@ -1,7 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, X, Trash2, RefreshCw, Calendar, User, Mail, Clock } from 'lucide-react';
+import { Check, Trash2, RefreshCw, Calendar, User, Mail, Clock } from 'lucide-react';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import { API_BASE_URL } from '@/config/api';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -72,13 +72,7 @@ export default function AppointmentsPage() {
     }
   }, [router]);
 
-  // 获取预约数据
-  useEffect(() => {
-    if (!admin) return;
-    fetchAppointments();
-  }, [admin]);
-
-  const fetchAppointments = async () => {
+  const fetchAppointments = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     
@@ -106,7 +100,13 @@ export default function AppointmentsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [admin, t]);
+
+  // 获取预约数据
+  useEffect(() => {
+    if (!admin) return;
+    fetchAppointments();
+  }, [admin, fetchAppointments]);
 
   // 格式化服务名称
   const formatServiceName = (service: string, serviceType?: string) => {
@@ -268,7 +268,7 @@ export default function AppointmentsPage() {
                     ? 'border-b-2 border-[#FF6F61] text-[#FF6F61]'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
-                onClick={() => setActiveTab(tab.key as any)}
+                onClick={() => setActiveTab(tab.key as 'unprocessed' | 'processed')}
               >
                 {tab.label}
                 <span className="ml-2 text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded">

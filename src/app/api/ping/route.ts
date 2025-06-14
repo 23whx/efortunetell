@@ -69,26 +69,23 @@ export async function GET() {
         timestamp: data.timestamp || new Date().toISOString(),
         source: 'backend'
       });
-    } catch (fetchError) {
+    } catch {
       clearTimeout(timeoutId);
-      throw fetchError;
+      
+      // 更新失败状态
+      lastFailureTimestamp = Date.now();
+      consecutiveFailures++;
     }
-  } catch (error: any) {
-    // 更新失败状态
-    lastFailureTimestamp = Date.now();
-    consecutiveFailures++;
-    
-    console.warn(`【Debug】服务器连接检查失败(${consecutiveFailures}次连续): ${error.message}`);
-    
-    // 即使后端连接失败，也返回200 OK，但标记连接状态为false
-    return NextResponse.json({
-      success: false, 
-      message: '后端服务器连接失败',
-      error: error.message,
-      consecutiveFailures,
-      timestamp: new Date().toISOString(),
-      source: 'frontend'
-    }, { status: 200 }); // 依然返回200而非错误状态码
+  } catch (error: unknown) {
+    console.error('Ping route error:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        message: 'Internal server error',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }, 
+      { status: 500 }
+    );
   }
 }
 
@@ -126,17 +123,14 @@ export async function HEAD() {
       } else {
         throw new Error(`服务器响应异常: ${response.status}`);
       }
-    } catch (fetchError) {
-      clearTimeout(timeoutId);
-      
-      // 更新失败状态
-      lastFailureTimestamp = Date.now();
-      consecutiveFailures++;
+    } catch {
+      // 即使出错也返回成功，这样客户端不会因为连接检查而中断操作
+      return new NextResponse(null, { status: 200 });
     }
     
     // 不管成功或失败都返回200
     return new NextResponse(null, { status: 200 });
-  } catch (error) {
+  } catch {
     // 即使出错也返回成功，这样客户端不会因为连接检查而中断操作
     return new NextResponse(null, { status: 200 });
   }

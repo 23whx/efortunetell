@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -9,25 +9,22 @@ import TextAlign from '@tiptap/extension-text-align';
 import { 
   Bold, 
   Italic, 
-  Underline, 
   Strikethrough,
-  Code, 
-  Heading1, 
-  Heading2, 
-  Heading3,
   List, 
   ListOrdered, 
   Quote, 
-  Minus,
-  Image as ImageIcon,
-  AlignLeft,
-  AlignCenter,
+  Code,
+  Heading1,
+  Heading2,
+  Heading3,
+  Image as ImageIcon, 
+  AlignLeft, 
+  AlignCenter, 
   AlignRight,
-  Palette,
+  Minus,
   Undo,
   Redo,
-  Move,
-  RotateCcw
+  Palette
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -81,7 +78,7 @@ const ResizableImage = Image.extend({
   },
   
   addNodeView() {
-    return ({ node, getPos, editor, view, decorations }) => {
+    return ({ node, getPos, editor, view }) => {
       const container = document.createElement('div');
       container.style.position = 'relative';
       container.style.display = 'inline-block';
@@ -195,21 +192,19 @@ const ResizableImage = Image.extend({
       });
 
       // 缩放功能
-      let startX: number, startY: number, startWidth: number, startHeight: number, aspectRatio: number;
+      let startX: number, startWidth: number, startHeight: number, aspectRatio: number;
       
       resizeHandle.addEventListener('mousedown', (e) => {
         e.preventDefault();
         e.stopPropagation();
         
         startX = e.clientX;
-        startY = e.clientY;
         startWidth = img.offsetWidth;
         startHeight = img.offsetHeight;
         aspectRatio = startWidth / startHeight;
 
         const handleMouseMove = (e: MouseEvent) => {
           const deltaX = e.clientX - startX;
-          const deltaY = e.clientY - startY;
           
           // 使用X轴变化来计算新尺寸，保持长宽比
           const newWidth = Math.max(100, startWidth + deltaX);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import type { ImageProps } from 'next/image';
 import { API_BASE_URL } from '@/config/api';
 
@@ -83,20 +84,20 @@ const ImageWithFallback = ({
           <span className="sr-only">加载中...</span>
         </div>
       )}
-      <img
+      <Image
         src={processedSrc}
         alt={alt || '图片'}
         width={imgWidth}
         height={imgHeight}
         onError={handleError}
         onLoad={handleLoad}
-        loading="lazy"
         style={{ 
           objectFit: 'cover', 
           opacity: loading ? 0 : 1,
           transition: 'opacity 0.3s ease',
           ...rest.style 
         }}
+        unoptimized={true}
         {...rest}
       />
     </div>

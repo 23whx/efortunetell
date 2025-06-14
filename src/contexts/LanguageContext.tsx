@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'zh' | 'en';
 
@@ -494,16 +494,10 @@ const translations = {
   }
 };
 
-interface LanguageProviderProps {
-  children: ReactNode;
-}
-
-export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('en');
-  const [isClient, setIsClient] = useState(false);
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLanguageState] = useState<Language>('zh');
 
   useEffect(() => {
-    setIsClient(true);
     // 从 localStorage 读取语言设置
     if (typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('language') as Language;
@@ -529,7 +523,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       {children}
     </LanguageContext.Provider>
   );
-};
+}
 
 export const useLanguage = (): LanguageContextType => {
   const context = useContext(LanguageContext);

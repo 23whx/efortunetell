@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Upload, X, Check, Image as ImageIcon, Move, RotateCcw, Maximize } from 'lucide-react';
+import Image from 'next/image';
+import { Upload, X, Check, ImageIcon, Move, RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/button';
 import { getImageUrl } from '@/config/api';
 
@@ -50,7 +51,7 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverPreviewRef = useRef<HTMLDivElement>(null);
 
-  // 只在外部coverSettings改变时同步一次
+  // 监听外部传入的coverSettings变化
   useEffect(() => {
     if (coverSettings) {
       setCoverSettingsState({
@@ -59,7 +60,7 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
         positionY: coverSettings.positionY
       });
     }
-  }, [coverSettings?.scale, coverSettings?.positionX, coverSettings?.positionY]);
+  }, [coverSettings]);
 
   // 创建一个包装函数来处理settings变化
   const handleCoverSettingsChange = useCallback((newSettings: CoverSettings) => {
@@ -320,31 +321,28 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
             {contentImages.map((imageUrl, index) => (
               <div
                 key={index}
-                className={`relative cursor-pointer rounded-lg border-2 transition-all hover:border-blue-300 ${
-                  selectedCover === imageUrl
-                    ? 'border-blue-500'
-                    : 'border-gray-200'
-                }`}
+                className={`
+                  relative aspect-square rounded-lg overflow-hidden cursor-pointer border-2 transition-all
+                  ${selectedCover === imageUrl 
+                    ? 'border-blue-500 ring-2 ring-blue-200' 
+                    : 'border-gray-200 hover:border-gray-300'
+                  }
+                `}
                 onClick={() => handleImageSelect(imageUrl)}
               >
-                <img
+                <Image
                   src={getImageUrl(imageUrl)}
                   alt={`图片 ${index + 1}`}
-                  className="w-full h-24 object-cover rounded-lg"
+                  width={150}
+                  height={150}
+                  className="w-full h-full object-cover"
+                  unoptimized={true}
                 />
                 {selectedCover === imageUrl && (
-                  <div 
-                    className="absolute inset-0 rounded-lg flex items-center justify-center"
-                    style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)' }}
-                  >
-                    <div className="bg-white text-blue-600 p-1 rounded-full shadow-md">
-                      <Check size={16} />
-                    </div>
+                  <div className="absolute top-2 right-2 bg-blue-500 text-white p-1 rounded-full">
+                    <Check size={12} />
                   </div>
                 )}
-                <div className="absolute top-1 right-1 bg-green-500 text-white p-1 rounded-full opacity-0 hover:opacity-100 transition-opacity">
-                  <Maximize size={12} />
-                </div>
               </div>
             ))}
           </div>
@@ -353,12 +351,10 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
 
       {/* 无图片时的提示 */}
       {contentImages.length === 0 && !selectedCover && (
-        <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-          <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">暂无封面图片</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            请上传图片并保存文章后，图片将出现在这里供选择作为封面
-          </p>
+        <div className="text-center py-8 text-gray-500">
+          <ImageIcon size={48} className="mx-auto mb-4 text-gray-300" />
+          <p className="text-sm">暂无可选择的图片</p>
+          <p className="text-xs text-gray-400 mt-1">请先上传图片或在文章中添加图片</p>
         </div>
       )}
 
@@ -367,8 +363,8 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        className="hidden"
         onChange={handleFileSelect}
+        className="hidden"
       />
     </div>
   );

@@ -1,16 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Button from '@/components/ui/button';
-import { Calendar, User, Trash2, Heart, Bookmark } from 'lucide-react';
-import TimezoneSelector from '@/components/ui/TimezoneSelector';
-import { 
-  DEFAULT_TIMEZONE, 
-  formatDateWithTimezone, 
-  getRelativeTime,
-  standardizeDate
-} from '@/utils/dateUtils';
+import { Calendar, Bookmark, Heart, Trash2 } from 'lucide-react';
 import { API_BASE_URL } from '@/config/api';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -58,7 +51,6 @@ export default function UserProfilePage() {
   const [bookmarkedArticles, setBookmarkedArticles] = useState<BookmarkedArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookmarksLoading, setBookmarksLoading] = useState(false);
-  const [selectedTimezone, setSelectedTimezone] = useState<string>(DEFAULT_TIMEZONE);
   const [activeTab, setActiveTab] = useState<'all' | 'bazi' | 'qimen' | 'liuren' | 'naming'>('all');
   const [currentTab, setCurrentTab] = useState<'bookings' | 'bookmarks'>('bookings');
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -121,70 +113,37 @@ export default function UserProfilePage() {
   }, [user]);
 
   // 获取收藏文章数据
-  const fetchBookmarkedArticles = async () => {
-    console.log('📚 [收藏功能] 开始获取收藏文章数据');
-    console.log('📚 [收藏功能] 用户状态:', user);
+  const fetchBookmarkedArticles = useCallback(async () => {
+    if (!user) return;
     
-    if (!user) {
-      console.log('📚 [收藏功能] 用户未登录，跳过获取收藏数据');
-      return;
-    }
-
     const token = localStorage.getItem('token');
-    console.log('📚 [收藏功能] localStorage token:', token ? '有token' : '无token');
-    console.log('📚 [收藏功能] localStorage user:', localStorage.getItem('user'));
+    if (!token) return;
     
-    if (!token) {
-      console.error("📚 [收藏功能] 获取收藏数据失败: 未找到认证Token。");
-      return;
-    }
-
-    setBookmarksLoading(true);
     try {
-      const url = `${API_BASE_URL}/api/articles/bookmarks`;
-      console.log('📚 [收藏功能] 请求URL:', url);
-      console.log('📚 [收藏功能] 请求头:', {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token.substring(0, 20)}...`
+      setBookmarksLoading(true);
+      const response = await fetch(`${API_BASE_URL}/api/users/bookmarks`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
       
-      const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      console.log('📚 [收藏功能] 响应状态:', response.status);
-      console.log('📚 [收藏功能] 响应状态文本:', response.statusText);
-
       if (response.ok) {
         const data = await response.json();
-        console.log('📚 [收藏功能] 响应数据:', data);
-        
-        if (data.success && data.data) {
-          console.log('📚 [收藏功能] 收藏文章数量:', data.data.length);
-          setBookmarkedArticles(data.data);
-        } else {
-          console.warn('📚 [收藏功能] 响应格式异常:', data);
+        if (data.success) {
+          setBookmarkedArticles(data.data || []);
         }
-      } else {
-        const errorData = await response.text();
-        console.error('📚 [收藏功能] 获取收藏数据失败:', response.status, errorData);
       }
-    } catch (error) {
-      console.error('📚 [收藏功能] 获取收藏数据时出错:', error);
+    } catch (error: unknown) {
+      console.error('获取收藏文章失败:', error);
     } finally {
       setBookmarksLoading(false);
     }
-  };
+  }, [user]);
 
-  // 当切换到收藏夹tab时获取收藏数据
   useEffect(() => {
-    if (currentTab === 'bookmarks' && user) {
-      fetchBookmarkedArticles();
-    }
-  }, [currentTab, user]);
+    fetchBookmarkedArticles();
+  }, [fetchBookmarkedArticles]);
 
   // 格式化服务名称
   const formatServiceName = (service: string, serviceType?: string) => {
@@ -349,7 +308,7 @@ export default function UserProfilePage() {
                         ? 'border-b-2 border-[#FF6F61] text-[#FF6F61]'
                         : 'text-gray-500 hover:text-gray-700'
                     }`}
-                    onClick={() => setActiveTab(tab.key as any)}
+                    onClick={() => setActiveTab(tab.key as 'all' | 'bazi' | 'qimen' | 'liuren' | 'naming')}
                   >
                     {tab.label}
                     <span className="ml-2 text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded">

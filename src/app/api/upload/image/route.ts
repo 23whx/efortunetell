@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
-import { writeFile } from 'fs/promises';
-import path from 'path';
-import { mkdir } from 'fs/promises';
 import { API_BASE_URL } from '@/config/api';
 
 // 后端API基础URL修正
@@ -80,12 +77,14 @@ export async function POST(request: NextRequest) {
         const errorData = await response.json();
         errorMessage = JSON.stringify(errorData);
         console.error('【DEBUG】后端响应错误详情:', errorMessage);
-      } catch (e) {
+      } catch {
+        console.error('上传到后端失败');
+        
         try {
-          errorMessage = await response.text();
-          console.error('【DEBUG】后端响应错误文本:', errorMessage);
-        } catch (textError) {
-          console.error('【DEBUG】无法读取后端错误响应');
+          const responseText = await response.text();
+          console.error('后端响应内容:', responseText);
+        } catch {
+          console.error('无法读取后端响应内容');
         }
       }
       

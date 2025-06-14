@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       title: `${slug} - 博客文章`,
       description: `这是关于${slug}的文章`,
     };
-  } catch (_) {
+  } catch {
     return {
       title: '文章不存在',
       description: '请浏览其他文章',
@@ -38,7 +38,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {fileContent}
       </article>
     );
-  } catch (_) {
+  } catch {
     return notFound();
   }
 }

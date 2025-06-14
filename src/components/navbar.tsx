@@ -9,7 +9,7 @@ import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 import { useState, useEffect, FormEvent } from 'react';
 import { API_ROUTES, getAuthHeaders } from '@/config/api';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { getAvatarPath, getDisplayName } from '@/utils/avatar';
+import { getAvatarPath } from '@/utils/avatar';
 
 export default function Navbar() {
   const pathname = usePathname();

@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { Save, ArrowLeft, Eye, FileText } from 'lucide-react';
 import Button from '@/components/ui/button';
 import RichTextEditor from '@/components/ui/RichTextEditor';
@@ -8,25 +9,7 @@ import CoverImageSelector from '@/components/ui/CoverImageSelector';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import { API_BASE_URL, fetchWithAuth, getImageUrl } from "@/config/api";
 
-interface Article {
-  _id: string;
-  title: string;
-  content: string;
-  summary: string;
-  category: string;
-  tags: string[];
-  status: string;
-  coverImage?: string;
-  coverSettings?: {
-    scale: number;
-    positionX: number;
-    positionY: number;
-  };
-  images?: string[];
-  createdAt: string;
-}
-
-export default function AdminEditPage() {
+function AdminEditContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const articleId = searchParams.get('id');
@@ -44,7 +27,7 @@ export default function AdminEditPage() {
     positionX: 50,
     positionY: 50
   });
-  const [contentImages, setContentImages] = useState<string[]>([]);
+
   const [databaseImages, setDatabaseImages] = useState<string[]>([]);
   
   // UI状态
@@ -70,6 +53,7 @@ export default function AdminEditPage() {
       // 新建文章时初始化为空
       setDatabaseImages([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, isEditMode, articleId]);
 
   // 监听内容变化，提取图片URL
@@ -129,7 +113,6 @@ export default function AdminEditPage() {
     };
 
     const images = extractImagesFromContent(content);
-    setContentImages(images);
     
     // 添加调试日志
     console.log('📄 [编辑页面] 内容变化，提取到的图片:', images);
@@ -158,8 +141,38 @@ export default function AdminEditPage() {
     setCoverImage(imageUrl);
   }, [coverImage]);
 
+  // 图片URL转换辅助函数
+  const convertBackendToFrontendUrl = useCallback((htmlContent: string): string => {
+    if (!htmlContent) return '';
+    
+    // 如果是单个图片路径
+    if (!htmlContent.includes('<') && htmlContent.startsWith('/images/')) {
+      return `http://26.26.26.1:5000${htmlContent}`;
+    }
+    
+    // 处理HTML内容中的图片：将后端相对路径转换为完整URL
+    return htmlContent
+      .replace(
+        /<img([^>]*?)src=["']\/images\/([^"']+)["']([^>]*?)>/g,
+        `<img$1src="http://26.26.26.1:5000/images/$2"$3>`
+      );
+  }, []);
+
+  const convertFullUrlToRelative = useCallback((htmlContent: string): string => {
+    if (!htmlContent) return '';
+    
+    // 将完整的后端URL转换为相对路径（用于保存到数据库）
+    return htmlContent
+      .replace(/http:\/\/26\.26\.26\.1:5000\/images\/([^"'\s]+)/g, '/images/$1');
+  }, []);
+
+  const normalizeImagePath = useCallback((path: string): string => {
+    // 实现路径规范化逻辑
+    return path;
+  }, []);
+
   // 获取文章详情
-  const fetchArticleDetails = async (id: string) => {
+  const fetchArticleDetails = useCallback(async (id: string) => {
     console.log('📖 ===== 开始加载文章详情 =====');
     console.log('  - 文章ID:', id);
     
@@ -219,7 +232,7 @@ export default function AdminEditPage() {
         
         if (article.coverImage) {
           console.log('🎨 处理封面图片...');
-          let coverPath = article.coverImage;
+          const coverPath = normalizeImagePath(article.coverImage || '');
           console.log('  - 原始封面路径:', coverPath);
           
           // 不再简化路径 - 新格式路径需要保持完整
@@ -253,7 +266,13 @@ export default function AdminEditPage() {
       setLoading(false);
       console.log('🏁 文章加载流程结束 (loading = false)');
     }
-  };
+  }, [convertBackendToFrontendUrl, normalizeImagePath]);
+
+  useEffect(() => {
+    if (admin && admin.token && articleId) {
+      fetchArticleDetails(articleId);
+    }
+  }, [admin, articleId, fetchArticleDetails]);
 
   // 图片上传（暂存到前端）
   const handleImageUpload = async (file: File): Promise<string> => {
@@ -652,31 +671,6 @@ export default function AdminEditPage() {
     return updatedContent;
   };
 
-  // 图片URL转换辅助函数
-  const convertBackendToFrontendUrl = (htmlContent: string): string => {
-    if (!htmlContent) return '';
-    
-    // 如果是单个图片路径
-    if (!htmlContent.includes('<') && htmlContent.startsWith('/images/')) {
-      return `http://26.26.26.1:5000${htmlContent}`;
-    }
-    
-    // 处理HTML内容中的图片：将后端相对路径转换为完整URL
-    return htmlContent
-      .replace(
-        /<img([^>]*?)src=["']\/images\/([^"']+)["']([^>]*?)>/g,
-        `<img$1src="http://26.26.26.1:5000/images/$2"$3>`
-      );
-  };
-
-  const convertFullUrlToRelative = (htmlContent: string): string => {
-    if (!htmlContent) return '';
-    
-    // 将完整的后端URL转换为相对路径（用于保存到数据库）
-    return htmlContent
-      .replace(/http:\/\/26\.26\.26\.1:5000\/images\/([^"'\s]+)/g, '/images/$1');
-  };
-
   if (!admin) return null;
 
   if (loading) {
@@ -866,10 +860,13 @@ export default function AdminEditPage() {
               <div className="bg-white rounded-lg border border-gray-200 p-8">
                 <div className="prose prose-lg max-w-none">
                   {coverImage && (
-                    <img
+                    <Image
                       src={getImageUrl(coverImage)}
                       alt="封面图片"
+                      width={800}
+                      height={256}
                       className="w-full h-64 object-cover rounded-lg mb-8"
+                      unoptimized={true}
                     />
                   )}
                   
@@ -894,5 +891,20 @@ export default function AdminEditPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function AdminEditPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FFFACD] flex">
+        <AdminSidebar activeItem="articles" />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="w-10 h-10 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin"></div>
+        </main>
+      </div>
+    }>
+      <AdminEditContent />
+    </Suspense>
   );
 } 

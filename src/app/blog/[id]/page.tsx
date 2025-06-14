@@ -91,7 +91,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
       title: '博客文章',
       description: '查看我们的博客文章'
     };
-  } catch (_) {
+      } catch {
     return {
       title: '博客文章',
       description: '查看我们的博客文章'

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import AdminSidebar from '@/components/shared/AdminSidebar';
@@ -45,7 +45,7 @@ interface ArticleResponse {
 
 export default function CommentManagement() {
   const { t } = useLanguage();
-  const [admin, setAdmin] = useState<{ username: string } | null>(null);
+  const [admin, setAdmin] = useState<{ username: string; token: string } | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -66,7 +66,7 @@ export default function CommentManagement() {
   }, [router]);
 
   // 获取所有文章及其评论
-  const fetchArticlesWithComments = async () => {
+  const fetchArticlesWithComments = useCallback(async () => {
     try {
       setLoading(true);
       const headers = getAuthHeaders();
@@ -114,13 +114,13 @@ export default function CommentManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, searchQuery, t]);
 
   useEffect(() => {
-    if (admin) {
+    if (admin && admin.token) {
       fetchArticlesWithComments();
     }
-  }, [admin, page, searchQuery]);
+  }, [admin, fetchArticlesWithComments]);
 
   useEffect(() => {
     if (tip) {
@@ -215,6 +215,14 @@ export default function CommentManagement() {
     return item.username || '匿名用户';
   };
 
+  // 获取头像路径
+  const getAvatarUrl = (item: Comment | Reply) => {
+    if (item.user && item.user.username) {
+      return getAvatarPath(item.user);
+    }
+    return '/user_img.png';
+  };
+
   // 渲染回复组件
   const renderReply = (reply: Reply, articleId: string, commentId: string, level: number = 0) => {
     const maxLevel = 2; // 最大显示层级
@@ -228,7 +236,7 @@ export default function CommentManagement() {
             <div className="flex items-center space-x-2">
               <div className="w-6 h-6 rounded-full flex-shrink-0 overflow-hidden">
                 <Image
-                  src={getAvatarPath(reply.user)}
+                  src={getAvatarUrl(reply)}
                   alt="用户头像"
                   width={24}
                   height={24}
@@ -364,7 +372,7 @@ export default function CommentManagement() {
                               <div className="flex items-center space-x-3">
                                 <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden">
                                   <Image
-                                    src={getAvatarPath(comment.user)}
+                                    src={getAvatarUrl(comment)}
                                     alt="用户头像"
                                     width={32}
                                     height={32}

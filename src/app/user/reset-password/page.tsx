@@ -44,7 +44,7 @@ export default function ResetPasswordPage() {
         username: parsed.username,
         email: parsed.email
       });
-    } catch (err) {
+    } catch {
       // 解析失败，重定向到找回密码页面
       router.push('/user/forgot-password');
     }
@@ -98,8 +98,8 @@ export default function ResetPasswordPage() {
       } else {
         setError(data.message || '密码重置失败，请重试');
       }
-    } catch (err) {
-      console.error('重置密码错误:', err);
+    } catch {
+      console.error('重置密码错误');
       setError('网络错误，请稍后重试');
     } finally {
       setIsLoading(false);

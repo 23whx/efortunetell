@@ -26,9 +26,9 @@ interface DuplicateGroup {
   count: number;
 }
 
-export default function ImageManagementPage() {
+export default function ImageManagement() {
   const router = useRouter();
-  const [admin, setAdmin] = useState<{ username: string, token: string } | null>(null);
+  const [admin, setAdmin] = useState<{ username: string; token: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<ImageStats | null>(null);
   const [duplicates, setDuplicates] = useState<DuplicateGroup[]>([]);
@@ -309,7 +309,7 @@ export default function ImageManagementPage() {
             {!loading && !stats && (
               <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">图片统计分析</h3>
-                <p className="text-gray-500 mb-6">点击"重新分析"按钮开始分析图片文件，查找重复和未引用的文件。</p>
+                <p className="text-gray-500 mb-6">点击&quot;重新分析&quot;按钮开始分析图片文件，查找重复和未引用的文件。</p>
                 <Button onClick={fetchImageStats} className="bg-[#FF6F61] hover:bg-[#FF5A4D] text-white">
                   开始分析
                 </Button>
@@ -323,6 +323,10 @@ export default function ImageManagementPage() {
                 <p className="text-gray-500">正在分析图片文件...</p>
               </div>
             )}
+
+            <p className="text-gray-600 text-sm">
+              点击图片可复制路径。支持的格式：JPG、PNG、GIF、WebP。
+            </p>
           </div>
         </div>
       </main>

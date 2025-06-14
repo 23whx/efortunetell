@@ -163,29 +163,26 @@ export function getTimezoneInfo(timezone: string): { id: string; name: string; o
  * @param timezone 时区
  * @returns 格式化的相对时间字符串
  */
-export function getRelativeTime(dateString: string, timezone: string = DEFAULT_TIMEZONE): string {
-  if (!dateString) return '';
-  
+export const getRelativeTime = (dateString: string): string => {
   try {
+    const date = new Date(dateString);
     const now = new Date();
-    const targetDate = new Date(dateString);
+    const diffMs = now.getTime() - date.getTime();
+
+    // 计算时间差
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
     
-    // 计算毫秒差
-    const diff = targetDate.getTime() - now.getTime();
-    
-    // 转换为天、小时、分钟
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
-    if (days < 0 || (days === 0 && hours < 0)) {
+    if (diffDays < 0 || (diffDays === 0 && diffHours < 0)) {
       return '已过期';
     }
     
-    if (days > 0) {
-      return `${days}天 ${hours}小时 ${minutes}分钟`;
+    if (diffDays > 0) {
+      return `${diffDays}天 ${diffHours}小时 ${diffMinutes}分钟`;
     } else {
-      return `${hours}小时 ${minutes}分钟`;
+      return `${diffHours}小时 ${diffMinutes}分钟`;
     }
   } catch (e) {
     console.error('计算相对时间错误:', e);
@@ -219,4 +216,13 @@ export function toChinaDateString(utcDateString: string): string {
 
 export function toChinaDayString(date: Date): string {
   return formatInTimeZone(date, 'Asia/Shanghai', 'yyyy-MM-dd');
-} 
+}
+
+export const formatDateForDisplay = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}; 

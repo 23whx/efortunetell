@@ -102,19 +102,17 @@ export default function FortunePage() {
         return true;
       } else {
         console.error('创建预约记录失败:', result.message);
-        alert(`${t('fortune.bookingError')}: ${result.message}`);
         return false;
       }
     } catch (error) {
       console.error('创建预约记录时出错:', error);
-      alert(`${t('fortune.bookingError')}: ${error instanceof Error ? error.message : t('error.unknownError')}`);
       return false;
     } finally {
       setIsCreatingAppointment(false);
     }
   };
 
-  const handleGetInTouch = async (service: any) => {
+  const handleGetInTouch = async (service: { serviceType: string; name: string; price: string }) => {
     if (!isLoggedIn || !user) {
       console.log('用户未登录，跳转到登录页面');
       router.push('/user/login');
@@ -123,7 +121,7 @@ export default function FortunePage() {
 
     console.log('用户已登录，开始创建预约记录');
     // 创建预约记录
-    const success = await createAppointmentRecord(
+    await createAppointmentRecord(
       service.serviceType, 
       service.name, 
       service.price

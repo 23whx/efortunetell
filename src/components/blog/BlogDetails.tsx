@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { Article, CommentType } from '@/app/blog/[id]/page';
+import { Article } from '@/app/blog/[id]/page';
 import Image from 'next/image';
 import { API_BASE_URL, getImageUrl, getAuthHeaders } from '@/config/api';
-import { Heart, Bookmark, MessageCircle, Eye, Calendar, User, Tag, Share2, ArrowUp } from 'lucide-react';
+import { Heart, Bookmark, MessageCircle, Eye, Calendar, Share2, ArrowUp } from 'lucide-react';
 import { getAvatarPath, getDisplayName } from '@/utils/avatar';
 import { formatDate } from '@/utils/date';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -60,7 +60,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
       console.log('🔧 [BlogDetails] 原始内容中的图片标签:', originalImages);
       
       // 替换所有相对路径图片为后端完整URL，并添加错误处理
-      let processedHtml = article.content.replace(
+      const processedHtml = article.content.replace(
         /<img\s+([^>]*\s+)?src=["']([^"']+)["']([^>]*)?>/g, 
         (match, before = '', src, after = '') => {
           console.log('🔧 [BlogDetails] 处理图片标签:', { match, src, before, after });
@@ -349,6 +349,17 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
   const coverImageUrl = getCoverImageUrl();
   console.log('🔧 [BlogDetails] 最终封面图片URL:', coverImageUrl);
 
+  // 获取用户头像和显示名称的辅助函数
+  const getUserAvatar = (user?: { _id: string; username: string; avatar?: string; role?: string }) => {
+    if (!user) return '/user_img.png';
+    return getAvatarPath(user);
+  };
+
+  const getUserDisplayName = (user?: { _id: string; username: string; avatar?: string; role?: string }) => {
+    if (!user) return '匿名用户';
+    return getDisplayName(user);
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffacd' }}>
       {/* 提示信息 */}
@@ -435,7 +446,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden">
                     <Image
-                      src={getAvatarPath(article.author)}
+                      src={getUserAvatar(article.author)}
                       alt="作者头像"
                       width={40}
                       height={40}
@@ -444,7 +455,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                     />
                   </div>
                   <span className="text-gray-700 font-medium">
-                    {getDisplayName(article.author)}
+                    {getUserDisplayName(article.author)}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -677,7 +688,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                       <div className="flex items-start space-x-3">
                         <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden">
                           <Image
-                            src={getAvatarPath(comment.user)}
+                            src={getUserAvatar(comment.user)}
                             alt="用户头像"
                             width={32}
                             height={32}
@@ -688,7 +699,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
                             <span className="font-medium text-gray-900">
-                              {comment.user?.username || comment.username || "用户"}
+                              {getUserDisplayName(comment.user)}
                             </span>
                             <span className="text-gray-500 text-sm">
                               {formatDate(comment.createdAt || comment.date || new Date().toISOString())}
@@ -717,7 +728,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                                   <div className="flex items-center space-x-2 mb-2">
                                     <div className="w-6 h-6 rounded-full flex-shrink-0 overflow-hidden">
                                       <Image
-                                        src={getAvatarPath(reply.user)}
+                                        src={getUserAvatar(reply.user)}
                                         alt="用户头像"
                                         width={24}
                                         height={24}
@@ -726,7 +737,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                                       />
                                     </div>
                                     <span className="font-medium text-gray-900 text-sm">
-                                      {reply.user?.username || reply.username || "用户"}
+                                      {getUserDisplayName(reply.user)}
                                     </span>
                                     <span className="text-gray-500 text-xs">
                                       {formatDate(reply.createdAt || reply.date || new Date().toISOString())}
@@ -755,7 +766,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                                           <div className="flex items-center space-x-2 mb-1">
                                             <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
                                               <Image
-                                                src={getAvatarPath(nestedReply.user)}
+                                                src={getUserAvatar(nestedReply.user)}
                                                 alt="用户头像"
                                                 width={20}
                                                 height={20}
@@ -764,7 +775,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                                               />
                                             </div>
                                             <span className="font-medium text-gray-900 text-xs">
-                                              {nestedReply.user?.username || nestedReply.username || "用户"}
+                                              {getUserDisplayName(nestedReply.user)}
                                             </span>
                                             <span className="text-gray-500 text-xs">
                                               {formatDate(nestedReply.createdAt || nestedReply.date || new Date().toISOString())}
@@ -800,7 +811,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                                 <textarea
                                   value={replyContent}
                                   onChange={(e) => setReplyContent(e.target.value)}
-                                  placeholder={`${t('blog.reply')} ${comment.user?.username || comment.username || "用户"}...`}
+                                  placeholder={`${t('blog.reply')} ${getUserDisplayName(comment.user)}...`}
                                   className="w-full p-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#ff6f61] focus:border-transparent"
                                   rows={3}
                                 />

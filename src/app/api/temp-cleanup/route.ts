@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       const body = await request.json();
       specificFiles = body.filesToDelete || [];
       console.log('  - 指定删除的文件:', specificFiles);
-    } catch (error) {
+    } catch {
       console.log('  - 未指定特定文件，将使用安全清理模式');
     }
 
@@ -68,8 +68,8 @@ export async function POST(request: NextRequest) {
           } else {
             console.log(`  - 新文件 ${fileName}: ${Math.round(fileAge / 1000 / 60)} 分钟前创建，保留`);
           }
-        } catch (error) {
-          console.error(`  - 检查文件 ${fileName} 失败:`, error);
+        } catch {
+          console.error(`  - 检查文件 ${fileName} 失败`);
         }
       }
       
@@ -118,14 +118,11 @@ export async function POST(request: NextRequest) {
       failedDeletions: failedDeletions
     });
     
-  } catch (error) {
-    console.error('💥 ===== 临时图片清理API出错 =====');
-    console.error('错误详情:', error);
-    console.error('错误堆栈:', (error as Error).stack);
-    
-    return NextResponse.json(
-      { success: false, message: '临时图片清理失败' },
-      { status: 500 }
-    );
+  } catch {
+    console.error('清理临时图片失败');
+    return NextResponse.json({ 
+      success: false, 
+      message: '清理失败' 
+    }, { status: 500 });
   }
 } 

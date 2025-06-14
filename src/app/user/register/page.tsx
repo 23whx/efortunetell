@@ -77,7 +77,7 @@ export default function RegisterPage() {
     formData.append('email', email);
 
     // 输出FormData内容以调试
-    for (let [key, value] of formData.entries()) {
+    for (const [key, value] of formData.entries()) {
       console.log(key, value);
     }
 
@@ -93,6 +93,9 @@ export default function RegisterPage() {
         router.push('/user/profile');
       } else {
         setError(data.message || t('user.register.error'));
+        for (const [key, value] of Object.entries(data.errors)) {
+          console.error(`${key}: ${value}`);
+        }
       }
     } catch (err) {
       console.error('注册错误:', err);

@@ -1,7 +1,8 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Button from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Menu } from 'lucide-react';
 import { SketchPicker, ColorResult } from 'react-color';
 import React from "react";
@@ -27,6 +28,16 @@ export default function AdminWritePage() {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [fontColor, setFontColor] = useState('#222222');
   const [imageHashes, setImageHashes] = useState<Map<string, string>>(new Map());
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // 防抖函数类型定义
+  const debounce = useCallback((func: (...args: unknown[]) => void, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+    return (...args: unknown[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  }, []);
 
   // 计算图片hash
   const getImageHash = async (file: File): Promise<string> => {
@@ -67,7 +78,7 @@ export default function AdminWritePage() {
       const data = await response.json();
       if (data.success && data.data) {
         if (Array.isArray(data.data)) {
-          return data.data.map((item: any) => item.url);
+          return data.data.map((item: { url: string }) => item.url);
         } else if (data.data.url) {
           return [data.data.url];
         }
@@ -78,6 +89,20 @@ export default function AdminWritePage() {
       throw error;
     }
   };
+
+  // 插入图片到文章内容
+  const insertImageToContent = useCallback((imagePath: string) => {
+    const textarea = contentRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const imageTag = `\n<img src="${imagePath}" alt="文章图片" style="max-width: 100%; height: auto;" />\n`;
+    const newText = content.slice(0, start) + imageTag + content.slice(start);
+    setContent(newText);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + imageTag.length, start + imageTag.length);
+    }, 0);
+  }, [content]);
 
   // 处理粘贴事件，支持粘贴图片（带查重）
   useEffect(() => {
@@ -118,7 +143,7 @@ export default function AdminWritePage() {
     };
     document.addEventListener('paste', handlePaste);
     return () => { document.removeEventListener('paste', handlePaste); };
-  }, [imageHashes, imageFiles]);
+  }, [imageHashes, imageFiles, insertImageToContent]);
 
   // 处理图片上传（带查重）
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,8 +165,8 @@ export default function AdminWritePage() {
           try {
             hash = await getImageHash(file);
           } catch (hashError) {
-            console.error('哈希计算失败:', hashError);
-            hash = Date.now() + '-' + Math.random().toString(36).substring(2, 15);
+            console.warn('计算图片哈希失败，跳过查重:', hashError);
+            // 继续处理，但不进行查重
           }
           
           // 处理重复图片
@@ -161,7 +186,7 @@ export default function AdminWritePage() {
             }
           }
           
-          // 创建blob URL
+          // 创建Blob URL
           let blobUrl;
           try {
             blobUrl = URL.createObjectURL(file);
@@ -239,19 +264,12 @@ export default function AdminWritePage() {
     }, 0);
   };
   
-  // 插入图片到文章内容
-  const insertImageToContent = (imgUrl: string) => {
-    const textarea = contentRef.current;
-    if (!textarea) return;
-    const start = textarea.selectionStart;
-    const imageTag = `\n<img src="${imgUrl}" alt="文章图片" style="max-width: 100%; height: auto;" />\n`;
-    const newText = content.slice(0, start) + imageTag + content.slice(start);
-    setContent(newText);
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + imageTag.length, start + imageTag.length);
-    }, 0);
-  };
+  useEffect(() => {
+    if (selectedImage) {
+      insertImageToContent(selectedImage);
+      setSelectedImage(null);
+    }
+  }, [selectedImage, insertImageToContent]);
 
   // 上传所有临时图片并获取服务器URL（多图批量上传）
   const uploadAllImages = async (): Promise<Map<string, string>> => {
@@ -273,7 +291,7 @@ export default function AdminWritePage() {
           if (cover === blobUrl) setCover(null);
         }
       });
-    } catch (error) {
+    } catch {
       blobs.forEach(blobUrl => {
         failedUploads.push(blobUrl);
         if (cover === blobUrl) setCover(null);
@@ -331,15 +349,7 @@ export default function AdminWritePage() {
     return slug;
   };
 
-  // 提取图片路径中的文件名，确保使用相对URL格式
-  const normalizeImagePath = (path: string): string => {
-    if (!path) return '';
-    if (path.startsWith('blob:')) return '';
-    if (path.startsWith('/images/') || path.startsWith('/uploads/') || path.startsWith('http')) return path;
-    return '';
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!title) { alert('标题不能为空'); return; }
     if (!content) { alert('内容不能为空'); return; }
@@ -462,7 +472,7 @@ export default function AdminWritePage() {
         slug: generateSlug(title)
       };
       if (coverImage) {
-        (rawData as any).coverImage = coverImage;
+        (rawData as { [key: string]: unknown }).coverImage = coverImage;
       }
       // 获取认证Token
       const admin = JSON.parse(localStorage.getItem('admin') || '{}');
@@ -492,7 +502,7 @@ export default function AdminWritePage() {
       let responseData = null;
       try {
         responseData = JSON.parse(responseText);
-      } catch (e) {
+              } catch {
         console.log('【DEBUG】响应内容不是JSON:', responseText);
       }
       
@@ -539,9 +549,9 @@ export default function AdminWritePage() {
       } else {
         throw new Error(`发布失败: ${responseData?.message || '服务器返回了成功状态，但响应格式不正确'}`);
       }
-    } catch (err) {
-      console.error('文章提交错误:', err);
-      alert(`发布失败: ${err instanceof Error ? err.message : '网络错误，请稍后重试'}`);
+    } catch (error: unknown) {
+      console.error('提交错误:', error);
+      alert(error instanceof Error ? error.message : '提交失败，请重试');
     } finally {
       setSubmitting(false);
     }
@@ -581,48 +591,21 @@ export default function AdminWritePage() {
 
   // 监听文章内容变化，检测删除的图片
   useEffect(() => {
-    // 从内容中提取所有图片URL
-    const imgUrlsInContent: string[] = [];
-    const imgRegex = /<img[^>]*src=["']([^"']+)["'][^>]*>/g;
-    let match;
-    
-    while ((match = imgRegex.exec(content)) !== null) {
-      imgUrlsInContent.push(match[1]);
-    }
-    
-    // 找出内容中不存在的图片，提示用户是否需要删除
     const checkImagesInContent = () => {
-      // 保存不在内容中的图片
-      const imagesNotInContent = images.filter(imgUrl => 
-        !imgUrlsInContent.includes(imgUrl) && cover !== imgUrl
-      );
+      const imageRegex = /<img[^>]+src="([^"]+)"/g;
+      const matches = [...content.matchAll(imageRegex)];
+      const contentImages = matches.map(match => match[1]);
       
-      // 如果有不在内容中的图片且不是封面图片，询问用户是否删除
-      if (imagesNotInContent.length > 0) {
-        // 不直接删除，而是在控制台记录
-        console.log(`有 ${imagesNotInContent.length} 张图片不在内容中且不是封面：`, imagesNotInContent);
-        // 注释掉自动删除的代码，由用户手动管理
-        // imagesNotInContent.forEach(imgUrl => {
-        //   setTimeout(() => {
-        //     handleDeleteImage(imgUrl);
-        //   }, 0);
-        // });
-      }
+      setImages(prev => prev.filter(img => contentImages.includes(img)));
     };
     
-    // 使用防抖处理，避免频繁触发
-    const debounce = (func: Function, delay: number) => {
-      let timeoutId: NodeJS.Timeout;
-      return function(...args: any[]) {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => func(...args), delay);
-      };
-    };
-    
-    // 使用防抖进行检查
     const debouncedCheck = debounce(checkImagesInContent, 1000);
     debouncedCheck();
-  }, [content]);
+  }, [content, debounce]);
+
+  useEffect(() => {
+    console.log('🔄 封面或图片状态变化，重新计算预览');
+  }, [cover, images]);
 
   return (
     <div className="min-h-screen bg-[#FFFACD] flex">
@@ -722,7 +705,7 @@ export default function AdminWritePage() {
                 )}
               </div>
               <div className="bg-gray-100 p-2 mb-2 rounded text-sm text-gray-600">
-                提示: 您可以直接粘贴图片(Ctrl+V)到编辑区域，或使用"插入图片"按钮从本地选择图片
+                提示: 您可以直接粘贴图片(Ctrl+V)到编辑区域，或使用&quot;插入图片&quot;按钮从本地选择图片
               </div>
               <textarea
                 id="article-content"
@@ -760,11 +743,14 @@ export default function AdminWritePage() {
               <div className="flex flex-wrap gap-3 mb-2">
                 {images.map((img, idx) => (
                   <div key={idx} className="relative group">
-                    <img 
+                    <Image 
                       src={img} 
                       alt="插图" 
+                      width={96}
+                      height={96}
                       className={`w-24 h-24 object-cover rounded border-2 ${cover === img ? 'border-[#FF6F61]' : 'border-gray-200'}`} 
                       onClick={() => setCover(img)} 
+                      unoptimized={true}
                     />
                     {cover === img && <span className="absolute top-1 left-1 bg-[#FF6F61] text-white text-xs px-2 py-0.5 rounded">封面</span>}
                     <button
@@ -797,6 +783,9 @@ export default function AdminWritePage() {
                 <input type="file" accept="image/*" multiple ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
               </div>
               <div className="text-xs text-gray-500">点击图片可设为封面，鼠标悬停可选择插入到文章中</div>
+              <p className="text-gray-600 text-sm">
+                支持格式：JPG、PNG、GIF、WebP。建议尺寸：1200x630px
+              </p>
             </div>
             <div className="flex justify-end">
               <Button className="bg-[#FF6F61] text-white px-6">提交文章</Button>

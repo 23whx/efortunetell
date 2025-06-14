@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { API_BASE_URL, getAuthHeaders, fetchWithAuth, getBackendURL } from '@/config/api';
-import { v4 as uuidv4 } from 'uuid';
+import { API_BASE_URL, getAuthHeaders, getBackendURL } from '@/config/api';
 import { 
   standardizeDate, 
-  parseAndStandardizeDateTime, 
-  convertToUTC,
-  DEFAULT_TIMEZONE,
-  getDateInTimezone
+  parseAndStandardizeDateTime,
+  DEFAULT_TIMEZONE
 } from '@/utils/dateUtils';
 
 // 获取预约列表

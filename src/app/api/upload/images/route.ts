@@ -100,12 +100,14 @@ export async function POST(request: NextRequest) {
         const errorData = await response.json();
         errorMessage = JSON.stringify(errorData);
         console.error('【DEBUG】后端响应错误详情:', errorMessage);
-      } catch (e) {
+      } catch {
+        console.error('解析后端错误响应失败');
+        
         try {
-          errorMessage = await response.text();
-          console.error('【DEBUG】后端响应错误文本:', errorMessage);
-        } catch (textError) {
-          console.error('【DEBUG】无法读取后端错误响应');
+          const responseText = await response.text();
+          console.error('后端响应内容:', responseText);
+        } catch {
+          console.error('无法读取后端响应内容');
         }
       }
       
@@ -119,7 +121,7 @@ export async function POST(request: NextRequest) {
     console.log('【DEBUG】后端响应成功:', JSON.stringify(data).substring(0, 200) + '...');
     
     // 准备返回数据，包括原始URL到新URL的映射
-    const resultData = data.data.map((item: any, index: number) => {
+    const resultData = data.data.map((item: { path: string }, index: number) => {
       const originalUrl = index < originalUrls.length ? originalUrls[index] : '';
       const result = {
         originalUrl,
@@ -136,12 +138,15 @@ export async function POST(request: NextRequest) {
       data: resultData
     });
     
-  } catch (error) {
-    console.error('【DEBUG】批量图片上传过程中发生错误:', error);
-    return NextResponse.json({ 
-      success: false, 
-      message: error instanceof Error ? error.message : '批量图片上传失败',
-      error: error instanceof Error ? error.stack : '未知错误'
-    }, { status: 500 });
+  } catch (error: unknown) {
+    console.error('Upload error:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        message: 'Upload failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
   }
 } 

@@ -147,31 +147,10 @@ export default function BlogPage() {
     return getImageUrl(article.coverImage);
   };
 
-  // 图片加载错误处理
-  const handleImageError = useCallback((articleId: string, originalSrc: string) => {
-    // 如果已经是后端URL，则使用默认图片
-    if (originalSrc.includes(API_BASE_URL)) {
-      return '/images/default-image.svg';
-    }
-    
-    // 尝试从后端加载图片
-    const path = originalSrc.startsWith('/') ? originalSrc : `/${originalSrc}`;
-    return `${API_BASE_URL}${path}`;
-  }, []);
-
   // 图片状态管理
-  const [imageSources, setImageSources] = useState<Record<string, string>>({});
+  const [imageSources] = useState<Record<string, string>>({});
 
-  // 处理特定文章图片加载错误
-  const handleArticleImageError = useCallback((articleId: string, e: React.SyntheticEvent<HTMLImageElement>) => {
-    const currentSrc = e.currentTarget.src;
-    const newSrc = handleImageError(articleId, currentSrc);
-    
-    setImageSources(prev => ({
-      ...prev,
-      [articleId]: newSrc
-    }));
-  }, [handleImageError]);
+
 
   // 获取文章的显示图片URL
   const getArticleImageSrc = useCallback((article: Article) => {
