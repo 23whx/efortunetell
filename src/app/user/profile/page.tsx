@@ -121,7 +121,7 @@ export default function UserProfilePage() {
     
     try {
       setBookmarksLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/users/bookmarks`, {
+      const response = await fetch(`${API_BASE_URL}/api/articles/bookmarks`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
