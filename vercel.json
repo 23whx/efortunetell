@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/blog",
+      "destination": "https://efortunetell.blog",
+      "permanent": true
+    },
+    {
+      "source": "https://efortuneteller.vercel.app/blog",
+      "destination": "https://efortunetell.blog",
+      "permanent": true
+    }
+  ]
+}
