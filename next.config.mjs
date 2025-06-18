@@ -8,11 +8,16 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://26.26.26.1:5000/api/:path*',
+        destination: 'https://api.efortunetell.blog/api/:path*',
       },
       {
         source: '/images/:path*',
-        destination: 'http://26.26.26.1:5000/images/:path*',
+        destination: 'https://api.efortunetell.blog/images/:path*',
+      },
+      // 将根路径重写到博客页面，用户看到的URL保持为 /
+      {
+        source: '/',
+        destination: '/blog',
       },
     ];
   },
@@ -20,18 +25,16 @@ const nextConfig = {
     position: 'bottom-right',
   },
   images: {
-    domains: ['localhost', '26.26.26.1'],
+    domains: ['localhost', 'api.efortunetell.blog'],
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: '26.26.26.1',
-        port: '5000',
+        protocol: 'https',
+        hostname: 'api.efortunetell.blog',
         pathname: '/images/**',
       },
       {
-        protocol: 'http',
-        hostname: '26.26.26.1',
-        port: '5000',
+        protocol: 'https',
+        hostname: 'api.efortunetell.blog',
         pathname: '/uploads/**',
       },
       {

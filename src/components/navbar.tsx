@@ -96,7 +96,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 pt-6 pb-4 px-4 shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/blog" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Image
               src="/icon.png"
               alt="Rolley的玄学命理小站图标"
@@ -113,8 +113,8 @@ export default function Navbar() {
           {!admin && (
             <>
               <Link 
-                href="/blog" 
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/blog' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
+                href="/" 
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/' || pathname === '/blog' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('nav.blog')}
               </Link>

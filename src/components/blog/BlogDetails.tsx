@@ -146,7 +146,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
 
   // 处理标签点击
   const handleTagClick = (tag: string) => {
-    router.push(`/blog?tag=${encodeURIComponent(tag)}`);
+    router.push(`/?tag=${encodeURIComponent(tag)}`);
   };
 
   // 点赞文章

@@ -1,5 +1,5 @@
 // 后端API基础URL
-export const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.efortunetell.blog';
 
 // API路径
 export const API_ROUTES = {
@@ -179,7 +179,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
  */
 export const getBackendURL = (): string => {
   // 从环境变量中获取，或使用默认值
-  return process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+  return process.env.NEXT_PUBLIC_API_URL || 'https://api.efortunetell.blog';
 };
 
 // 图片URL处理函数 - 使用Next.js代理

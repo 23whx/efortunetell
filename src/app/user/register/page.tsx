@@ -170,13 +170,13 @@ export default function RegisterPage() {
         </form>
         <div className="mt-4 flex justify-between" style={{ display: 'none' }}>
           <a 
-            href="http://localhost:5000/api/auth/google" 
+            href="https://api.efortunetell.blog/api/auth/google" 
             className="inline-block bg-[#FF6F61] hover:bg-[#ff8a75] text-white py-2 px-4 rounded"
           >
             使用Google登录
           </a>
           <a 
-            href="http://localhost:5000/api/auth/github" 
+            href="https://api.efortunetell.blog/api/auth/github" 
             className="inline-block bg-[#FF6F61] hover:bg-[#ff8a75] text-white py-2 px-4 rounded"
           >
             使用GitHub登录

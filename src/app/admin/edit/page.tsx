@@ -147,14 +147,14 @@ function AdminEditContent() {
     
     // 如果是单个图片路径
     if (!htmlContent.includes('<') && htmlContent.startsWith('/images/')) {
-      return `http://26.26.26.1:5000${htmlContent}`;
+      return `https://api.efortunetell.blog${htmlContent}`;
     }
     
     // 处理HTML内容中的图片：将后端相对路径转换为完整URL
     return htmlContent
       .replace(
         /<img([^>]*?)src=["']\/images\/([^"']+)["']([^>]*?)>/g,
-        `<img$1src="http://26.26.26.1:5000/images/$2"$3>`
+        `<img$1src="https://api.efortunetell.blog/images/$2"$3>`
       );
   }, []);
 
@@ -163,7 +163,7 @@ function AdminEditContent() {
     
     // 将完整的后端URL转换为相对路径（用于保存到数据库）
     return htmlContent
-      .replace(/http:\/\/26\.26\.26\.1:5000\/images\/([^"'\s]+)/g, '/images/$1');
+      .replace(/https:\/\/api\.efortunetell\.blog\/images\/([^"'\s]+)/g, '/images/$1');
   }, []);
 
   const normalizeImagePath = useCallback((path: string): string => {
@@ -357,9 +357,9 @@ function AdminEditContent() {
           if (imgSrc.startsWith('/images/')) {
             currentImages.push(imgSrc);
           }
-          // 处理完整URL格式：http://26.26.26.1:5000/images/...
-          else if (imgSrc.startsWith('http://26.26.26.1:5000/images/')) {
-            const relativePath = imgSrc.replace('http://26.26.26.1:5000', '');
+          // 处理完整URL格式：https://api.efortunetell.blog/images/...
+          else if (imgSrc.startsWith('https://api.efortunetell.blog/images/')) {
+            const relativePath = imgSrc.replace('https://api.efortunetell.blog', '');
             currentImages.push(relativePath);
           }
         }
@@ -479,9 +479,9 @@ function AdminEditContent() {
           if (imgSrc.startsWith('/images/')) {
             images.push(imgSrc);
           }
-          // 处理完整URL格式：http://26.26.26.1:5000/images/...
-          else if (imgSrc.startsWith('http://26.26.26.1:5000/images/')) {
-            const relativePath = imgSrc.replace('http://26.26.26.1:5000', '');
+          // 处理完整URL格式：https://api.efortunetell.blog/images/...
+          else if (imgSrc.startsWith('https://api.efortunetell.blog/images/')) {
+            const relativePath = imgSrc.replace('https://api.efortunetell.blog', '');
             images.push(relativePath);
           }
         }
@@ -637,7 +637,7 @@ function AdminEditContent() {
     let updatedContent = htmlContent;
     let updateCount = 0;
     for (const [tempFileName, newPath] of Object.entries(moveResult.data.imageMap)) {
-      const backendUrl = `http://26.26.26.1:5000${newPath}`;
+      const backendUrl = `https://api.efortunetell.blog${newPath}`;
       
       console.log(`  - 替换URL ${updateCount + 1} (文件: ${tempFileName}):`);
       console.log(`    新URL: ${backendUrl}`);

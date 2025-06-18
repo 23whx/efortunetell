@@ -147,7 +147,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     <div className="min-h-screen">
       <div className="max-w-5xl mx-auto">
         <Link 
-          href="/blog" 
+          href="/" 
           className="inline-flex items-center hover:text-[#ff8a75] mb-6 px-6 pt-6 transition-colors"
           style={{ color: '#ff6f61' }}
         >

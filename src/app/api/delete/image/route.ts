@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       fileName = imagePath.split('\\').pop() || '';
     } else if (imagePath.includes('/images/')) {
       fileName = imagePath.split('/').pop() || '';
-    } else if (imagePath.includes('26.26.26.1:3000/images/')) {
+    } else if (imagePath.includes('api.efortunetell.blog/images/')) {
       fileName = imagePath.split('/').pop() || '';
     }
     

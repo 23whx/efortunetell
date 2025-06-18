@@ -99,7 +99,7 @@ export default function ArticleManagement() {
           
           // 过滤掉已知的无效图片路径
           if (coverImagePath && (
-            coverImagePath === 'http://26.26.26.1:3000/default-cover.jpg' ||
+            coverImagePath === 'https://api.efortunetell.blog/default-cover.jpg' ||
             coverImagePath === 'default-cover.jpg' ||
             coverImagePath === '/default-cover.jpg'
           )) {
@@ -119,8 +119,8 @@ export default function ArticleManagement() {
               coverImagePath = `/images/${coverImagePath}`;
             }
             // 处理同一API服务器上的完整URL路径
-            else if (coverImagePath.startsWith('http://26.26.26.1:3000/') || 
-                     coverImagePath.includes(':5000/images/')) {
+            else if (coverImagePath.startsWith('https://api.efortunetell.blog/') || 
+                     coverImagePath.includes('api.efortunetell.blog/images/')) {
               // 从API服务器URL中提取文件名，添加/images/前缀
               const fileName = coverImagePath.split('/').pop();
               coverImagePath = `/images/${fileName}`;

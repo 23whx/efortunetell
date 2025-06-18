@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { API_BASE_URL } from '@/config/api';
 
-// 后端API基础URL修正
-// 在配置文件中是 http://26.26.26.1:5000，确保在此处也一致
+// 后端API基础URL配置
+// 使用配置文件中的API_BASE_URL，已更新为生产环境地址
 const BACKEND_API_URL = `${API_BASE_URL}/api`;
 
 // 最大文件大小1MB
