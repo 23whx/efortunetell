@@ -58,7 +58,7 @@ export default function AdminDashboard() {
         <div className="mt-8 flex justify-center">
           <Button 
             className="bg-[#FF6F61] text-white px-6 py-2" 
-            onClick={() => router.push('/admin/write')}
+            onClick={() => router.push('/admin/edit')}
           >
             写新文章
           </Button>

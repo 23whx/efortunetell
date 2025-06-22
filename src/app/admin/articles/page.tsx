@@ -355,7 +355,7 @@ export default function ArticleManagement() {
           <div className="mb-6 flex justify-end">
             <Button 
               className="bg-[#FF6F61] text-white px-4" 
-              onClick={() => router.push('/admin/write')}
+              onClick={() => router.push('/admin/edit')}
             >
               写文章
             </Button>
