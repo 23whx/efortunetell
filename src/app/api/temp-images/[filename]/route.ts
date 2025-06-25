@@ -6,11 +6,13 @@ import os from 'os';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  context: { params: { filename: string } }
 ) {
   console.log('🖼️ ===== 临时图片访问API =====');
   
   try {
+    // 从context中获取params
+    const { params } = context;
     const filename = params.filename;
     console.log('  - 请求的文件名:', filename);
     
