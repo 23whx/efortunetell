@@ -4,20 +4,13 @@ import { existsSync } from 'fs';
 import path from 'path';
 import os from 'os';
 
-interface RouteParams {
-  params: {
-    filename: string;
-  };
-}
-
 export async function GET(
   request: NextRequest,
-  context: RouteParams
+  { params }: { params: { filename: string } }
 ) {
   console.log('🖼️ ===== 临时图片访问API =====');
   
   try {
-    const { params } = context;
     const filename = params.filename;
     console.log('  - 请求的文件名:', filename);
     
