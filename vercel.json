@@ -1,10 +1,4 @@
 {
-  "redirects": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://api.efortunetell.blog/api/:path*"
-    }
-  ],
   "rewrites": [
     {
       "source": "/images/:path*",

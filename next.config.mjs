@@ -6,10 +6,53 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      // 只重定向需要转发到后端的特定API路径
+      // 排除前端自己的API路由：temp-upload, temp-cleanup, ping, proxy
       {
-        source: '/api/:path*',
-        destination: 'https://api.efortunetell.blog/api/:path*',
+        source: '/api/auth/:path*',
+        destination: 'https://api.efortunetell.blog/api/auth/:path*',
       },
+      {
+        source: '/api/users/:path*',
+        destination: 'https://api.efortunetell.blog/api/users/:path*',
+      },
+      {
+        source: '/api/blogs/:path*',
+        destination: 'https://api.efortunetell.blog/api/blogs/:path*',
+      },
+      {
+        source: '/api/articles/:path*',
+        destination: 'https://api.efortunetell.blog/api/articles/:path*',
+      },
+      {
+        source: '/api/comments/:path*',
+        destination: 'https://api.efortunetell.blog/api/comments/:path*',
+      },
+      {
+        source: '/api/bookings/:path*',
+        destination: 'https://api.efortunetell.blog/api/bookings/:path*',
+      },
+      {
+        source: '/api/appointments/:path*',
+        destination: 'https://api.efortunetell.blog/api/appointments/:path*',
+      },
+      {
+        source: '/api/payments/:path*',
+        destination: 'https://api.efortunetell.blog/api/payments/:path*',
+      },
+      {
+        source: '/api/admin/:path*',
+        destination: 'https://api.efortunetell.blog/api/admin/:path*',
+      },
+      {
+        source: '/api/images/:path*',
+        destination: 'https://api.efortunetell.blog/api/images/:path*',
+      },
+      {
+        source: '/api/upload/:path*',
+        destination: 'https://api.efortunetell.blog/api/upload/:path*',
+      },
+      // 静态图片资源重定向
       {
         source: '/images/:path*',
         destination: 'https://api.efortunetell.blog/images/:path*',
