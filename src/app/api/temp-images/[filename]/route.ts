@@ -4,17 +4,17 @@ import { existsSync } from 'fs';
 import path from 'path';
 import os from 'os';
 
-export async function GET(
-  request: NextRequest,
-  context: { params: { filename: string } }
-) {
+export async function GET(request: NextRequest) {
   console.log('🖼️ ===== 临时图片访问API =====');
   
   try {
-    // 从context中获取params
-    const { params } = context;
-    const filename = params.filename;
-    console.log('  - 请求的文件名:', filename);
+    // 从URL路径中提取filename
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+    const filename = pathname.split('/').pop(); // 获取最后一个路径段作为filename
+    
+    console.log('  - URL路径:', pathname);
+    console.log('  - 提取的文件名:', filename);
     
     if (!filename) {
       console.error('❌ 文件名为空');
