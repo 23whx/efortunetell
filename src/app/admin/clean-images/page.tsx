@@ -188,29 +188,29 @@ export default function CleanImagesPage() {
           
           {/* 标签页切换 */}
           <div className="flex gap-2 mt-4">
-            <Button
+            <button
               onClick={() => setActiveTab('clean')}
-              className={`px-4 py-2 rounded-lg font-medium ${
+              className={`px-4 py-2 rounded-lg font-medium border transition-colors ${
                 activeTab === 'clean' 
-                  ? 'bg-[#FF6F61] text-white' 
-                  : 'bg-white text-[#FF6F61] border border-[#FF6F61]'
+                  ? 'bg-[#FF6F61] text-white border-[#FF6F61]' 
+                  : 'bg-white text-[#FF6F61] border-[#FF6F61] hover:bg-[#FF6F61] hover:text-white'
               }`}
             >
               🧹 图片清理
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={() => {
                 setActiveTab('check');
                 if (!imagePathsData) checkImagePaths();
               }}
-              className={`px-4 py-2 rounded-lg font-medium ${
+              className={`px-4 py-2 rounded-lg font-medium border transition-colors ${
                 activeTab === 'check' 
-                  ? 'bg-[#FF6F61] text-white' 
-                  : 'bg-white text-[#FF6F61] border border-[#FF6F61]'
+                  ? 'bg-[#FF6F61] text-white border-[#FF6F61]' 
+                  : 'bg-white text-[#FF6F61] border-[#FF6F61] hover:bg-[#FF6F61] hover:text-white'
               }`}
             >
               🔍 路径检查
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -364,29 +364,29 @@ export default function CleanImagesPage() {
                   { value: 'broken', label: '无效路径', icon: '❌' },
                   { value: 'no-images', label: '无图片', icon: '📄' }
                 ].map((option) => (
-                  <Button
+                  <button
                     key={option.value}
                     onClick={() => checkImagePaths(option.value, 1)}
                     disabled={checkLoading}
-                    className={`px-3 py-1 text-sm rounded ${
+                    className={`px-3 py-2 text-sm rounded border transition-colors ${
                       checkType === option.value
-                        ? 'bg-[#FF6F61] text-white'
-                        : 'bg-white text-[#FF6F61] border border-[#FF6F61]'
-                    }`}
+                        ? 'bg-[#FF6F61] text-white border-[#FF6F61]'
+                        : 'bg-white text-[#FF6F61] border-[#FF6F61] hover:bg-[#FF6F61] hover:text-white'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {option.icon} {option.label}
-                  </Button>
+                  </button>
                 ))}
               </div>
 
-              <Button 
+              <button 
                 onClick={() => checkImagePaths(checkType, currentPage)} 
                 disabled={checkLoading}
-                className="bg-[#FF6F61] text-white hover:opacity-90"
+                className="px-4 py-2 bg-[#FF6F61] text-white rounded hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center"
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${checkLoading ? 'animate-spin' : ''}`} />
                 {checkLoading ? '检查中...' : '刷新检查'}
-              </Button>
+              </button>
             </div>
 
             {/* 检查结果 */}
@@ -405,21 +405,21 @@ export default function CleanImagesPage() {
                     <div className="text-sm text-gray-600">
                       第 {imagePathsData.pagination.current} 页，共 {imagePathsData.pagination.total} 页
                     </div>
-                    <div className="flex gap-2">
-                      <Button
+                                         <div className="flex gap-2">
+                      <button
                         onClick={() => checkImagePaths(checkType, currentPage - 1)}
                         disabled={!imagePathsData.pagination.hasPrev || checkLoading}
-                        className="px-3 py-1 text-sm bg-white text-[#FF6F61] border border-[#FF6F61]"
+                        className="px-3 py-1 text-sm bg-white text-[#FF6F61] border border-[#FF6F61] hover:bg-[#FF6F61] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors"
                       >
                         <ChevronLeft className="h-4 w-4" />
-                      </Button>
-                      <Button
+                      </button>
+                      <button
                         onClick={() => checkImagePaths(checkType, currentPage + 1)}
                         disabled={!imagePathsData.pagination.hasNext || checkLoading}
-                        className="px-3 py-1 text-sm bg-white text-[#FF6F61] border border-[#FF6F61]"
+                        className="px-3 py-1 text-sm bg-white text-[#FF6F61] border border-[#FF6F61] hover:bg-[#FF6F61] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors"
                       >
                         <ChevronRight className="h-4 w-4" />
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 )}
