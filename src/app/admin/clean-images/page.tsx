@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Button from "@/components/ui/button";
 import AdminSidebar from '@/components/shared/AdminSidebar';
-import { Trash2, RefreshCw, Info, AlertTriangle } from 'lucide-react';
+import { Trash2, RefreshCw, Info, AlertTriangle, Search, ChevronLeft, ChevronRight, Image as ImageIcon, FileText } from 'lucide-react';
 
 interface ImageStats {
   totalArticles: number;
@@ -24,12 +24,49 @@ interface CleanResult {
   message: string;
 }
 
+interface ArticleWithImages {
+  _id: string;
+  title: string;
+  slug: string;
+  category: string;
+  createdAt: string;
+  coverImage: string | null;
+  contentImages: string[];
+  hasImages: boolean;
+  imageCount: number;
+}
+
+interface ImagePathsData {
+  title: string;
+  articles: ArticleWithImages[];
+  pagination: {
+    current: number;
+    total: number;
+    totalArticles: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+  summary: {
+    totalFound: number;
+    currentPage: number;
+    articlesWithImages: number;
+    totalImages: number;
+  };
+}
+
 export default function CleanImagesPage() {
   const [stats, setStats] = useState<ImageStats | null>(null);
   const [tempImageArticles, setTempImageArticles] = useState<TempImageArticle[]>([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CleanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  
+  // 图片路径检查相关状态
+  const [activeTab, setActiveTab] = useState<'clean' | 'check'>('clean');
+  const [imagePathsData, setImagePathsData] = useState<ImagePathsData | null>(null);
+  const [checkType, setCheckType] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [checkLoading, setCheckLoading] = useState(false);
 
   // 获取图片统计信息
   const fetchStats = async () => {
@@ -87,6 +124,31 @@ export default function CleanImagesPage() {
     }
   };
 
+  // 检查图片路径
+  const checkImagePaths = async (type: string = checkType, page: number = currentPage) => {
+    try {
+      setCheckLoading(true);
+      setError(null);
+
+      const response = await fetch(`/api/admin/check-image-paths?type=${type}&page=${page}&limit=20`, {
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('检查图片路径失败');
+      }
+
+      const data = await response.json();
+      setImagePathsData(data);
+      setCheckType(type);
+      setCurrentPage(page);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '检查图片路径失败');
+    } finally {
+      setCheckLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchStats();
   }, []);
@@ -121,12 +183,42 @@ export default function CleanImagesPage() {
       <div className="flex-1 md:ml-56 p-6">
         <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2 text-[#FF6F61]">图片清理管理</h1>
-          <p className="text-gray-700">一键清理文章中的无效图片路径，解决图片显示问题</p>
+          <h1 className="text-3xl font-bold mb-2 text-[#FF6F61]">图片管理中心</h1>
+          <p className="text-gray-700">检查和清理文章中的图片路径，解决图片显示问题</p>
+          
+          {/* 标签页切换 */}
+          <div className="flex gap-2 mt-4">
+            <Button
+              onClick={() => setActiveTab('clean')}
+              className={`px-4 py-2 rounded-lg font-medium ${
+                activeTab === 'clean' 
+                  ? 'bg-[#FF6F61] text-white' 
+                  : 'bg-white text-[#FF6F61] border border-[#FF6F61]'
+              }`}
+            >
+              🧹 图片清理
+            </Button>
+            <Button
+              onClick={() => {
+                setActiveTab('check');
+                if (!imagePathsData) checkImagePaths();
+              }}
+              className={`px-4 py-2 rounded-lg font-medium ${
+                activeTab === 'check' 
+                  ? 'bg-[#FF6F61] text-white' 
+                  : 'bg-white text-[#FF6F61] border border-[#FF6F61]'
+              }`}
+            >
+              🔍 路径检查
+            </Button>
+          </div>
         </div>
 
-        {/* 统计信息卡片 */}
-        <div className="bg-white rounded-lg shadow-lg border border-[#FF6F61] p-6 mb-6">
+        {/* 清理功能 */}
+        {activeTab === 'clean' && (
+          <>
+            {/* 统计信息卡片 */}
+            <div className="bg-white rounded-lg shadow-lg border border-[#FF6F61] p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Info className="h-5 w-5 text-[#FF6F61]" />
             <h2 className="text-xl font-bold text-[#FF6F61]">图片统计信息</h2>
@@ -238,17 +330,159 @@ export default function CleanImagesPage() {
           </div>
         )}
 
-        {/* 使用说明 */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-300 p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">使用说明</h2>
-          <div className="space-y-2 text-sm text-gray-600">
-            <p>• <strong>清理临时图片：</strong>推荐日常使用，清理编辑过程中产生的临时图片路径</p>
-            <p>• <strong>清理无效图片：</strong>清理各种无效的图片路径，包括本地地址、错误协议等</p>
-            <p>• <strong>清理所有封面：</strong>删除所有文章的封面图片，请谨慎使用</p>
-            <p>• 清理操作不可撤销，建议在操作前备份重要数据</p>
-            <p>• 清理后文章将显示默认封面或无封面状态</p>
-          </div>
-        </div>
+            {/* 使用说明 */}
+            <div className="bg-white rounded-lg shadow-lg border border-gray-300 p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">使用说明</h2>
+              <div className="space-y-2 text-sm text-gray-600">
+                <p>• <strong>清理临时图片：</strong>推荐日常使用，清理编辑过程中产生的临时图片路径</p>
+                <p>• <strong>清理无效图片：</strong>清理各种无效的图片路径，包括本地地址、错误协议等</p>
+                <p>• <strong>清理所有封面：</strong>删除所有文章的封面图片，请谨慎使用</p>
+                <p>• 清理操作不可撤销，建议在操作前备份重要数据</p>
+                <p>• 清理后文章将显示默认封面或无封面状态</p>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* 路径检查功能 */}
+        {activeTab === 'check' && (
+          <>
+            {/* 筛选器 */}
+            <div className="bg-white rounded-lg shadow-lg border border-[#FF6F61] p-6 mb-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Search className="h-5 w-5 text-[#FF6F61]" />
+                <h2 className="text-xl font-bold text-[#FF6F61]">图片路径检查</h2>
+              </div>
+              
+              <div className="flex flex-wrap gap-2 mb-4">
+                {[
+                  { value: 'all', label: '所有文章', icon: '📄' },
+                  { value: 'cover-only', label: '仅封面图片', icon: '🖼️' },
+                  { value: 'content-only', label: '仅内容图片', icon: '📝' },
+                  { value: 'both', label: '封面+内容', icon: '🎨' },
+                  { value: 'temp-images', label: '临时图片', icon: '⚠️' },
+                  { value: 'broken', label: '无效路径', icon: '❌' },
+                  { value: 'no-images', label: '无图片', icon: '📄' }
+                ].map((option) => (
+                  <Button
+                    key={option.value}
+                    onClick={() => checkImagePaths(option.value, 1)}
+                    disabled={checkLoading}
+                    className={`px-3 py-1 text-sm rounded ${
+                      checkType === option.value
+                        ? 'bg-[#FF6F61] text-white'
+                        : 'bg-white text-[#FF6F61] border border-[#FF6F61]'
+                    }`}
+                  >
+                    {option.icon} {option.label}
+                  </Button>
+                ))}
+              </div>
+
+              <Button 
+                onClick={() => checkImagePaths(checkType, currentPage)} 
+                disabled={checkLoading}
+                className="bg-[#FF6F61] text-white hover:opacity-90"
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${checkLoading ? 'animate-spin' : ''}`} />
+                {checkLoading ? '检查中...' : '刷新检查'}
+              </Button>
+            </div>
+
+            {/* 检查结果 */}
+            {imagePathsData && (
+              <div className="bg-white rounded-lg shadow-lg border border-[#FF6F61] p-6 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-[#FF6F61]">{imagePathsData.title}</h3>
+                  <div className="text-sm text-gray-600">
+                    找到 {imagePathsData.summary.totalFound} 篇文章，共 {imagePathsData.summary.totalImages} 张图片
+                  </div>
+                </div>
+
+                {/* 分页信息 */}
+                {imagePathsData.pagination.total > 1 && (
+                  <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded">
+                    <div className="text-sm text-gray-600">
+                      第 {imagePathsData.pagination.current} 页，共 {imagePathsData.pagination.total} 页
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => checkImagePaths(checkType, currentPage - 1)}
+                        disabled={!imagePathsData.pagination.hasPrev || checkLoading}
+                        className="px-3 py-1 text-sm bg-white text-[#FF6F61] border border-[#FF6F61]"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        onClick={() => checkImagePaths(checkType, currentPage + 1)}
+                        disabled={!imagePathsData.pagination.hasNext || checkLoading}
+                        className="px-3 py-1 text-sm bg-white text-[#FF6F61] border border-[#FF6F61]"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* 文章列表 */}
+                <div className="space-y-3">
+                  {imagePathsData.articles.map((article) => (
+                    <div key={article._id} className="border rounded-lg p-4 hover:bg-gray-50">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">{article.title}</h4>
+                          <div className="text-sm text-gray-500 mt-1">
+                            {article.category} • {new Date(article.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <ImageIcon className="h-4 w-4" />
+                          <span>{article.imageCount} 张图片</span>
+                        </div>
+                      </div>
+
+                      {/* 封面图片 */}
+                      {article.coverImage && (
+                        <div className="mb-2">
+                          <div className="text-xs text-blue-600 font-medium mb-1">封面图片:</div>
+                          <div className="text-xs bg-blue-50 p-2 rounded font-mono break-all">
+                            {article.coverImage}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 内容图片 */}
+                      {article.contentImages.length > 0 && (
+                        <div>
+                          <div className="text-xs text-green-600 font-medium mb-1">
+                            内容图片 ({article.contentImages.length}):
+                          </div>
+                          <div className="space-y-1">
+                            {article.contentImages.map((img, index) => (
+                              <div key={index} className="text-xs bg-green-50 p-2 rounded font-mono break-all">
+                                {img}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {!article.hasImages && (
+                        <div className="text-xs text-gray-500 italic">此文章没有图片</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {imagePathsData.articles.length === 0 && (
+                  <div className="text-center text-gray-500 py-8">
+                    没有找到符合条件的文章
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
         </div>
       </div>
     </div>
