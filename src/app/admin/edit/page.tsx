@@ -475,9 +475,13 @@ function AdminEditContent() {
             
             const uploadResult = await uploadResponse.json();
             if (uploadResult.success && uploadResult.data.url) {
-              // 更新为后端URL
-              updatedCoverImage = `https://api.efortunetell.blog${uploadResult.data.url}`;
-              console.log('✅ 封面图片移动成功');
+              // 保存相对路径到数据库（不包含域名）
+              updatedCoverImage = uploadResult.data.url;
+              if (uploadResult.data.isDuplicate) {
+                console.log('✅ 封面图片复用现有文件 (节省存储空间)');
+              } else {
+                console.log('✅ 封面图片上传成功');
+              }
               console.log('  - 原路径:', coverImage);
               console.log('  - 新路径:', updatedCoverImage);
             } else {
@@ -693,7 +697,11 @@ function AdminEditContent() {
         if (uploadResult.success && uploadResult.data.url) {
           // 记录新的图片路径
           uploadResults[fileName] = uploadResult.data.url;
-          console.log(`    ✅ 上传成功: ${fileName} -> ${uploadResult.data.url}`);
+          if (uploadResult.data.isDuplicate) {
+            console.log(`    ✅ 发现重复文件，复用现有: ${fileName} -> ${uploadResult.data.url} (节省存储空间)`);
+          } else {
+            console.log(`    ✅ 上传新文件: ${fileName} -> ${uploadResult.data.url}`);
+          }
         } else {
           console.error(`    ❌ 上传响应异常: ${fileName}`, uploadResult);
         }
@@ -711,10 +719,11 @@ function AdminEditContent() {
     let updateCount = 0;
     
     for (const [fileName, newPath] of Object.entries(uploadResults)) {
-      const backendUrl = `https://api.efortunetell.blog${newPath}`;
+      // 数据库中保存相对路径，显示时再转换为完整URL
+      const relativePath = newPath; // newPath 已经是相对路径：/images/articles/{id}/filename.png
       
       console.log(`  - 替换URL ${updateCount + 1} (文件: ${fileName}):`);
-      console.log(`    新URL: ${backendUrl}`);
+      console.log(`    新相对路径: ${relativePath}`);
       
       // 使用更灵活的正则表达式，匹配任何包含该文件名的temp-images URL
       const tempUrlRegex = new RegExp(`https?://[^/]+/temp-images/${fileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g');
@@ -729,7 +738,8 @@ function AdminEditContent() {
       }
       
       const beforeLength = updatedContent.length;
-      updatedContent = updatedContent.replace(tempUrlRegex, backendUrl);
+      // 替换为相对路径，数据库中保存相对路径
+      updatedContent = updatedContent.replace(tempUrlRegex, relativePath);
       const afterLength = updatedContent.length;
       
       if (beforeLength !== afterLength) {
