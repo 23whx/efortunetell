@@ -6,7 +6,7 @@ import { Menu } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AdminSidebarProps {
-  activeItem: 'articles' | 'comments' | 'appointments' | 'images';
+  activeItem: 'articles' | 'comments' | 'appointments' | 'images' | 'clean-images';
 }
 
 export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
@@ -67,6 +67,12 @@ export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
           onClick={() => { router.push('/admin/images'); setSidebarOpen(false); }}
         >
           {t('admin.sidebar.images')}
+        </Button>
+        <Button
+          className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'clean-images' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
+          onClick={() => { router.push('/admin/clean-images'); setSidebarOpen(false); }}
+        >
+          🧹 图片清理
         </Button>
         
         <div className="mt-auto">
