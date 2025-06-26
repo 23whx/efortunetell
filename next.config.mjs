@@ -5,7 +5,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   async rewrites() {
-    return [
+    const rewrites = [
       // 只重定向需要转发到后端的特定API路径
       // 排除前端自己的API路由：temp-upload, temp-cleanup, ping, proxy
       {
@@ -63,11 +63,22 @@ const nextConfig = {
         destination: '/api/temp-images/:filename',
       },
       // 将根路径重写到博客页面，用户看到的URL保持为 /
-      {
+      // 注释掉用于本地测试
+      // {
+      //   source: '/',
+      //   destination: '/blog',
+      // },
+    ];
+
+    // 本地开发时不重写根路径，生产环境才重写
+    if (process.env.NODE_ENV !== 'development') {
+      rewrites.push({
         source: '/',
         destination: '/blog',
-      },
-    ];
+      });
+    }
+
+    return rewrites;
   },
   devIndicators: {
     position: 'bottom-right',
