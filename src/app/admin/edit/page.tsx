@@ -443,26 +443,51 @@ function AdminEditContent() {
         if (coverFileName) {
           console.log('  - 开始移动封面图片...');
           
-          // 移动封面图片
-          const moveResponse = await fetchWithAuth(`${API_BASE_URL}/api/articles/${articleId}/move-images`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tempImages: [coverFileName] })
-          });
-          
-          console.log('  - 封面移动API响应状态:', moveResponse.status);
-          
-          const moveResult = await moveResponse.json();
-          console.log('  - 封面移动API响应:', moveResult);
-          
-          if (moveResult.success && moveResult.data.imageMap[coverFileName]) {
-            updatedCoverImage = moveResult.data.imageMap[coverFileName];
-            console.log('✅ 封面图片移动成功');
-            console.log('  - 原路径:', coverImage);
-            console.log('  - 新路径:', updatedCoverImage);
-          } else {
-            console.error('❌ 封面图片移动失败:', moveResult.message);
-          }
+          try {
+            // 从前端临时API获取图片内容
+            const tempImageUrl = `/temp-images/${coverFileName}`;
+            const imageResponse = await fetch(tempImageUrl);
+            
+            if (!imageResponse.ok) {
+              console.error('  - 无法获取临时封面图片:', coverFileName);
+              throw new Error(`无法获取临时图片: ${coverFileName}`);
+            }
+            
+            const imageBlob = await imageResponse.blob();
+            console.log('  - 获取封面图片成功, 大小:', imageBlob.size, 'bytes');
+            
+            // 创建File对象
+            const imageFile = new File([imageBlob], coverFileName, { type: imageBlob.type });
+            
+            // 上传到后端文章专用目录
+            const formData = new FormData();
+            formData.append('image', imageFile);
+            
+            const uploadResponse = await fetchWithAuth(`${API_BASE_URL}/api/upload/article-image/${articleId}`, {
+              method: 'POST',
+              body: formData
+            });
+            
+            if (!uploadResponse.ok) {
+              console.error('  - 上传封面图片到后端失败');
+              throw new Error('上传封面图片失败');
+            }
+            
+            const uploadResult = await uploadResponse.json();
+            if (uploadResult.success && uploadResult.data.url) {
+              // 更新为后端URL
+              updatedCoverImage = `https://api.efortunetell.blog${uploadResult.data.url}`;
+              console.log('✅ 封面图片移动成功');
+              console.log('  - 原路径:', coverImage);
+              console.log('  - 新路径:', updatedCoverImage);
+            } else {
+              console.error('  - 上传响应异常:', uploadResult);
+              throw new Error('上传响应异常');
+            }
+                     } catch (error) {
+             console.error('❌ 封面图片移动失败:', error instanceof Error ? error.message : error);
+             // 即使移动失败，也要继续流程，不中断文章提交
+           }
         }
       } else {
         console.log('  - 无需处理封面图片 (不是临时图片)');
@@ -650,11 +675,11 @@ function AdminEditContent() {
         // 创建File对象
         const imageFile = new File([imageBlob], fileName, { type: imageBlob.type });
         
-        // 上传到后端
+        // 上传到后端文章专用目录
         const formData = new FormData();
         formData.append('image', imageFile);
         
-        const uploadResponse = await fetchWithAuth(`${API_BASE_URL}/api/upload/image`, {
+        const uploadResponse = await fetchWithAuth(`${API_BASE_URL}/api/upload/article-image/${articleId}`, {
           method: 'POST',
           body: formData
         });
@@ -666,10 +691,9 @@ function AdminEditContent() {
         
         const uploadResult = await uploadResponse.json();
         if (uploadResult.success && uploadResult.data.url) {
-          // 将图片移动到文章专用目录
-          const articleImagePath = `/images/articles/${articleId}/${fileName}`;
-          uploadResults[fileName] = articleImagePath;
-          console.log(`    ✅ 上传成功: ${fileName} -> ${articleImagePath}`);
+          // 记录新的图片路径
+          uploadResults[fileName] = uploadResult.data.url;
+          console.log(`    ✅ 上传成功: ${fileName} -> ${uploadResult.data.url}`);
         } else {
           console.error(`    ❌ 上传响应异常: ${fileName}`, uploadResult);
         }
