@@ -369,6 +369,16 @@ function AdminEditContent() {
       console.log('  - 是否编辑模式:', isEditMode);
       console.log('  - 从内容提取的图片:', currentImages);
       
+      // 生成slug（仅在新建文章时需要）
+      let articleSlug = '';
+      if (!isEditMode) {
+        // 为新文章生成唯一的slug
+        const timestamp = Date.now();
+        const randomStr = Math.random().toString(36).substring(2, 8);
+        articleSlug = `article-${timestamp}-${randomStr}`;
+        console.log('  - 生成新文章slug:', articleSlug);
+      }
+      
       const articleData = {
         title: title.trim(),
         content: content.trim(), // 先用原始内容
@@ -378,7 +388,8 @@ function AdminEditContent() {
         status,
         coverImage: coverImage || null,
         coverSettings: coverImage ? coverSettings : null,
-        images: isEditMode ? currentImages : [] // 编辑模式保持现有图片，新建模式为空
+        images: isEditMode ? currentImages : [], // 编辑模式保持现有图片，新建模式为空
+        ...(articleSlug && { slug: articleSlug }) // 仅在新建文章时添加slug
       };
 
       console.log('🚀 第一阶段: 提交基础文章数据...');
