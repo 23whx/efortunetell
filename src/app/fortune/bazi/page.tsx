@@ -351,7 +351,7 @@ export default function BaziBookingPage() {
       
       if (success) {
         // 显示预约成功信息
-        setSuccessMessage(`预约成功！您的八字算命服务已安排在 ${selectedDate} 中国时间19:00-21:00。我们将通过邮件 ${email} 发送详细信息。`);
+        setSuccessMessage(`预约成功！您的八字服务已安排在 ${selectedDate} 中国时间19:00-21:00。我们将通过邮件 ${email} 发送详细信息。`);
         
         // 刷新数据
         setRefreshTrigger(prev => prev + 1);
@@ -578,7 +578,7 @@ export default function BaziBookingPage() {
         
         {/* 八字预约表单 */}
         <div className="bg-white rounded-lg shadow-lg border border-[#FF6F61] p-8">
-          <h1 className="text-2xl font-bold text-[#FF6F61] mb-6 text-center">八字算命预约</h1>
+          <h1 className="text-2xl font-bold text-[#FF6F61] mb-6 text-center">八字预约</h1>
           
           <div className="mb-2 text-sm text-gray-600">
             <span className="text-red-500">*</span> 表示必填项
@@ -751,7 +751,7 @@ export default function BaziBookingPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
             <h3 className="text-xl font-bold mb-4">确认预约</h3>
-            <p className="mb-4">您确定要预约以下八字算命服务吗？</p>
+            <p className="mb-4">您确定要预约以下八字服务吗？</p>
             <p className="text-gray-700 mb-2">预约人: {user.username}</p>
             <p className="text-gray-700 mb-2">出生时间: {birthDateTime}</p>
             <p className="text-gray-700 mb-2">邮箱地址: {email}</p>
@@ -815,7 +815,7 @@ export default function BaziBookingPage() {
               <span className="text-xl font-bold text-[#FF6F61]">¥199</span>
             </div>
             
-            <p className="mb-4 text-gray-600">八字算命服务费用</p>
+            <p className="mb-4 text-gray-600">八字服务费用</p>
             
             <div className="space-y-2 mb-6">
               {paymentOptions.map(option => (

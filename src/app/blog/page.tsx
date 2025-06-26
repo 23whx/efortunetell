@@ -50,7 +50,7 @@ export default function BlogPage() {
   // 分类映射：将翻译键映射到后端存储的中文分类名
   const categoryMapping = {
     [t('common.all')]: null,
-    [t('service.bazi')]: '八字算命',
+    [t('service.bazi')]: '八字',
     [t('service.liuren')]: '大六壬', 
     [t('service.qimen')]: '阴盘奇门',
     [t('category.plumFortune')]: '梅花易数',

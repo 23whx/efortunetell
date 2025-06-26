@@ -71,11 +71,11 @@ const translations = {
     'home.title': 'Rolley的玄学命理小站',
     'home.subtitle': '探索命理奥秘，指引人生方向',
     'home.welcome': '欢迎来到玄学世界',
-    'home.description': '我们提供专业的命理咨询服务，包括八字算命、奇门遁甲、大六壬等传统术数。',
+    'home.description': '我们提供专业的命理咨询服务，包括八字、奇门遁甲、大六壬等传统术数。',
 
     // 算命服务
     'fortune.title': '算命服务',
-    'fortune.bazi.title': '八字算命',
+    'fortune.bazi.title': '八字',
     'fortune.bazi.description': '通过出生年月日时分析命理',
     'fortune.qimen.title': '阴盘奇门',
     'fortune.qimen.description': '奇门遁甲预测分析',
@@ -164,7 +164,7 @@ const translations = {
     'booking.status.cancelled': '已取消',
 
     // 服务类型
-    'service.bazi': '八字算命',
+    'service.bazi': '八字',
     'service.qimen': '阴盘奇门',
     'service.liuren': '大六壬',
     'service.naming': '中国吉祥姓名',
