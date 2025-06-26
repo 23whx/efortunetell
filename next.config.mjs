@@ -57,6 +57,11 @@ const nextConfig = {
         source: '/images/:path*',
         destination: 'https://api.efortunetell.blog/images/:path*',
       },
+      // 临时图片重定向到本地API路由
+      {
+        source: '/temp-images/:filename',
+        destination: '/api/temp-images/:filename',
+      },
       // 将根路径重写到博客页面，用户看到的URL保持为 /
       {
         source: '/',
