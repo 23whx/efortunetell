@@ -274,7 +274,7 @@ function AdminEditContent() {
     }
   }, [admin, articleId, fetchArticleDetails]);
 
-  // 图片上传（暂存到前端）
+  // 图片上传（暂存到前端临时目录）
   const handleImageUpload = async (file: File): Promise<string> => {
     console.log('🖼️ 开始图片上传流程');
     console.log('  - 文件名:', file.name);
@@ -594,7 +594,7 @@ function AdminEditContent() {
     }
   };
   
-  // 处理临时图片：移动到后端并更新内容中的图片URL
+  // 处理临时图片：读取前端临时图片并上传到后端
   const processTemporaryImages = async (htmlContent: string, articleId: string): Promise<string> => {
     console.log('🔄 processTemporaryImages 开始');
     console.log('  - 文章ID:', articleId);
@@ -603,17 +603,20 @@ function AdminEditContent() {
     // 更灵活的临时图片正则表达式，匹配任何端口的temp-images URL
     const tempImageRegex = /https?:\/\/[^\/]+\/temp-images\/([^"'\s]+)/g;
     const tempImages: string[] = [];
+    const tempUrls: string[] = [];
     let match;
     
-    // 提取所有临时图片URL
+    // 提取所有临时图片URL和文件名
     console.log('  - 开始提取临时图片URL...');
     let matchCount = 0;
     while ((match = tempImageRegex.exec(htmlContent)) !== null) {
       matchCount++;
       const fileName = match[1];
+      const fullUrl = match[0];
       tempImages.push(fileName);
+      tempUrls.push(fullUrl);
       console.log(`    ${matchCount}. 找到临时图片:`, fileName);
-      console.log(`    完整URL:`, match[0]);
+      console.log(`    完整URL:`, fullUrl);
     }
     
     if (tempImages.length === 0) {
@@ -623,38 +626,74 @@ function AdminEditContent() {
     
     console.log(`✅ 总共找到 ${tempImages.length} 个临时图片:`, tempImages);
     
-    // 调用后端API移动图片
-    console.log('  - 调用后端移动图片API...');
-            const moveResponse = await fetchWithAuth(`${API_BASE_URL}/api/articles/${articleId}/move-images`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tempImages })
-    });
+    // 读取每个临时图片并上传到后端
+    console.log('  - 开始从前端读取临时图片并上传到后端...');
+    const uploadResults: { [filename: string]: string } = {};
     
-    console.log('  - 移动API响应状态:', moveResponse.status);
-    
-    const moveResult = await moveResponse.json();
-    console.log('  - 移动API响应数据:', moveResult);
-    
-    if (!moveResult.success) {
-      console.error('❌ 图片移动失败:', moveResult.message);
-      throw new Error('图片移动失败: ' + moveResult.message);
+    for (let i = 0; i < tempImages.length; i++) {
+      const fileName = tempImages[i];
+      try {
+        console.log(`  - 处理图片 ${i + 1}/${tempImages.length}: ${fileName}`);
+        
+        // 从前端临时API获取图片内容
+        const tempImageUrl = `/temp-images/${fileName}`;
+        const imageResponse = await fetch(tempImageUrl);
+        
+        if (!imageResponse.ok) {
+          console.error(`    ❌ 无法获取临时图片: ${fileName}`);
+          continue;
+        }
+        
+        const imageBlob = await imageResponse.blob();
+        console.log(`    ✅ 获取图片成功, 大小: ${imageBlob.size} bytes`);
+        
+        // 创建File对象
+        const imageFile = new File([imageBlob], fileName, { type: imageBlob.type });
+        
+        // 上传到后端
+        const formData = new FormData();
+        formData.append('image', imageFile);
+        
+        const uploadResponse = await fetchWithAuth(`${API_BASE_URL}/api/upload/image`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!uploadResponse.ok) {
+          console.error(`    ❌ 上传图片到后端失败: ${fileName}`);
+          continue;
+        }
+        
+        const uploadResult = await uploadResponse.json();
+        if (uploadResult.success && uploadResult.data.url) {
+          // 将图片移动到文章专用目录
+          const articleImagePath = `/images/articles/${articleId}/${fileName}`;
+          uploadResults[fileName] = articleImagePath;
+          console.log(`    ✅ 上传成功: ${fileName} -> ${articleImagePath}`);
+        } else {
+          console.error(`    ❌ 上传响应异常: ${fileName}`, uploadResult);
+        }
+        
+      } catch (error) {
+        console.error(`    ❌ 处理图片失败: ${fileName}`, error);
+      }
     }
     
-    console.log('✅ 图片移动成功，开始更新内容中的URL...');
-    console.log('  - 图片映射表:', moveResult.data.imageMap);
+    console.log('✅ 所有图片上传完成，开始更新内容中的URL...');
+    console.log('  - 图片映射表:', uploadResults);
     
     // 更新内容中的图片URL
     let updatedContent = htmlContent;
     let updateCount = 0;
-    for (const [tempFileName, newPath] of Object.entries(moveResult.data.imageMap)) {
+    
+    for (const [fileName, newPath] of Object.entries(uploadResults)) {
       const backendUrl = `https://api.efortunetell.blog${newPath}`;
       
-      console.log(`  - 替换URL ${updateCount + 1} (文件: ${tempFileName}):`);
+      console.log(`  - 替换URL ${updateCount + 1} (文件: ${fileName}):`);
       console.log(`    新URL: ${backendUrl}`);
       
       // 使用更灵活的正则表达式，匹配任何包含该文件名的temp-images URL
-      const tempUrlRegex = new RegExp(`https?://[^/]+/temp-images/${tempFileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g');
+      const tempUrlRegex = new RegExp(`https?://[^/]+/temp-images/${fileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g');
       
       // 查找所有匹配的URL
       const matches = updatedContent.match(tempUrlRegex);
@@ -662,7 +701,7 @@ function AdminEditContent() {
         console.log(`    找到 ${matches.length} 个匹配的URL:`);
         matches.forEach((url, i) => console.log(`      ${i + 1}. ${url}`));
       } else {
-        console.log(`    ⚠️ 未找到包含文件名 ${tempFileName} 的临时URL`);
+        console.log(`    ⚠️ 未找到包含文件名 ${fileName} 的临时URL`);
       }
       
       const beforeLength = updatedContent.length;

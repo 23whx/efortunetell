@@ -85,6 +85,7 @@ const nextConfig = {
         hostname: 'api.efortunetell.blog',
         pathname: '/uploads/**',
       },
+
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -97,6 +98,7 @@ const nextConfig = {
         port: '5000',
         pathname: '/uploads/**',
       },
+
     ],
     unoptimized: true,
   },

@@ -103,7 +103,6 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('💥 ===== 临时图片访问API出错 =====');
     console.error('错误详情:', error);
-    console.error('错误堆栈:', (error as Error)?.stack);
 
     return NextResponse.json(
       { 

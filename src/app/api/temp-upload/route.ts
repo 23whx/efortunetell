@@ -8,17 +8,6 @@ import os from 'os';
 export async function POST(request: NextRequest) {
   console.log('📁 ===== 前端临时图片上传API =====');
   
-  // 环境检测
-  console.log('🔍 环境信息:');
-  console.log('  - Node.js版本:', process.version);
-  console.log('  - 平台:', process.platform);
-  console.log('  - 架构:', process.arch);
-  console.log('  - 当前工作目录:', process.cwd());
-  console.log('  - 操作系统:', os.type(), os.release());
-  console.log('  - 临时目录:', os.tmpdir());
-  console.log('  - 环境变量 VERCEL:', process.env.VERCEL || '未设置');
-  console.log('  - 环境变量 NODE_ENV:', process.env.NODE_ENV || '未设置');
-  
   try {
     const formData = await request.formData();
     console.log('  - 接收到FormData');
@@ -123,25 +112,11 @@ export async function POST(request: NextRequest) {
       
     } catch (writeError) {
       console.error('❌ 文件写入错误:', writeError);
-      console.error('写入错误详情:', {
-        code: (writeError as any).code,
-        errno: (writeError as any).errno,
-        path: (writeError as any).path,
-        syscall: (writeError as any).syscall
-      });
       throw new Error(`文件写入失败: ${writeError}`);
     }
     
     // 构建响应URL
-    let responseUrl: string;
-    if (useSystemTemp) {
-      // Vercel环境：返回一个临时标识，后续需要特殊处理
-      responseUrl = `/temp-images/${fileName}`;
-      console.log('⚠️ Vercel环境：返回临时URL标识');
-    } else {
-      // 本地环境：返回public路径
-      responseUrl = `/temp-images/${fileName}`;
-    }
+    const responseUrl = `/temp-images/${fileName}`;
 
     const responseData = {
       success: true,
@@ -157,36 +132,21 @@ export async function POST(request: NextRequest) {
     console.log('✅ 临时图片保存成功');
     console.log('  - 访问URL:', responseData.data.url);
     console.log('  - 环境:', responseData.data.environment);
-    console.log('  - 系统临时目录:', responseData.data.useSystemTemp);
     console.log('🏁 前端临时上传API结束');
     
     return NextResponse.json(responseData);
     
   } catch (error) {
     console.error('💥 ===== 前端临时上传API出错 =====');
-    console.error('错误类型:', error?.constructor?.name);
-    console.error('错误消息:', (error as Error)?.message);
-    console.error('错误代码:', (error as any)?.code);
     console.error('错误详情:', error);
-    console.error('错误堆栈:', (error as Error)?.stack);
     
-    // 返回更详细的错误信息
     return NextResponse.json(
       { 
         success: false, 
         message: `图片上传失败: ${(error as Error)?.message || '未知错误'}`,
         error: {
-          type: error?.constructor?.name,
           message: (error as Error)?.message,
-          code: (error as any)?.code,
           stack: (error as Error)?.stack
-        },
-        environment: {
-          isVercel: process.env.VERCEL === '1',
-          nodeVersion: process.version,
-          platform: process.platform,
-          cwd: process.cwd(),
-          tmpdir: os.tmpdir()
         }
       },
       { status: 500 }

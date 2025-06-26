@@ -2,13 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readdir, unlink, stat } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+import os from 'os';
 
 export async function POST(request: NextRequest) {
   console.log('🧹 ===== 临时图片清理API =====');
   
   try {
-    const tempImagesDir = path.join(process.cwd(), 'public', 'temp-images');
-    console.log('  - 临时目录路径:', tempImagesDir);
+    // 检测环境并确定临时目录
+    const isVercel = process.env.VERCEL === '1';
+    let tempImagesDir: string;
+
+    if (isVercel) {
+      tempImagesDir = path.join(os.tmpdir(), 'temp-images');
+      console.log('  - Vercel环境，使用系统临时目录:', tempImagesDir);
+    } else {
+      tempImagesDir = path.join(process.cwd(), 'public', 'temp-images');
+      console.log('  - 本地环境，使用public目录:', tempImagesDir);
+    }
     
     if (!existsSync(tempImagesDir)) {
       console.log('  - 临时目录不存在，无需清理');
@@ -118,11 +128,12 @@ export async function POST(request: NextRequest) {
       failedDeletions: failedDeletions
     });
     
-  } catch {
-    console.error('清理临时图片失败');
+  } catch (error) {
+    console.error('💥 ===== 临时图片清理API出错 =====');
+    console.error('错误详情:', error);
     return NextResponse.json({ 
       success: false, 
-      message: '清理失败' 
+      message: `清理失败: ${(error as Error)?.message || '未知错误'}` 
     }, { status: 500 });
   }
 } 
