@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import Button from "@/components/ui/button";
 import AdminSidebar from '@/components/shared/AdminSidebar';
-import { Trash2, RefreshCw, Info, AlertTriangle, Search, ChevronLeft, ChevronRight, Image as ImageIcon, FileText } from 'lucide-react';
+import { Trash2, RefreshCw, Info, AlertTriangle, Search, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { fetchWithAuth, API_BASE_URL } from '@/config/api';
 
 interface ImageStats {
   totalArticles: number;
@@ -72,9 +73,7 @@ export default function CleanImagesPage() {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/image-stats', {
-        credentials: 'include'
-      });
+      const response = await fetchWithAuth(`${API_BASE_URL}/api/admin/image-stats`);
       
       if (!response.ok) {
         throw new Error('获取统计信息失败');
@@ -98,12 +97,11 @@ export default function CleanImagesPage() {
       setResult(null);
       setError(null);
 
-      const response = await fetch('/api/admin/clean-images', {
+      const response = await fetchWithAuth(`${API_BASE_URL}/api/admin/clean-images`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({ type })
       });
 
@@ -130,9 +128,7 @@ export default function CleanImagesPage() {
       setCheckLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/admin/check-image-paths?type=${type}&page=${page}&limit=20`, {
-        credentials: 'include'
-      });
+      const response = await fetchWithAuth(`${API_BASE_URL}/api/admin/check-image-paths?type=${type}&page=${page}&limit=20`);
 
       if (!response.ok) {
         throw new Error('检查图片路径失败');
@@ -284,7 +280,7 @@ export default function CleanImagesPage() {
         {/* 清理操作按钮 */}
         <div className="bg-white rounded-lg shadow-lg border border-[#FF6F61] p-6 mb-6">
           <h2 className="text-xl font-bold text-[#FF6F61] mb-2">清理操作</h2>
-          <p className="text-gray-600 mb-4">选择合适的清理方式，建议先使用"清理临时图片"</p>
+          <p className="text-gray-600 mb-4">选择合适的清理方式，建议先使用&ldquo;清理临时图片&rdquo;</p>
           
           <div className="space-y-4">
             {cleanOptions.map((option) => (
