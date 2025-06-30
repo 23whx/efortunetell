@@ -464,7 +464,7 @@ function AdminEditContent() {
             formData.append('image', imageFile);
             
             const uploadResponse = await fetchWithAuth(`${API_BASE_URL}/api/upload/article-image/${articleId}`, {
-              method: 'POST',
+            method: 'POST',
               body: formData
             });
             
@@ -482,16 +482,16 @@ function AdminEditContent() {
               } else {
                 console.log('✅ 封面图片上传成功');
               }
-              console.log('  - 原路径:', coverImage);
-              console.log('  - 新路径:', updatedCoverImage);
-            } else {
+            console.log('  - 原路径:', coverImage);
+            console.log('  - 新路径:', updatedCoverImage);
+          } else {
               console.error('  - 上传响应异常:', uploadResult);
               throw new Error('上传响应异常');
             }
                      } catch (error) {
              console.error('❌ 封面图片移动失败:', error instanceof Error ? error.message : error);
              // 即使移动失败，也要继续流程，不中断文章提交
-           }
+          }
         }
       } else {
         console.log('  - 无需处理封面图片 (不是临时图片)');
@@ -684,7 +684,7 @@ function AdminEditContent() {
         formData.append('image', imageFile);
         
         const uploadResponse = await fetchWithAuth(`${API_BASE_URL}/api/upload/article-image/${articleId}`, {
-          method: 'POST',
+      method: 'POST',
           body: formData
         });
         
