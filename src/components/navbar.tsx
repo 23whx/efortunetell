@@ -99,7 +99,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2">
             <Image
               src="/icon.png"
-              alt="Rolley的玄学命理小站图标"
+              alt="Rolley Divination Blog Icon"
               width={32}
               height={32}
               className="rounded-full"
@@ -168,7 +168,7 @@ export default function Navbar() {
               <Link href="/admin/dashboard" className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#FF6F61] hover:opacity-80" title={t('nav.admin')}>
                 <Image
                   src={getAvatarPath(admin)}
-                  alt="管理员头像"
+                  alt="Admin Avatar"
                   width={40}
                   height={40}
                   className="w-full h-full object-cover"
@@ -188,7 +188,7 @@ export default function Navbar() {
               <Link href="/user/profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-black hover:opacity-80" title={t('nav.profile')}>
                 <Image
                   src={getAvatarPath(user)}
-                  alt="用户头像"
+                  alt="User Avatar"
                   width={40}
                   height={40}
                   className="w-full h-full object-cover"

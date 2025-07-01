@@ -74,8 +74,12 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
           const fullUrl = getImageUrl(src);
           console.log('🔧 [BlogDetails] 图片URL转换:', src, '->', fullUrl);
           
-          // 添加图片加载失败的处理
-          return `<img ${before}src="${fullUrl}"${after} style="max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0;" loading="lazy" onerror="this.onerror=null; this.style.display='none'; console.error('图片加载失败:', this.src);">`;
+          // Ensure every image has an English alt attribute for better accessibility & SEO
+          const hasAlt = /alt=/i.test(before + after);
+          const altAttr = hasAlt ? '' : ` alt="${article.title}"`;
+          
+          // Add lazy-loading, basic styles and graceful-error handling
+          return `<img ${before}src="${fullUrl}"${after}${altAttr} style="max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0;" loading="lazy" onerror="this.onerror=null; this.style.display='none'; console.error('Image failed to load:', this.src);">`;
         }
       );
       
@@ -447,7 +451,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                   <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden">
                     <Image
                       src={getUserAvatar(article.author)}
-                      alt="作者头像"
+                      alt="Author avatar"
                       width={40}
                       height={40}
                       className="w-full h-full object-cover"
@@ -689,7 +693,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                         <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden">
                           <Image
                             src={getUserAvatar(comment.user)}
-                            alt="用户头像"
+                            alt="User avatar"
                             width={32}
                             height={32}
                             className="w-full h-full object-cover"
@@ -729,7 +733,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                                     <div className="w-6 h-6 rounded-full flex-shrink-0 overflow-hidden">
                                       <Image
                                         src={getUserAvatar(reply.user)}
-                                        alt="用户头像"
+                                        alt="User avatar"
                                         width={24}
                                         height={24}
                                         className="w-full h-full object-cover"
@@ -767,7 +771,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
                                             <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
                                               <Image
                                                 src={getUserAvatar(nestedReply.user)}
-                                                alt="用户头像"
+                                                alt="User avatar"
                                                 width={20}
                                                 height={20}
                                                 className="w-full h-full object-cover"

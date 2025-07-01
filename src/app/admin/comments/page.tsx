@@ -237,7 +237,7 @@ export default function CommentManagement() {
               <div className="w-6 h-6 rounded-full flex-shrink-0 overflow-hidden">
                 <Image
                   src={getAvatarUrl(reply)}
-                  alt="用户头像"
+                  alt="User avatar"
                   width={24}
                   height={24}
                   className="w-full h-full object-cover"
@@ -373,7 +373,7 @@ export default function CommentManagement() {
                                 <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden">
                                   <Image
                                     src={getAvatarUrl(comment)}
-                                    alt="用户头像"
+                                    alt="User avatar"
                                     width={32}
                                     height={32}
                                     className="w-full h-full object-cover"

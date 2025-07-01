@@ -272,7 +272,7 @@ export default function BlogPage() {
                         <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
                           <Image
                             src={getAvatarPath(article.author)}
-                            alt="作者头像"
+                            alt="Author avatar"
                             width={20}
                             height={20}
                             className="w-full h-full object-cover"

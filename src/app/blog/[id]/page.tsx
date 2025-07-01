@@ -4,6 +4,7 @@ import { API_BASE_URL } from '@/config/api';
 import { ArrowLeft } from 'lucide-react';
 import BlogDetails from '@/components/blog/BlogDetails';
 import { Metadata } from 'next';
+import Script from 'next/script';
 
 interface BlogDetailPageProps {
   params: Promise<{ id: string }>
@@ -76,13 +77,34 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
     
     if (data.success && data.data) {
       const article = data.data;
+
+      const baseUrl = 'https://efortunetell.blog';
+      const canonicalUrl = `${baseUrl}/blog/${article._id}`;
+      const imageUrl = article.coverImage?.startsWith('http') ? article.coverImage : `${baseUrl}${article.coverImage}`;
+
       return {
         title: article.title,
-        description: article.summary || `阅读关于 ${article.title} 的文章`,
+        description: article.summary || `Read the article about ${article.title}`,
+        keywords: article.tags || [],
+        alternates: {
+          canonical: canonicalUrl,
+          languages: {
+            'en-US': canonicalUrl,
+            'zh-CN': `${canonicalUrl}?lang=zh`,
+          },
+        },
         openGraph: {
           title: article.title,
-          description: article.summary,
-          images: article.coverImage ? [article.coverImage] : [],
+          description: article.summary || '',
+          url: canonicalUrl,
+          type: 'article',
+          images: imageUrl ? [{ url: imageUrl }] : [],
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: article.title,
+          description: article.summary || '',
+          images: imageUrl ? [imageUrl] : [],
         },
       };
     }
@@ -143,44 +165,70 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     error = err instanceof Error ? err.message : '获取文章详情失败，请稍后重试';
   }
   
+  // Build structured data for the article (JSON-LD)
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article?.title,
+    description: article?.summary,
+    image: article?.coverImage ? [article.coverImage] : undefined,
+    author: {
+      '@type': 'Person',
+      name: article?.author?.username,
+    },
+    datePublished: article?.publishedAt || article?.createdAt,
+    dateModified: article?.updatedAt,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://efortunetell.blog/blog/${article?._id}`,
+    },
+  };
+
   return (
-    <div className="min-h-screen">
-      <div className="max-w-5xl mx-auto">
-        <Link 
-          href="/" 
-          className="inline-flex items-center hover:text-[#ff8a75] mb-6 px-6 pt-6 transition-colors"
-          style={{ color: '#ff6f61' }}
-        >
-          <ArrowLeft size={20} className="mr-2" />
-          <span className="font-medium">返回博客列表</span>
-        </Link>
-        
-        {error ? (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg mx-6 mb-6">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium">加载文章失败</h3>
-                <p className="mt-1 text-sm">{error}</p>
+    <>
+      {/* Structured data for SEO */}
+      <Script id="article-ld-json" type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </Script>
+
+      <div className="min-h-screen">
+        <div className="max-w-5xl mx-auto">
+          <Link 
+            href="/" 
+            className="inline-flex items-center hover:text-[#ff8a75] mb-6 px-6 pt-6 transition-colors"
+            style={{ color: '#ff6f61' }}
+          >
+            <ArrowLeft size={20} className="mr-2" />
+            <span className="font-medium">返回博客列表</span>
+          </Link>
+          
+          {error ? (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg mx-6 mb-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium">加载文章失败</h3>
+                  <p className="mt-1 text-sm">{error}</p>
+                </div>
               </div>
             </div>
-          </div>
-        ) : !article ? (
-          <div className="flex justify-center py-20">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              <p className="mt-4 text-gray-600">正在加载文章...</p>
+          ) : !article ? (
+            <div className="flex justify-center py-20">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600">正在加载文章...</p>
+              </div>
             </div>
-          </div>
-        ) : (
-          // 将文章数据传递给客户端组件
-          <BlogDetails article={article} />
-        )}
+          ) : (
+            // 将文章数据传递给客户端组件
+            <BlogDetails article={article} />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 } 
