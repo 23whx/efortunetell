@@ -1,249 +1,192 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { X, Copy, Check } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Share2, Copy, Check } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  summary: string;
   url: string;
-  coverImage?: string;
+  description?: string;
 }
 
 interface SharePlatform {
   name: string;
+  nameEn: string;
   icon: string;
   color: string;
-  shareUrl: (title: string, summary: string, url: string) => string;
+  onClick: () => void;
 }
 
-const sharePlatforms: SharePlatform[] = [
-  {
-    name: '微信',
-    icon: '💬',
-    color: '#07C160',
-    shareUrl: (title, summary, url) => url
-  },
-  {
-    name: '微博',
-    icon: '🔥',
-    color: '#E6162D',
-    shareUrl: (title, summary, url) => 
-      `https://service.weibo.com/share/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title + ' - ' + summary)}`
-  },
-  {
-    name: '知乎',
-    icon: '🧠',
-    color: '#0084FF',
-    shareUrl: (title, summary, url) => 
-      `https://www.zhihu.com/share?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`
-  },
-  {
-    name: '豆瓣',
-    icon: '📚',
-    color: '#00B51D',
-    shareUrl: (title, summary, url) => 
-      `https://www.douban.com/share/service?href=${encodeURIComponent(url)}&name=${encodeURIComponent(title)}&text=${encodeURIComponent(summary)}`
-  },
-  {
-    name: '小红书',
-    icon: '📝',
-    color: '#FF2442',
-    shareUrl: (title, summary, url) => url
-  },
-  {
-    name: 'QQ空间',
-    icon: '🌟',
-    color: '#FFCE00',
-    shareUrl: (title, summary, url) => 
-      `https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}`
-  },
-  {
-    name: 'Facebook',
-    icon: '📘',
-    color: '#1877F2',
-    shareUrl: (title, summary, url) => 
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(title + ' - ' + summary)}`
-  },
-  {
-    name: 'Twitter/X',
-    icon: '🐦',
-    color: '#1DA1F2',
-    shareUrl: (title, summary, url) => 
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(title + ' - ' + summary)}&url=${encodeURIComponent(url)}`
-  },
-  {
-    name: 'Instagram',
-    icon: '📷',
-    color: '#E4405F',
-    shareUrl: (title, summary, url) => url
-  },
-  {
-    name: 'LinkedIn',
-    icon: '💼',
-    color: '#0A66C2',
-    shareUrl: (title, summary, url) => 
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}`
-  },
-  {
-    name: 'Telegram',
-    icon: '✈️',
-    color: '#0088CC',
-    shareUrl: (title, summary, url) => 
-      `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title + ' - ' + summary)}`
-  },
-  {
-    name: 'WhatsApp',
-    icon: '💚',
-    color: '#25D366',
-    shareUrl: (title, summary, url) => 
-      `https://wa.me/?text=${encodeURIComponent(title + ' - ' + summary + ' ' + url)}`
-  }
-];
-
-export default function ShareModal({ isOpen, onClose, title, summary, url, coverImage }: ShareModalProps) {
+export default function ShareModal({ isOpen, onClose, title, url, description = '' }: ShareModalProps) {
+  const { t, language } = useLanguage();
   const [copied, setCopied] = useState(false);
-  const [hasNativeShare, setHasNativeShare] = useState(false);
-
-  useEffect(() => {
-    // 检查是否支持原生分享
-    setHasNativeShare(typeof navigator !== 'undefined' && 'share' in navigator);
-  }, []);
 
   if (!isOpen) return null;
 
-  const handlePlatformShare = (platform: SharePlatform) => {
-    if (platform.name === '微信' || platform.name === '小红书' || platform.name === 'Instagram') {
-      // 这些平台主要通过复制链接分享
-      handleCopyLink();
-      return;
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('复制失败:', error);
     }
-
-    const shareUrl = platform.shareUrl(title, summary, url);
-    window.open(shareUrl, '_blank', 'width=600,height=400');
   };
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const shareText = description || `我刚生成了八字性格画像"${title}"，快来看看！`;
+  const encodedText = encodeURIComponent(shareText);
+  const encodedUrl = encodeURIComponent(url);
 
-  const handleNativeShare = async () => {
-    if (hasNativeShare && navigator.share) {
-      try {
-        await navigator.share({
-          title,
-          text: summary,
-          url
-        });
-      } catch (error) {
-        console.error('分享失败:', error);
+  const platforms: SharePlatform[] = [
+    {
+      name: 'X (Twitter)',
+      nameEn: 'X (Twitter)',
+      icon: '🐦',
+      color: 'bg-black text-white',
+      onClick: () => {
+        window.open(`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`, '_blank');
+      }
+    },
+    {
+      name: 'Facebook',
+      nameEn: 'Facebook',
+      icon: '📘',
+      color: 'bg-blue-600 text-white',
+      onClick: () => {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`, '_blank');
+      }
+    },
+    {
+      name: 'Instagram',
+      nameEn: 'Instagram',
+      icon: '📷',
+      color: 'bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white',
+      onClick: () => {
+        // Instagram doesn't support direct URL sharing, so we copy the content
+        handleCopyLink();
+        alert(language === 'zh' ? 'Instagram 不支持直接分享链接，链接已复制到剪贴板，请手动分享' : 'Instagram does not support direct link sharing. Link copied to clipboard.');
+      }
+    },
+    {
+      name: '微信',
+      nameEn: 'WeChat',
+      icon: '💬',
+      color: 'bg-green-500 text-white',
+      onClick: () => {
+        // 微信分享需要特殊处理，这里先复制链接
+        handleCopyLink();
+        alert(language === 'zh' ? '微信分享链接已复制到剪贴板，请在微信中粘贴分享' : 'WeChat share link copied to clipboard, please paste in WeChat');
+      }
+    },
+    {
+      name: '微信朋友圈',
+      nameEn: 'WeChat Moments',
+      icon: '🌟',
+      color: 'bg-green-600 text-white',
+      onClick: () => {
+        // 朋友圈分享需要特殊处理，这里先复制链接
+        handleCopyLink();
+        alert(language === 'zh' ? '朋友圈分享链接已复制到剪贴板，请在微信朋友圈中粘贴分享' : 'WeChat Moments share link copied to clipboard, please paste in WeChat Moments');
+      }
+    },
+    {
+      name: '小红书',
+      nameEn: 'XiaoHongShu',
+      icon: '📖',
+      color: 'bg-red-500 text-white',
+      onClick: () => {
+        // 小红书分享需要特殊处理，这里先复制链接
+        handleCopyLink();
+        alert(language === 'zh' ? '小红书分享链接已复制到剪贴板，请在小红书App中分享' : 'XiaoHongShu share link copied to clipboard, please share in XiaoHongShu app');
       }
     }
-  };
+  ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
         {/* 头部 */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h3 className="text-xl font-semibold text-gray-900">分享文章</h3>
+        <div className="flex items-center justify-between p-6 border-b">
+          <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <Share2 size={20} />
+            {language === 'zh' ? '分享' : 'Share'}
+          </h3>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X size={20} />
           </button>
         </div>
 
-        {/* 文章预览 */}
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex space-x-3">
-            {coverImage && (
-              <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                <Image
-                  src={coverImage}
-                  alt={title}
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-cover"
-                  unoptimized={true}
-                />
-              </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-gray-900 mb-1 overflow-hidden" style={{
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical'
-              }}>{title}</h4>
-              <p className="text-sm text-gray-600 overflow-hidden" style={{
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical'
-              }}>{summary}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* 分享平台 */}
+        {/* 内容 */}
         <div className="p-6">
-          <div className="grid grid-cols-4 gap-4 mb-6">
-            {sharePlatforms.map((platform) => (
-              <button
-                key={platform.name}
-                onClick={() => handlePlatformShare(platform)}
-                className="flex flex-col items-center p-3 rounded-xl hover:bg-gray-50 transition-colors group"
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-white text-xl mb-2 group-hover:scale-110 transition-transform"
-                  style={{ backgroundColor: platform.color }}
+          {/* 分享标题 */}
+          <div className="mb-6">
+            <h4 className="font-medium text-gray-800 mb-2">
+              {language === 'zh' ? '分享您的八字性格画像' : 'Share Your BaZi Personality Portrait'}
+            </h4>
+            <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+              {title}
+            </p>
+          </div>
+
+          {/* 平台列表 */}
+          <div className="space-y-3 mb-6">
+            <h5 className="font-medium text-gray-700 text-sm">
+              {language === 'zh' ? '选择分享平台' : 'Choose Platform'}
+            </h5>
+            <div className="grid grid-cols-2 gap-3">
+              {platforms.map((platform, index) => (
+                <button
+                  key={index}
+                  onClick={platform.onClick}
+                  className={`flex items-center gap-3 p-3 rounded-lg transition-all hover:scale-105 ${platform.color}`}
                 >
-                  {platform.icon}
-                </div>
-                <span className="text-xs text-gray-600 text-center leading-tight">
-                  {platform.name}
-                </span>
-              </button>
-            ))}
+                  <span className="text-lg">{platform.icon}</span>
+                  <span className="font-medium text-sm">
+                    {language === 'zh' ? platform.name : platform.nameEn}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* 复制链接 */}
-          <div className="space-y-3">
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-600 truncate">{url}</p>
-              </div>
+          <div className="border-t pt-4">
+            <h5 className="font-medium text-gray-700 text-sm mb-3">
+              {language === 'zh' ? '或复制链接' : 'Or Copy Link'}
+            </h5>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={url}
+                readOnly
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50"
+              />
               <button
                 onClick={handleCopyLink}
-                className="flex items-center space-x-2 px-3 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 ${
+                  copied 
+                    ? 'bg-green-500 text-white' 
+                    : 'bg-[#FF6F61] text-white hover:bg-[#FF8A75]'
+                }`}
               >
                 {copied ? (
                   <>
-                    <Check className="w-4 h-4 text-green-500" />
-                    <span className="text-sm text-green-500">已复制</span>
+                    <Check size={16} />
+                    {language === 'zh' ? '已复制' : 'Copied'}
                   </>
                 ) : (
                   <>
-                    <Copy className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-700">复制链接</span>
+                    <Copy size={16} />
+                    {language === 'zh' ? '复制' : 'Copy'}
                   </>
                 )}
               </button>
             </div>
-
-            {/* 系统分享 */}
-            {hasNativeShare && (
-              <button
-                onClick={handleNativeShare}
-                className="w-full py-3 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-              >
-                使用系统分享
-              </button>
-            )}
           </div>
         </div>
       </div>

@@ -124,6 +124,12 @@ export default function Navbar() {
               >
                 {t('nav.fortune')}
               </Link>
+              <Link 
+                href="/fortune/bazi-persona" 
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname.startsWith('/fortune/bazi-persona') ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
+              >
+                {t('nav.baziTest')}
+              </Link>
               <form onSubmit={handleSearch} className="relative">
                 <input 
                   type="text" 

@@ -1,5 +1,6 @@
 'use client';
 import { RiPokerHeartsLine, RiPokerClubsLine, RiPokerDiamondsLine, RiPokerSpadesLine } from 'react-icons/ri';
+import { Brain } from 'lucide-react';
 import Button from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -62,6 +63,15 @@ export default function FortunePage() {
       icon: <RiPokerSpadesLine className="text-primary text-2xl" />,
       buttonText: t('fortune.getInTouch'),
       serviceType: 'naming'
+    },
+    {
+      id: 5,
+      name: '八字性格画像生成器',
+      description: '基于传统命理学与AI技术，生成个性化性格画像与五行分析图表',
+      price: '免费',
+      icon: <Brain className="text-primary text-2xl" />,
+      buttonText: '立即生成',
+      serviceType: 'bazi-persona'
     }
   ];
 
@@ -113,6 +123,12 @@ export default function FortunePage() {
   };
 
   const handleGetInTouch = async (service: { serviceType: string; name: string; price: string }) => {
+    // 八字性格画像生成器直接跳转，不需要登录
+    if (service.serviceType === 'bazi-persona') {
+      router.push('/fortune/bazi-persona');
+      return;
+    }
+
     if (!isLoggedIn || !user) {
       console.log('用户未登录，跳转到登录页面');
       router.push('/user/login');
