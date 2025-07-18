@@ -871,7 +871,7 @@ export default function BlogDetails({ article }: BlogDetailsProps) {
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
         title={article.title}
-        summary={article.summary}
+        summary={article.summary || ''}       
         url={typeof window !== 'undefined' ? window.location.href : ''}
         coverImage={getCoverImageUrl() || undefined}
       />

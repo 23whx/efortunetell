@@ -9,6 +9,8 @@ interface ShareModalProps {
   title: string;
   url: string;
   description?: string;
+  summary: string;
+  coverImage?: string;
 }
 
 interface SharePlatform {
