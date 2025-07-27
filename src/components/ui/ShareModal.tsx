@@ -9,7 +9,7 @@ interface ShareModalProps {
   title: string;
   url: string;
   description?: string;
-  summary: string;
+  summary?: string;
   coverImage?: string;
 }
 
@@ -21,7 +21,7 @@ interface SharePlatform {
   onClick: () => void;
 }
 
-export default function ShareModal({ isOpen, onClose, title, url, description = '' }: ShareModalProps) {
+export default function ShareModal({ isOpen, onClose, title, url, description = '', summary = '', coverImage }: ShareModalProps) {
   const { t, language } = useLanguage();
   const [copied, setCopied] = useState(false);
 
@@ -37,7 +37,7 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
     }
   };
 
-  const shareText = description || `我刚生成了八字性格画像"${title}"，快来看看！`;
+  const shareText = description || summary || `我刚生成了八字性格画像"${title}"，快来看看！`;
   const encodedText = encodeURIComponent(shareText);
   const encodedUrl = encodeURIComponent(url);
 

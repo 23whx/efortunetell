@@ -257,7 +257,7 @@ const translations = {
 
     // 八字性格画像
     'bazi.title': '八字性格画像生成器',
-    'bazi.subtitle': '基于传统命理学与现代人格心理学，分析您的八字命盘，生成个性化性格画像',
+    'bazi.subtitle': '基于传统命理学与现代人格心理学，生成个性化性格画像',
     'bazi.form.title': '输入您的出生信息',
     'bazi.form.year': '出生年份',
     'bazi.form.month': '出生月份',
@@ -312,10 +312,10 @@ const translations = {
     'bazi.result.ageSuffix': '岁',
     'bazi.result.views': '浏览：',
     'bazi.result.viewsSuffix': '次',
-    'bazi.result.personality': '性格画像',
+    'bazi.result.personality': '性格画像（郑重声明：本内容仅供娱乐参考，具体结论请以专业命理师的判断为准。）',
     'bazi.result.personalityDimensions': '性格画像',
-    'bazi.result.destinyStructure': '命理结构摘要',
-    'bazi.result.destinySummary': '命理结构摘要',
+    'bazi.result.destinyStructure': '命理结构',
+    'bazi.result.destinySummary': '命理结构',
     'bazi.result.personalityRadar': '人格雷达图',
     'bazi.result.recommendations': '建议与总结',
     'bazi.result.suggestions': '建议与总结',
@@ -338,22 +338,22 @@ const translations = {
     'bazi.result.energySource': '能量来源',
 
     // 四柱标题
-    'bazi.result.year': '年柱',
-    'bazi.result.month': '月柱',
-    'bazi.result.day': '日柱',
-    'bazi.result.hour': '时柱',
+    'bazi.result.year': '年',
+    'bazi.result.month': '月',
+    'bazi.result.day': '日',
+    'bazi.result.hour': '时',
 
     // 五行和命盘
-    'bazi.result.fiveElements': '五行分布',
+    'bazi.result.fiveElements': '元素分布',
     'bazi.result.wood': '木',
     'bazi.result.fire': '火',
     'bazi.result.earth': '土',
     'bazi.result.metal': '金',
     'bazi.result.water': '水',
     'bazi.result.destinyFeatures': '命盘特征',
-    'bazi.result.dominantElement': '主导五行：',
-    'bazi.result.dayMasterStrength': '日主强弱：',
-    'bazi.result.mainTenGods': '主要十神：',
+    'bazi.result.dominantElement': '主导元素：',
+    'bazi.result.dayMasterStrength': '强弱：',
+    'bazi.result.mainTenGods': '主要特征：',
     'bazi.result.deities': '神煞：',
 
     // 人格雷达
@@ -618,7 +618,7 @@ const translations = {
 
     // Bazi Personality Portrait Generator
     'bazi.title': 'Bazi Personality Portrait Generator',
-    'bazi.subtitle': 'Based on traditional metaphysics and modern psychology, analyze your BaZi chart to generate a personalized personality portrait.',
+    'bazi.subtitle': 'Based on traditional metaphysics and modern psychology, generate a personalized personality portrait.',
     'bazi.form.title': 'Enter your birth information',
     'bazi.form.year': 'Year of birth',
     'bazi.form.month': 'Month of birth',
@@ -673,10 +673,10 @@ const translations = {
     'bazi.result.ageSuffix': 'years',
     'bazi.result.views': 'Views: ',
     'bazi.result.viewsSuffix': 'times',
-    'bazi.result.personality': 'Personality Portrait',
+    'bazi.result.personality': 'Personality Portrait (Disclaimer: This content is for entertainment purposes only. Please consult professional fortune tellers for specific conclusions.)',
     'bazi.result.personalityDimensions': 'Personality Portrait',
-    'bazi.result.destinyStructure': 'Destiny Structure Summary',
-    'bazi.result.destinySummary': 'Destiny Structure Summary',
+    'bazi.result.destinyStructure': 'Destiny Structure',
+    'bazi.result.destinySummary': 'Destiny Structure',
     'bazi.result.personalityRadar': 'Personality Radar Chart',
     'bazi.result.recommendations': 'Recommendations & Summary',
     'bazi.result.suggestions': 'Recommendations & Summary',
@@ -699,13 +699,13 @@ const translations = {
     'bazi.result.energySource': 'Energy Source',
 
     // Four Pillars
-    'bazi.result.year': 'Year Pillar',
-    'bazi.result.month': 'Month Pillar',
-    'bazi.result.day': 'Day Pillar',
-    'bazi.result.hour': 'Hour Pillar',
+    'bazi.result.year': 'Year',
+    'bazi.result.month': 'Month',
+    'bazi.result.day': 'Day',
+    'bazi.result.hour': 'Hour',
 
     // Five Elements and Chart
-    'bazi.result.fiveElements': 'Five Elements Distribution',
+    'bazi.result.fiveElements': 'Element Distribution',
     'bazi.result.wood': 'Wood',
     'bazi.result.fire': 'Fire',
     'bazi.result.earth': 'Earth',
@@ -713,8 +713,8 @@ const translations = {
     'bazi.result.water': 'Water',
     'bazi.result.destinyFeatures': 'Chart Features',
     'bazi.result.dominantElement': 'Dominant Element: ',
-    'bazi.result.dayMasterStrength': 'Day Master Strength: ',
-    'bazi.result.mainTenGods': 'Main Ten Gods: ',
+    'bazi.result.dayMasterStrength': 'Strength: ',
+    'bazi.result.mainTenGods': 'Main Features: ',
     'bazi.result.deities': 'Deities: ',
 
     // Personality Radar
