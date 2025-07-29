@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import TimezoneSelector from '@/components/ui/TimezoneSelector';
+import TimeWheelPicker from '@/components/ui/TimeWheelPicker';
 import { API_BASE_URL } from '@/config/api';
 import { CalendarDays, Star, TrendingUp, Loader2 } from 'lucide-react';
 import { DEFAULT_TIMEZONE } from '@/utils/dateUtils';
@@ -18,27 +19,14 @@ export default function BaziPersonaPage() {
     birthYear: '',
     birthMonth: '',
     birthDay: '',
-    birthHour: '',
+    birthHour: 12,
+    birthMinute: 0,
     timezone: DEFAULT_TIMEZONE
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 十二时辰数据
-  const timeHours = [
-    { value: '23', label: t('bazi.hour.zi') },
-    { value: '1', label: t('bazi.hour.chou') },
-    { value: '3', label: t('bazi.hour.yin') },
-    { value: '5', label: t('bazi.hour.mao') },
-    { value: '7', label: t('bazi.hour.chen') },
-    { value: '9', label: t('bazi.hour.si') },
-    { value: '11', label: t('bazi.hour.wu') },
-    { value: '13', label: t('bazi.hour.wei') },
-    { value: '15', label: t('bazi.hour.shen') },
-    { value: '17', label: t('bazi.hour.you') },
-    { value: '19', label: t('bazi.hour.xu') },
-    { value: '21', label: t('bazi.hour.hai') }
-  ];
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -55,7 +43,7 @@ export default function BaziPersonaPage() {
 
     try {
       // 验证输入 - name是可选的，其他字段必填
-      if (!formData.birthYear || !formData.birthMonth || !formData.birthDay || !formData.birthHour) {
+      if (!formData.birthYear || !formData.birthMonth || !formData.birthDay || formData.birthHour === undefined) {
         setError(t('bazi.form.error.incomplete'));
         setLoading(false);
         return;
@@ -65,7 +53,8 @@ export default function BaziPersonaPage() {
       const year = parseInt(formData.birthYear);
       const month = parseInt(formData.birthMonth);
       const day = parseInt(formData.birthDay);
-      const hour = parseInt(formData.birthHour);
+      const hour = formData.birthHour;
+      const minute = formData.birthMinute;
 
       if (year < 1900 || year > 2024) {
         setError(t('bazi.form.error.year'));
@@ -99,7 +88,7 @@ export default function BaziPersonaPage() {
           month: month,
           day: day,
           hour: hour,
-          minute: 0, // 默认为0分钟
+          minute: minute,
           timezone: formData.timezone
         })
       });
@@ -200,26 +189,45 @@ export default function BaziPersonaPage() {
               </div>
             </div>
 
-            {/* 第二行：出生时辰、性别、时区 */}
-            <div className="grid grid-cols-3 gap-4">
+            {/* 第二行：出生时辰和昵称 */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* 出生时辰选择器 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t('bazi.form.hour')}
                 </label>
-                <select
-                  name="birthHour"
-                  value={formData.birthHour}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF6F61] bg-white"
-                >
-                  <option value="">{t('bazi.form.selectHour')}</option>
-                  {timeHours.map((hour) => (
-                    <option key={hour.value} value={hour.value}>
-                      {hour.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center">
+                  <TimeWheelPicker
+                    selectedHour={formData.birthHour}
+                    selectedMinute={formData.birthMinute}
+                    onChange={(hour, minute) => setFormData(prev => ({ 
+                      ...prev, 
+                      birthHour: hour, 
+                      birthMinute: minute 
+                    }))}
+                    className="flex-1"
+                  />
+                </div>
               </div>
+
+              {/* 昵称 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('bazi.form.name')}
+                </label>
+                <Input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder={t('bazi.form.namePlaceholder')}
+                  className="w-full"
+                />
+              </div>
+            </div>
+
+            {/* 第三行：性别、时区 */}
+            <div className="grid grid-cols-2 gap-4">
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -262,21 +270,6 @@ export default function BaziPersonaPage() {
                   className="w-full"
                 />
               </div>
-            </div>
-
-            {/* 第三行：昵称 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('bazi.form.name')}
-              </label>
-              <Input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder={t('bazi.form.namePlaceholder')}
-                className="w-full"
-              />
             </div>
 
             {/* 错误提示 */}

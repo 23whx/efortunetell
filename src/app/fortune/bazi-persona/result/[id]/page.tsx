@@ -55,6 +55,17 @@ interface BaziPersonaData {
   name: string;
   gender: string;
   birthDateTime: string;
+  solarTimeInfo?: {
+    originalTime: string;
+    solarTime: string;
+    adjustments: {
+      tzOffset: number;
+      isDST: boolean;
+      longitude: number;
+      longitudeCorrectionMinutes: number;
+      totalAdjustmentMinutes: number;
+    };
+  };
   zh: PersonaLanguageData;
   en: PersonaLanguageData;
   destinyStructure: {
@@ -224,6 +235,42 @@ export default function BaziPersonaResultPage() {
             ))}
           </div>
         </div>
+
+        {/* 真太阳时信息 */}
+        {data.solarTimeInfo && (
+          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2">
+              <span>🌞</span>
+              {language === 'zh' ? '真太阳时信息' : 'True Solar Time Information'}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="font-medium text-blue-700">
+                  {language === 'zh' ? '原始时间：' : 'Original Time: '}
+                </span>
+                <span className="text-blue-600">{data.solarTimeInfo.originalTime}</span>
+              </div>
+              <div>
+                <span className="font-medium text-blue-700">
+                  {language === 'zh' ? '真太阳时：' : 'True Solar Time: '}
+                </span>
+                <span className="text-blue-600">{data.solarTimeInfo.solarTime}</span>
+              </div>
+              <div>
+                <span className="font-medium text-blue-700">
+                  {language === 'zh' ? '时区偏移：' : 'Timezone Offset: '}
+                </span>
+                <span className="text-blue-600">{data.solarTimeInfo.adjustments.tzOffset}小时</span>
+              </div>
+              <div>
+                <span className="font-medium text-blue-700">
+                  {language === 'zh' ? '经度修正：' : 'Longitude Correction: '}
+                </span>
+                <span className="text-blue-600">{data.solarTimeInfo.adjustments.longitudeCorrectionMinutes}分钟</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 命理结构摘要 */}
         {/* 四柱展示 */}
