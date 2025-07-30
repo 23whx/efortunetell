@@ -37,3 +37,72 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ============================
+# 安全过滤 - 可执行文件和可疑文件
+# ============================
+# Windows 可执行文件
+*.exe
+*.msi
+*.bat
+*.cmd
+*.com
+*.scr
+*.vbs
+*.vbe
+*.ws
+*.wsf
+*.wsc
+*.pif
+
+# Linux/Unix 可执行文件
+*.sh.exe
+*.bin
+*.run
+*.deb
+*.rpm
+*.dmg
+*.pkg
+
+# 脚本文件 (保留必要的)
+*.ps1
+*.psm1
+
+# 动态链接库
+*.dll
+*.so
+*.dylib
+
+# 可疑的归档文件
+*.ace
+*.cab
+*.rar
+*.7z
+
+# 其他潜在可疑文件
+*.hta
+*.jar
+*.class
+*.war
+
+# 环境变量文件
+.env
+.env.local
+.env.production
+.env.development
+
+# 备份文件
+*.bak
+*.backup
+*.old
+*.orig
+
+# 系统文件
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# 编辑器临时文件
+*.swp
+*.swo
+*~
