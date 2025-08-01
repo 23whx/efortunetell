@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
@@ -13,6 +13,13 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
 
 export const metadata: Metadata = {
   title: {
@@ -69,7 +76,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen overflow-auto font-sans bg-[#FFFACD] text-gray-900">
         <LanguageProvider>
           <Navbar />
-          <div className="pt-20">
+          <div className="pt-16 md:pt-20">
             {children}
           </div>
         </LanguageProvider>

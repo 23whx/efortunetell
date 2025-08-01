@@ -120,9 +120,186 @@ export default function BaziPersonaResultPage() {
     setLoading(false);
   }, [params.id, t]);
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!data || !currentData) return;
+    
+    // 生成分享图片
+    await generateShareImage();
+    
     setShowShareModal(true);
+  };
+
+  // 生成分享图片
+  const generateShareImage = async () => {
+    if (!data || !currentData) return;
+    
+    try {
+      console.log('🎨 开始生成分享图片...');
+      
+      // 创建Canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // 设置画布尺寸 (适合微信分享的比例)
+      canvas.width = 800;
+      canvas.height = 1000;
+
+      // 绘制背景
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, '#FFFACD');
+      gradient.addColorStop(1, '#FFF8E1');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 设置字体
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#333';
+
+      // 绘制标题
+      ctx.font = 'bold 36px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = '#FF6F61';
+      ctx.fillText(currentData?.personaTitle || '八字性格画像', 400, 80);
+
+      // 绘制用户信息
+      ctx.font = '24px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = '#666';
+      ctx.fillText(`${data.name} • ${data.gender} • ${data.age}岁`, 400, 130);
+
+      // 绘制关键词标签
+      let yPos = 180;
+      if (currentData?.keywordTags && currentData.keywordTags.length > 0) {
+        ctx.font = 'bold 20px "Microsoft YaHei", sans-serif';
+        ctx.fillStyle = '#8B4513';
+        ctx.fillText('性格关键词', 400, yPos);
+        
+        yPos += 40;
+        ctx.font = '18px "Microsoft YaHei", sans-serif';
+        ctx.fillStyle = '#FF6F61';
+        const tagsText = currentData.keywordTags.slice(0, 6).join(' • ');
+        ctx.fillText(tagsText, 400, yPos);
+        yPos += 50;
+      }
+
+      // 绘制性格维度（选择前4个重要维度）
+      const dimensions = [
+        { key: 'behaviorTendency', title: '行为倾向' },
+        { key: 'thinkingStyle', title: '思维方式' },
+        { key: 'communicationStyle', title: '沟通风格' },
+        { key: 'emotionalManagement', title: '情绪管理' }
+      ];
+
+      ctx.font = 'bold 20px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = '#8B4513';
+      ctx.fillText('性格维度分析', 400, yPos);
+      yPos += 40;
+
+      ctx.font = '16px "Microsoft YaHei", sans-serif';
+      ctx.textAlign = 'left';
+      
+      dimensions.forEach(dim => {
+        const content = currentData?.personalityDimensions?.[dim.key as keyof typeof currentData.personalityDimensions];
+        if (content) {
+          ctx.fillStyle = '#FF6F61';
+          ctx.fillText(`${dim.title}:`, 80, yPos);
+          
+          ctx.fillStyle = '#555';
+          // 文本换行处理
+          const maxWidth = 640;
+          const words = content.split('');
+          let line = '';
+          let lineHeight = 25;
+          let currentY = yPos;
+          
+          for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n];
+            const metrics = ctx.measureText(testLine);
+            const testWidth = metrics.width;
+            
+            if (testWidth > maxWidth && n > 0) {
+              ctx.fillText(line, 200, currentY);
+              line = words[n];
+              currentY += lineHeight;
+            } else {
+              line = testLine;
+            }
+          }
+          ctx.fillText(line, 200, currentY);
+          yPos = currentY + 35;
+        }
+      });
+
+      // 绘制雷达图数据（简化版本）
+      if (currentData?.personalityRadar) {
+        yPos += 20;
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 20px "Microsoft YaHei", sans-serif';
+        ctx.fillStyle = '#8B4513';
+        ctx.fillText('性格雷达分析', 400, yPos);
+        yPos += 40;
+
+        const radarData = currentData.personalityRadar;
+        const radarKeys = [
+          { key: 'rationalThinking', name: '理性思维' },
+          { key: 'emotionalExpression', name: '情感表达' },
+          { key: 'actionSpeed', name: '行动力' },
+          { key: 'extroversion', name: '外向性' },
+          { key: 'empathy', name: '共情力' },
+          { key: 'orderSense', name: '秩序感' }
+        ];
+
+        // 绘制雷达图数值
+        ctx.font = '16px "Microsoft YaHei", sans-serif';
+        ctx.textAlign = 'left';
+        
+        const leftCol = radarKeys.slice(0, 3);
+        const rightCol = radarKeys.slice(3, 6);
+        
+        leftCol.forEach((item, index) => {
+          const value = radarData[item.key as keyof typeof radarData] || 50;
+          ctx.fillStyle = '#FF6F61';
+          ctx.fillText(`${item.name}: ${value}`, 100, yPos + index * 30);
+        });
+        
+        rightCol.forEach((item, index) => {
+          const value = radarData[item.key as keyof typeof radarData] || 50;
+          ctx.fillStyle = '#FF6F61';
+          ctx.fillText(`${item.name}: ${value}`, 450, yPos + index * 30);
+        });
+        
+        yPos += 120;
+      }
+
+      // 绘制底部信息
+      yPos = canvas.height - 100;
+      ctx.textAlign = 'center';
+      ctx.font = '18px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = '#8B4513';
+      ctx.fillText('扫码查看完整报告', 400, yPos);
+      
+      ctx.font = '14px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = '#999';
+      ctx.fillText('efortunetell.blog • 易理命学', 400, yPos + 30);
+
+      // 将Canvas转换为图片并下载
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `八字性格画像_${data.name}_${new Date().getTime()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          console.log('✅ 分享图片生成成功');
+        }
+      }, 'image/png');
+
+    } catch (error) {
+      console.error('❌ 生成分享图片失败:', error);
+    }
   };
 
   const handleGoBack = () => {
@@ -442,13 +619,25 @@ export default function BaziPersonaResultPage() {
             {t('bazi.result.overallSummary')}
           </p>
           
+          {/* 分享说明 */}
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-center gap-2 text-blue-700 mb-2">
+              <span>📸</span>
+              <span className="font-medium">微信分享说明</span>
+            </div>
+            <p className="text-sm text-blue-600">
+              点击"生成分享图片"按钮会自动下载包含您性格分析的精美图片，
+              您可以保存后发送给朋友，或搭配结果链接一起分享到朋友圈！
+            </p>
+          </div>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               onClick={handleShare}
               className="bg-[#FF6F61] text-white flex items-center gap-2"
             >
               <Share2 size={16} />
-              {t('bazi.result.share')}
+              生成分享图片
             </Button>
             <Button
               onClick={handleGoBack}
@@ -466,7 +655,7 @@ export default function BaziPersonaResultPage() {
         onClose={() => setShowShareModal(false)}
         title={currentData?.personaTitle || '八字性格画像'}
         url={typeof window !== 'undefined' ? window.location.href : ''}
-        description={t('bazi.share.text').replace('{title}', currentData?.personaTitle || '八字性格画像')}
+        description={`我刚生成了八字性格画像"${currentData?.personaTitle || '八字性格画像'}"，快来看看我的性格分析吧！✨ 注意：链接仅在我的浏览器有效，建议保存分享图片！`}
       />
     </div>
   );

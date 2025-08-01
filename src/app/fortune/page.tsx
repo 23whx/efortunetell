@@ -148,27 +148,35 @@ export default function FortunePage() {
   };
 
   return (
-    <div className="min-h-screen p-8 bg-[#FFFACD]">
-      <h1 className="text-2xl font-bold text-[#FF6F61] mb-6 text-center">{t('fortune.title')}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 bg-[#FFFACD]">
+      <h1 className="text-xl md:text-2xl font-bold text-[#FF6F61] mb-4 md:mb-6 text-center">
+        {t('fortune.title')}
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 max-w-4xl mx-auto">
         {services.map((service) => (
           <div 
             key={service.id}
-            className="bg-card text-card-foreground border border-border rounded-lg shadow-md p-6 hover:scale-[1.02] transition-transform duration-200"
+            className="bg-card text-card-foreground border border-border rounded-lg shadow-md p-4 md:p-6 hover:scale-[1.02] transition-transform duration-200"
           >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-2 bg-secondary rounded-full">
+            <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
+              <div className="p-2 bg-secondary rounded-full flex-shrink-0">
                 {service.icon}
               </div>
-              <h2 className="text-xl font-semibold text-card-foreground">{service.name}</h2>
+              <h2 className="text-lg md:text-xl font-semibold text-card-foreground">
+                {service.name}
+              </h2>
             </div>
-            <p className="text-muted-foreground mb-4">{service.description}</p>
-            <div className="flex justify-between items-center">
-              <span className="text-primary font-medium">{service.price}</span>
+            <p className="text-muted-foreground mb-4 text-sm md:text-base">
+              {service.description}
+            </p>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+              <span className="text-primary font-medium text-lg md:text-xl">
+                {service.price}
+              </span>
               <Button
                 onClick={() => handleGetInTouch(service)}
                 disabled={isCreatingAppointment}
-                className="bg-[#FF6F61] hover:bg-[#FF5A4D] text-white"
+                className="bg-[#FF6F61] hover:bg-[#FF5A4D] text-white w-full sm:w-auto px-4 py-2 md:px-6 md:py-3 text-sm md:text-base"
               >
                 {isCreatingAppointment ? t('common.loading') + '...' : service.buttonText}
               </Button>

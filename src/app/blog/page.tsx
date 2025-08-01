@@ -168,24 +168,29 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen font-sans bg-[#FFFACD]">
       {/* Categories and Sort */}
-      <div className="sticky top-0 z-10 bg-[#FFFACD] py-4 px-6 border-b border-gray-200">
-        <div className="flex justify-between items-center">
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant="custom"
-                className={`shrink-0 rounded-lg font-medium px-4 py-2 border border-[#FF6F61] text-[#FF6F61] hover:shadow-lg transition-all ${(category === t('common.all') && selectedDisplayCategory === null) || selectedDisplayCategory === category ? 'bg-[#FF6F61] text-white' : 'bg-transparent'}`}
-                onClick={() => handleCategoryClick(category)}
-              >
-                {category}
-              </Button>
-            ))}
+      <div className="sticky top-16 md:top-20 z-10 bg-[#FFFACD] py-3 md:py-4 px-4 md:px-6 border-b border-gray-200">
+        <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
+          {/* 分类按钮 - 移动端滚动，桌面端正常显示 */}
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-2 md:gap-4 pb-2 md:pb-0 min-w-max">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant="custom"
+                  className={`shrink-0 rounded-lg font-medium px-3 py-2 md:px-4 text-sm md:text-base border border-[#FF6F61] text-[#FF6F61] hover:shadow-lg transition-all ${(category === t('common.all') && selectedDisplayCategory === null) || selectedDisplayCategory === category ? 'bg-[#FF6F61] text-white' : 'bg-transparent'}`}
+                  onClick={() => handleCategoryClick(category)}
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
           </div>
+          
+          {/* 排序选择器 */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'date' | 'likes' | 'bookmarks')}
-            className="bg-[#FFFACD] text-[#FF6F61] border border-[#FF6F61] rounded px-3 py-1 focus:outline-none focus:ring-1 focus:ring-[#FF6F61] hover:bg-[#ffede3] transition-colors"
+            className="bg-[#FFFACD] text-[#FF6F61] border border-[#FF6F61] rounded px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#FF6F61] hover:bg-[#ffede3] transition-colors shrink-0"
           >
             <option value="date">{t('sort.byDate')}</option>
             <option value="likes">{t('sort.byLikes')}</option>
@@ -195,7 +200,7 @@ export default function BlogPage() {
       </div>
 
       {/* Articles */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8">
         {loading && (
           <div className="flex justify-center py-20">
             <div className="w-12 h-12 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin"></div>
@@ -215,7 +220,7 @@ export default function BlogPage() {
         )}
         
         {!loading && !error && articles.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {articles
               .slice()
               .sort((a, b) => {
@@ -231,9 +236,9 @@ export default function BlogPage() {
                 <Link
                   href={`/blog/${article._id}`}
                   key={article._id}
-                  className="block bg-[#FFFACD] text-[hsl(0_0%_14.5%)] rounded-lg overflow-hidden hover:shadow-md hover:shadow-[#FF6F61]/20 transition-all duration-300 h-64 flex flex-col border border-[#FF6F61]"
+                  className="block bg-[#FFFACD] text-[hsl(0_0%_14.5%)] rounded-lg overflow-hidden hover:shadow-md hover:shadow-[#FF6F61]/20 transition-all duration-300 min-h-[280px] md:h-64 flex flex-col border border-[#FF6F61]"
                 >
-                  <div className="h-20 relative">
+                  <div className="h-24 md:h-20 relative">
                     {article.coverSettings ? (
                       // 使用coverSettings的情况
                       <div
@@ -262,14 +267,14 @@ export default function BlogPage() {
                       />
                     )}
                   </div>
-                  <div className="p-4 flex flex-col flex-grow">
+                  <div className="p-3 md:p-4 flex flex-col flex-grow">
                     <span className="text-xs font-medium text-[#FF6F61]">{article.category}</span>
-                    <h2 className="text-lg font-semibold mt-1 mb-2 line-clamp-2">{article.title}</h2>
-                    <p className="text-[hsl(0_0%_55.6%)] text-sm mb-3 line-clamp-2 flex-grow">{article.summary}</p>
+                    <h2 className="text-base md:text-lg font-semibold mt-1 mb-2 line-clamp-2">{article.title}</h2>
+                    <p className="text-[hsl(0_0%_55.6%)] text-sm mb-3 line-clamp-2 md:line-clamp-2 flex-grow">{article.summary}</p>
 
-                    <div className="flex justify-between items-center text-xs text-[#FF6F61] mt-auto pt-2 border-t border-[#FF6F61]">
-                      <div className="flex items-center space-x-2 truncate mr-2">
-                        <div className="w-5 h-5 rounded-full flex-shrink-0 overflow-hidden">
+                    <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center text-xs text-[#FF6F61] mt-auto pt-2 border-t border-[#FF6F61]">
+                      <div className="flex items-center space-x-2 truncate">
+                        <div className="w-4 h-4 md:w-5 md:h-5 rounded-full flex-shrink-0 overflow-hidden">
                           <Image
                             src={getAvatarPath(article.author)}
                             alt="Author avatar"
@@ -279,22 +284,22 @@ export default function BlogPage() {
                             unoptimized={true}
                           />
                         </div>
-                        <span className="truncate">
+                        <span className="truncate text-xs md:text-sm">
                           {getDisplayName(article.author)} · {formatDate(article.publishedAt || article.createdAt)}
                         </span>
                       </div>
-                      <div className="flex gap-3 shrink-0">
+                      <div className="flex gap-3 shrink-0 justify-start md:justify-end">
                         <div className="flex items-center gap-1">
-                          <Heart className="w-3.5 h-3.5" />
-                          <span>{article.likes || 0}</span>
+                          <Heart className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                          <span className="text-xs">{article.likes || 0}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Bookmark className="w-3.5 h-3.5" />
-                          <span>{article.bookmarks || 0}</span>
+                          <Bookmark className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                          <span className="text-xs">{article.bookmarks || 0}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <MessageSquare className="w-3.5 h-3.5" />
-                          <span>{article.commentsCount || 0}</span>
+                          <MessageSquare className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                          <span className="text-xs">{article.commentsCount || 0}</span>
                         </div>
                       </div>
                     </div>
