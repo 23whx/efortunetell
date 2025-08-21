@@ -332,6 +332,12 @@ export default function BaziPersonaResultPage() {
     );
   }
 
+  // 判断是否有雷达图数据
+  const hasRadar = currentData?.personalityRadar && Object.keys(currentData.personalityRadar).length > 0;
+  if (!hasRadar) {
+    console.log('⚠️ 后端未返回雷达图分值，前端不显示雷达图卡片。原因：personalityRadar 字段为 null 或空对象');
+  }
+
   return (
     <div className="min-h-screen bg-[#FFFACD] py-8 px-4">
       <div className="max-w-4xl mx-auto">
