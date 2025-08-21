@@ -97,13 +97,19 @@ export default function BaziPersonaPage() {
 
       if (response.ok && data.success) {
         console.log('✅ 八字性格画像生成成功');
-        const key = data.data.id || Date.now().toString();
-        // 保存到浏览器缓存
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(`baziPersona_${key}`, JSON.stringify(data.data));
-        }
-        // 跳转到结果页面
-        router.push(`/fortune/bazi-persona/result/${key}`);
+        // 生成唯一id，拼接到路径
+        const uniqueId = Date.now().toString();
+        const query = new URLSearchParams({
+          name: formData.name || '用户',
+          gender: formData.gender,
+          birthYear: formData.birthYear,
+          birthMonth: formData.birthMonth,
+          birthDay: formData.birthDay,
+          birthHour: String(formData.birthHour),
+          birthMinute: String(formData.birthMinute),
+          timezone: formData.timezone
+        }).toString();
+        router.push(`/fortune/bazi-persona/result/${uniqueId}?${query}`);
       } else {
         console.error('❌ 生成失败:', data.message);
         setError(data.message || t('bazi.form.error.generate'));

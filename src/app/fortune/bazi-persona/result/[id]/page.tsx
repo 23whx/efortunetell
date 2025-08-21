@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Button from '@/components/ui/button';
 import PersonalityRadarChart from '@/components/ui/PersonalityRadarChart';
 import ShareModal from '@/components/ui/ShareModal';
@@ -18,6 +18,7 @@ import {
   Lightbulb
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { API_BASE_URL } from '@/config/api';
 
 interface PersonaLanguageData {
   personaTitle: string;
@@ -94,6 +95,7 @@ interface BaziPersonaData {
 
 export default function BaziPersonaResultPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { t, language } = useLanguage();
   const [data, setData] = useState<BaziPersonaData | null>(null);
@@ -105,20 +107,47 @@ export default function BaziPersonaResultPage() {
   const currentData = data ? data[language] : null;
 
   useEffect(() => {
-    const id = params.id as string;
-    const cached = typeof window !== 'undefined' ? localStorage.getItem(`baziPersona_${id}`) : null;
-    if (cached) {
-      const obj = JSON.parse(cached);
-      // 计算年龄
-      const birth = new Date(obj.birthDateTime);
-      const age = Math.floor((Date.now() - birth.getTime()) / (1000 * 3600 * 24 * 365.25));
-      obj.age = age;
-      setData(obj);
-    } else {
-      setError(t('bazi.result.error.expired'));
+    // 从URL参数获取表单数据
+    const name = searchParams.get('name') || '用户';
+    const gender = searchParams.get('gender') || '男';
+    const birthYear = searchParams.get('birthYear');
+    const birthMonth = searchParams.get('birthMonth');
+    const birthDay = searchParams.get('birthDay');
+    const birthHour = searchParams.get('birthHour');
+    const birthMinute = searchParams.get('birthMinute');
+    const timezone = searchParams.get('timezone') || 'Asia/Shanghai';
+    if (!birthYear || !birthMonth || !birthDay || !birthHour) {
+      setError('数据不存在或已过期，请重新生成');
+      setLoading(false);
+      return;
     }
-    setLoading(false);
-  }, [params.id, t]);
+    // 请求后端生成八字性格画像
+    fetch(`${API_BASE_URL}/api/bazi-persona/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        gender: gender === '男' ? 'male' : 'female',
+        year: Number(birthYear),
+        month: Number(birthMonth),
+        day: Number(birthDay),
+        hour: Number(birthHour),
+        minute: Number(birthMinute) || 0,
+        timezone,
+        language
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success && res.data) {
+          setData(res.data);
+        } else {
+          setError(res.message || '生成失败，请重试');
+        }
+      })
+      .catch(() => setError('网络错误，请稍后重试'))
+      .finally(() => setLoading(false));
+  }, [searchParams, language]);
 
   const handleShare = async () => {
     if (!data || !currentData) return;
