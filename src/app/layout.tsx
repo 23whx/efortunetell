@@ -73,6 +73,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script 
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4880646654838411"
+          crossOrigin="anonymous"
+        ></script>
+      </head>
       <body className="antialiased min-h-screen overflow-auto font-sans bg-[#FFFACD] text-gray-900">
         <LanguageProvider>
           <Navbar />
