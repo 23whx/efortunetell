@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack -p 14761",
+    "dev": "next dev --webpack -p 14761",
     "build": "next build",
     "build:force": "next build",
     "start": "next start -p 14761",
