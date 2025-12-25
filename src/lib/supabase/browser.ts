@@ -1,7 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 export function createSupabaseBrowserClient() {
-  const g = globalThis as unknown as { __efortunetell_supabase__?: ReturnType<typeof createClient> };
+  type CachedSupabaseClient = SupabaseClient<any, any, any, any, any>;
+  const g = globalThis as typeof globalThis & {
+    __efortunetell_supabase__?: CachedSupabaseClient;
+  };
   if (g.__efortunetell_supabase__) return g.__efortunetell_supabase__;
 
   const url =
@@ -15,7 +18,7 @@ export function createSupabaseBrowserClient() {
     throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY');
   }
 
-  const client = createClient(url, anonKey);
+  const client = createClient(url, anonKey) as CachedSupabaseClient;
   g.__efortunetell_supabase__ = client;
   return client;
 }
