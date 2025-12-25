@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
@@ -41,11 +43,19 @@ export async function GET(request: NextRequest) {
 
   // Ensure an app-level profile row exists for OAuth sign-ins.
   // (Supabase Auth user lives in auth.users; our app uses public.profiles)
-  if (!error) {
+  if (error) {
+    console.error('[auth/callback] exchangeCodeForSession error:', error);
+  } else {
     const session = data.session;
     const user = data.user ?? session?.user;
 
-    if (session?.access_token && user) {
+    if (!session?.access_token || !user) {
+      console.warn('[auth/callback] No session/user after exchangeCodeForSession', {
+        hasSession: Boolean(session),
+        hasAccessToken: Boolean(session?.access_token),
+        hasUser: Boolean(user),
+      });
+    } else {
       const displayName =
         (user.user_metadata?.full_name as string | undefined) ??
         (user.user_metadata?.name as string | undefined) ??
@@ -70,15 +80,48 @@ export async function GET(request: NextRequest) {
         },
       });
 
-      await authed.from('profiles').upsert(
+      const upsertPayload = {
+        id: user.id,
+        role: 'user' as const,
+        display_name: displayName,
+        avatar_url: avatarUrl,
+      };
+
+      const { error: upsertError } = await authed.from('profiles').upsert(
         {
-          id: user.id,
-          role: 'user',
-          display_name: displayName,
-          avatar_url: avatarUrl,
+          ...upsertPayload,
         },
         { onConflict: 'id' }
       );
+
+      if (upsertError) {
+        console.error('[auth/callback] profiles upsert via supabase-js failed:', upsertError);
+
+        // Fallback: call PostgREST directly to avoid any client header/session nuance.
+        try {
+          const restRes = await fetch(`${url}/rest/v1/profiles?on_conflict=id`, {
+            method: 'POST',
+            headers: {
+              apikey: anonKey,
+              Authorization: `Bearer ${session.access_token}`,
+              'Content-Type': 'application/json',
+              Prefer: 'resolution=merge-duplicates,return=minimal',
+            },
+            body: JSON.stringify(upsertPayload),
+          });
+
+          if (!restRes.ok) {
+            const text = await restRes.text().catch(() => '');
+            console.error('[auth/callback] profiles upsert via REST failed:', restRes.status, text);
+          } else {
+            console.log('[auth/callback] profiles upsert via REST OK for user:', user.id);
+          }
+        } catch (e) {
+          console.error('[auth/callback] profiles upsert via REST threw:', e);
+        }
+      } else {
+        console.log('[auth/callback] profiles upsert OK for user:', user.id);
+      }
     }
   }
 
