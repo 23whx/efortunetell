@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   // Supabase migration: remove legacy VPS API rewrites.
   devIndicators: {
     position: 'bottom-right',
