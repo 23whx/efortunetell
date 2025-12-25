@@ -1,12 +1,6 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 export function createSupabaseBrowserClient() {
-  type CachedSupabaseClient = SupabaseClient<any, any, any, any, any>;
-  const g = globalThis as typeof globalThis & {
-    __efortunetell_supabase__?: CachedSupabaseClient;
-  };
-  if (g.__efortunetell_supabase__) return g.__efortunetell_supabase__;
-
   const url =
     process.env.NEXT_PUBLIC_SUPABASE_URL ??
     'https://qenvxxjwwwpjefeoztak.supabase.co';
@@ -18,9 +12,9 @@ export function createSupabaseBrowserClient() {
     throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY');
   }
 
-  const client = createClient(url, anonKey) as CachedSupabaseClient;
-  g.__efortunetell_supabase__ = client;
-  return client;
+  // Important: use @supabase/ssr browser client so OAuth sessions set via cookies
+  // (e.g. in /auth/callback) are visible to client components.
+  return createBrowserClient(url, anonKey, { isSingleton: true });
 }
 
 
