@@ -7,42 +7,51 @@ import { usePathname, useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 import { useState, useEffect, FormEvent } from 'react';
-import { API_ROUTES, getAuthHeaders } from '@/config/api';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getAvatarPath } from '@/utils/avatar';
+import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { getMyProfile } from '@/lib/supabase/profile';
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useLanguage();
-  const [user, setUser] = useState<{ username: string } | null>(null);
-  const [admin, setAdmin] = useState<{ username: string } | null>(null);
+  const [user, setUser] = useState<{ email: string } | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // 同步用户和管理员登录状态
+  // Sync Supabase session + role
   useEffect(() => {
-    const syncUserAndAdmin = () => {
-      // 普通用户登录状态
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      } else {
+    const supabase = createSupabaseBrowserClient();
+
+    const refresh = async () => {
+      const { data } = await supabase.auth.getUser();
+      const authUser = data.user;
+      if (!authUser) {
         setUser(null);
+        setIsAdmin(false);
+        return;
       }
-      
-      // 管理员登录状态
-      const storedAdmin = localStorage.getItem('admin');
-      if (storedAdmin) {
-        setAdmin(JSON.parse(storedAdmin));
-      } else {
-        setAdmin(null);
+
+      setUser({ email: authUser.email || '' });
+      try {
+        const { role } = await getMyProfile(supabase);
+        setIsAdmin(role === 'admin');
+      } catch {
+        setIsAdmin(false);
       }
     };
-    
-    syncUserAndAdmin();
-    window.addEventListener('storage', syncUserAndAdmin);
-    return () => window.removeEventListener('storage', syncUserAndAdmin);
+
+    refresh();
+
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      refresh();
+    });
+
+    return () => {
+      sub.subscription.unsubscribe();
+    };
   }, [pathname]);
 
   // 关闭移动端菜单当路由变化时
@@ -59,20 +68,14 @@ export default function Navbar() {
     }
   };
 
-  // 普通用户退出登录
+  // Logout
   const handleUserLogout = async () => {
     try {
-      // 调用后端退出登录接口
-      await fetch(API_ROUTES.LOGOUT, {
-        method: 'GET',
-        headers: getAuthHeaders(),
-      });
+      const supabase = createSupabaseBrowserClient();
+      await supabase.auth.signOut();
     } catch (error) {
       console.error('退出登录失败', error);
     } finally {
-      // 无论接口是否成功，前端都清除登录状态
-      localStorage.removeItem('user');
-      setUser(null);
       setIsMobileMenuOpen(false);
       if (pathname.startsWith('/user/')) {
         window.location.href = '/blog';
@@ -82,24 +85,7 @@ export default function Navbar() {
     }
   };
 
-  // 管理员退出登录
-  const handleAdminLogout = async () => {
-    try {
-      // 调用后端退出登录接口
-      await fetch(API_ROUTES.LOGOUT, {
-        method: 'GET',
-        headers: getAuthHeaders(),
-      });
-    } catch (error) {
-      console.error('管理员退出登录失败', error);
-    } finally {
-      // 无论接口是否成功，前端都清除登录状态
-      localStorage.removeItem('admin');
-      setAdmin(null);
-      setIsMobileMenuOpen(false);
-      window.location.href = '/blog';
-    }
-  };
+  const handleAdminLogout = handleUserLogout;
 
   return (
     <>
@@ -123,7 +109,7 @@ export default function Navbar() {
           {/* 桌面端导航 */}
           <div className="hidden md:flex items-center gap-4">
             {/* 导航链接，不是管理员时显示 */}
-            {!admin && (
+            {!isAdmin && (
               <>
                 <Link 
                   href="/" 
@@ -136,12 +122,6 @@ export default function Navbar() {
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/fortune' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
                 >
                   {t('nav.fortune')}
-                </Link>
-                <Link 
-                  href="/fortune/bazi-persona" 
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname.startsWith('/fortune/bazi-persona') ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
-                >
-                  {t('nav.baziTest')}
                 </Link>
                 <form onSubmit={handleSearch} className="relative">
                   <input 
@@ -159,7 +139,7 @@ export default function Navbar() {
             )}
             
             {/* 管理员登录后显示管理员专有链接 */}
-            {admin && (
+            {isAdmin && (
               <>
                 <Link 
                   href="/admin/dashboard" 
@@ -174,7 +154,7 @@ export default function Navbar() {
             <LanguageSwitcher />
             
             {/* 登录状态显示区域 */}
-            {admin ? (
+            {isAdmin ? (
               // 管理员登录后显示
               <div className="flex items-center gap-2">
                 <Button 
@@ -186,7 +166,7 @@ export default function Navbar() {
                 </Button>
                 <Link href="/admin/dashboard" className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#FF6F61] hover:opacity-80" title={t('nav.admin')}>
                   <Image
-                    src={getAvatarPath(admin)}
+                    src={getAvatarPath({ username: user?.email || 'admin' })}
                     alt="Admin Avatar"
                     width={40}
                     height={40}
@@ -206,7 +186,7 @@ export default function Navbar() {
                 </Button>
                 <Link href="/user/profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-black hover:opacity-80" title={t('nav.profile')}>
                   <Image
-                    src={getAvatarPath(user)}
+                    src={getAvatarPath({ username: user.email || 'user' })}
                     alt="User Avatar"
                     width={40}
                     height={40}
@@ -245,7 +225,7 @@ export default function Navbar() {
         <div className="fixed inset-0 bg-white z-40 md:hidden pt-20">
           <div className="flex flex-col h-full">
             {/* 搜索栏 */}
-            {!admin && (
+            {!isAdmin && (
               <div className="p-4 border-b border-gray-200">
                 <form onSubmit={handleSearch} className="relative">
                   <input 
@@ -264,7 +244,7 @@ export default function Navbar() {
 
             {/* 导航链接 */}
             <div className="flex-1 overflow-y-auto">
-              {!admin ? (
+              {!isAdmin ? (
                 // 普通导航菜单
                 <div className="space-y-1 p-4">
                   <Link 
@@ -278,12 +258,6 @@ export default function Navbar() {
                     className={`block px-4 py-4 rounded-lg font-medium text-lg transition-colors ${pathname === '/fortune' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
                   >
                     {t('nav.fortune')}
-                  </Link>
-                  <Link 
-                    href="/fortune/bazi-persona" 
-                    className={`block px-4 py-4 rounded-lg font-medium text-lg transition-colors ${pathname.startsWith('/fortune/bazi-persona') ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
-                  >
-                    {t('nav.baziTest')}
                   </Link>
                   <Link 
                     href="/contact" 
@@ -325,12 +299,12 @@ export default function Navbar() {
               </div>
 
               {/* 用户信息和登录/注销按钮 */}
-              {admin ? (
+              {isAdmin ? (
                 // 管理员登录后显示
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                     <Image
-                      src={getAvatarPath(admin)}
+                      src={getAvatarPath({ username: user?.email || 'admin' })}
                       alt="Admin Avatar"
                       width={40}
                       height={40}
@@ -338,7 +312,7 @@ export default function Navbar() {
                       unoptimized={true}
                     />
                     <div>
-                      <p className="font-medium text-gray-900">{admin.username}</p>
+                      <p className="font-medium text-gray-900">{user?.email || 'admin'}</p>
                       <p className="text-sm text-gray-500">{t('nav.admin')}</p>
                     </div>
                   </div>
@@ -355,7 +329,7 @@ export default function Navbar() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                     <Image
-                      src={getAvatarPath(user)}
+                      src={getAvatarPath({ username: user.email || 'user' })}
                       alt="User Avatar"
                       width={40}
                       height={40}
@@ -363,7 +337,7 @@ export default function Navbar() {
                       unoptimized={true}
                     />
                     <div>
-                      <p className="font-medium text-gray-900">{user.username}</p>
+                      <p className="font-medium text-gray-900">{user.email}</p>
                       <p className="text-sm text-gray-500">{t('nav.user')}</p>
                     </div>
                   </div>

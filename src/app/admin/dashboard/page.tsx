@@ -1,25 +1,12 @@
 "use client";
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
-import { FileText, MessageCircle, Calendar } from 'lucide-react';
+import { FileText, Calendar } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AdminDashboard() {
   const { t } = useLanguage();
-  const [admin, setAdmin] = useState<{ username: string } | null>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    const stored = localStorage.getItem('admin');
-    if (stored) {
-      setAdmin(JSON.parse(stored));
-    } else {
-      router.replace('/admin/login');
-    }
-  }, [router]);
-
-  if (!admin) return null;
 
   return (
     <div className="min-h-screen bg-[#FFFACD] flex flex-col items-center justify-center">
@@ -38,27 +25,18 @@ export default function AdminDashboard() {
           
           <div 
             className="border border-[#FF6F61] rounded-lg p-6 bg-[#FFFACD] hover:shadow-lg transition-all cursor-pointer flex flex-col items-center"
-            onClick={() => router.push('/admin/comments')}
-          >
-            <MessageCircle size={50} className="text-[#FF6F61] mb-4" />
-            <h2 className="text-xl font-bold text-[#FF6F61] mb-2">{t('common.comments')}</h2>
-            <p className="text-gray-700 text-center">查看、删除用户评论</p>
-          </div>
-          
-          <div 
-            className="border border-[#FF6F61] rounded-lg p-6 bg-[#FFFACD] hover:shadow-lg transition-all cursor-pointer flex flex-col items-center"
             onClick={() => router.push('/admin/appointments')}
           >
             <Calendar size={50} className="text-[#FF6F61] mb-4" />
             <h2 className="text-xl font-bold text-[#FF6F61] mb-2">{t('common.appointments')}</h2>
-            <p className="text-gray-700 text-center">管理日程与八字预约</p>
+            <p className="text-gray-700 text-center">管理用户提交的需求</p>
           </div>
         </div>
         
         <div className="mt-8 flex justify-center">
           <Button 
             className="bg-[#FF6F61] text-white px-6 py-2" 
-            onClick={() => router.push('/admin/edit')}
+            onClick={() => router.push('/admin/write')}
           >
             写新文章
           </Button>

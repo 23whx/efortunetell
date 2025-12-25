@@ -55,6 +55,22 @@ export default function ContactPage() {
               <p className="text-gray-600">推荐使用以下方式快速联系</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 max-w-4xl mx-auto">
+              {/* LINE - 主推 */}
+              <div className="group relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-green-200 to-emerald-200 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                <div className="relative bg-gradient-to-r from-green-100 to-emerald-100 p-6 md:p-8 rounded-2xl text-center transform group-hover:scale-105 transition-all duration-300 shadow-xl border border-green-200/50">
+                  <div className="text-4xl md:text-5xl mb-3 md:mb-4">💚</div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-2 flex items-center justify-center gap-2 text-emerald-800">
+                    LINE
+                    <span className="text-yellow-500">⭐</span>
+                  </h3>
+                  <p className="text-emerald-700 mb-3 md:mb-4 text-sm md:text-base">优先联系渠道</p>
+                  <div className="inline-block bg-emerald-200 text-emerald-900 px-4 py-2 md:px-6 md:py-3 rounded-xl font-semibold text-sm md:text-base select-all">
+                    whx953829
+                  </div>
+                </div>
+              </div>
+
               {/* X (Twitter) - 主推 */}
               <div className="group relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-200 to-red-200 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
@@ -77,7 +93,7 @@ export default function ContactPage() {
               </div>
 
               {/* Telegram */}
-              <div className="group relative">
+              <div className="group relative md:col-span-2">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-indigo-200 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
                 <div className="relative bg-gradient-to-r from-blue-100 to-indigo-100 p-6 md:p-8 rounded-2xl text-center transform group-hover:scale-105 transition-all duration-300 shadow-xl border border-blue-200/50">
                   <div className="text-4xl md:text-5xl mb-3 md:mb-4">✈️</div>
@@ -172,7 +188,7 @@ export default function ContactPage() {
               <div className="inline-flex items-center gap-2 bg-blue-100 px-4 py-2 md:px-6 md:py-3 rounded-full">
                 <span className="text-xl md:text-2xl">⚡</span>
                 <span className="text-blue-700 font-medium text-sm md:text-base">
-                  推荐：X (Twitter) @Rollkey4 & Telegram @Rollkey
+                  推荐：LINE whx953829
                 </span>
               </div>
             </div>

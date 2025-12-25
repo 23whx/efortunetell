@@ -4,32 +4,18 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import Button from '@/components/ui/button';
-import { API_ROUTES } from '@/config/api';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { ensureMyProfile } from '@/lib/supabase/profile';
 
 export default function RegisterPage() {
   const { t } = useLanguage();
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
-  const validateUsername = (value: string) => {
-    if (value.length < 3) {
-      setUsernameError('用户名最少需要3个字符');
-      return false;
-    } else if (value.length > 20) {
-      setUsernameError('用户名最多允许20个字符');
-      return false;
-    } else {
-      setUsernameError('');
-      return true;
-    }
-  };
 
   const validatePassword = (value: string) => {
     if (value.length < 6) {
@@ -39,12 +25,6 @@ export default function RegisterPage() {
       setPasswordError('');
       return true;
     }
-  };
-
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setUsername(value);
-    validateUsername(value);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,49 +37,37 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
     
-    // 验证用户名和密码
-    const isUsernameValid = validateUsername(username);
+    // 验证密码
     const isPasswordValid = validatePassword(password);
     
-    if (!isUsernameValid || !isPasswordValid) {
+    if (!isPasswordValid) {
       return;
     }
     
     setIsLoading(true);
     
-    // 输出状态值以调试
-    console.log('用户名:', username);
-    console.log('密码:', password);
-
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('password', password);
-    formData.append('email', email);
-
-    // 输出FormData内容以调试
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
     try {
-      const response = await fetch(API_ROUTES.REGISTER, {
-        method: 'POST',
-        body: formData,
+      const supabase = createSupabaseBrowserClient();
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/user/profile`,
+        },
       });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
+      if (signUpError) throw signUpError;
+
+      // If email confirmations are disabled, ensure profile immediately and go profile.
+      try {
+        await ensureMyProfile(supabase);
         router.push('/user/profile');
-      } else {
-        setError(data.message || t('user.register.error'));
-        for (const [key, value] of Object.entries(data.errors)) {
-          console.error(`${key}: ${value}`);
-        }
+      } catch {
+        // Email confirmation mode: user will confirm via email.
+        router.push('/user/login');
       }
     } catch (err) {
       console.error('注册错误:', err);
-      setError(t('error.networkError'));
+      setError(err instanceof Error ? err.message : t('error.networkError'));
     } finally {
       setIsLoading(false);
     }
@@ -116,22 +84,17 @@ export default function RegisterPage() {
         )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="username"><span className="text-red-500">*</span>{t('user.register.username')}</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email"><span className="text-red-500">*</span>Email</label>
             <Input
-              id="username"
-              type="text"
-              value={username}
-              onChange={handleUsernameChange}
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               className="border-[#FF6F61] focus:ring-[#FF6F61] focus:border-[#FF6F61] flex-1"
-              placeholder="请输入用户名"
+              placeholder="name@example.com"
             />
           </div>
-          {usernameError && (
-            <div className="mb-2 ml-20 text-red-500 text-sm">
-              {usernameError}
-            </div>
-          )}
           <div className="mb-4 flex items-center gap-2">
             <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="password"><span className="text-red-500">*</span>{t('user.register.password')}</label>
             <Input
@@ -149,17 +112,6 @@ export default function RegisterPage() {
               {passwordError}
             </div>
           )}
-          <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email">{t('user.register.email')}</label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="border-[#FF6F61] focus:ring-[#FF6F61] focus:border-[#FF6F61] flex-1"
-              placeholder="请输入邮箱地址"
-            />
-          </div>
           <Button 
             type="submit" 
             className="w-full bg-[#FF6F61] hover:bg-[#ff8a75] text-white border-none"
@@ -168,20 +120,6 @@ export default function RegisterPage() {
             {isLoading ? t('common.loading') + '...' : t('user.register.submit')}
           </Button>
         </form>
-        <div className="mt-4 flex justify-between" style={{ display: 'none' }}>
-          <a 
-            href="https://api.efortunetell.blog/api/auth/google" 
-            className="inline-block bg-[#FF6F61] hover:bg-[#ff8a75] text-white py-2 px-4 rounded"
-          >
-            使用Google登录
-          </a>
-          <a 
-            href="https://api.efortunetell.blog/api/auth/github" 
-            className="inline-block bg-[#FF6F61] hover:bg-[#ff8a75] text-white py-2 px-4 rounded"
-          >
-            使用GitHub登录
-          </a>
-        </div>
       </div>
     </div>
   );

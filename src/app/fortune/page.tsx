@@ -1,30 +1,16 @@
 'use client';
 import { RiPokerHeartsLine, RiPokerClubsLine, RiPokerDiamondsLine, RiPokerSpadesLine } from 'react-icons/ri';
-import { Brain } from 'lucide-react';
 import Button from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getAuthHeaders } from '@/config/api';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function FortunePage() {
   const { t } = useLanguage();
-  const [user, setUser] = useState<{ username: string; email?: string } | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isCreatingAppointment, setIsCreatingAppointment] = useState(false);
   const router = useRouter();
   
   useEffect(() => {
-    const stored = localStorage.getItem('user');
-    const userData = stored ? JSON.parse(stored) : null;
-    const token = localStorage.getItem('token');
-    
-    console.log('Fortune页面 - 从localStorage读取的用户数据:', userData);
-    console.log('Fortune页面 - 从localStorage读取的token:', token ? '有token' : '无token');
-    
-    setUser(userData);
-    // 只要有token和用户信息就认为已登录
-    setIsLoggedIn(!!(token && userData && userData.username));
+    // No-op: legacy localStorage auth removed (Supabase session is used elsewhere)
   }, []);
 
   const services = [
@@ -63,88 +49,12 @@ export default function FortunePage() {
       icon: <RiPokerSpadesLine className="text-primary text-2xl" />,
       buttonText: t('fortune.getInTouch'),
       serviceType: 'naming'
-    },
-    {
-      id: 5,
-      name: '八字性格画像生成器',
-      description: '基于传统命理学与AI技术，生成个性化性格画像与五行分析图表',
-      price: '免费',
-      icon: <Brain className="text-primary text-2xl" />,
-      buttonText: '立即生成',
-      serviceType: 'bazi-persona'
     }
   ];
 
-  const createAppointmentRecord = async (serviceType: string, serviceName: string, price: string) => {
-    if (!isLoggedIn || !user) {
-      console.log('createAppointmentRecord: 用户未登录');
-      return false;
-    }
-
-    try {
-      setIsCreatingAppointment(true);
-      
-      const appointmentData = {
-        username: user.username,
-        service: serviceName,
-        serviceType: serviceType,
-        price: price,
-        date: new Date().toISOString().split('T')[0],
-        time: 'TBD',
-        status: 'contact_requested',
-        notes: `User requested contact for ${serviceName} service`,
-        birthDateTime: new Date().toISOString()
-      };
-
-      console.log('发送预约数据:', appointmentData);
-      console.log('使用的认证头:', getAuthHeaders());
-
-      const response = await fetch('/api/appointments', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(appointmentData)
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        console.log('预约记录创建成功:', result.data);
-        return true;
-      } else {
-        console.error('创建预约记录失败:', result.message);
-        return false;
-      }
-    } catch (error) {
-      console.error('创建预约记录时出错:', error);
-      return false;
-    } finally {
-      setIsCreatingAppointment(false);
-    }
-  };
-
   const handleGetInTouch = async (service: { serviceType: string; name: string; price: string }) => {
-    // 八字性格画像生成器直接跳转，不需要登录
-    if (service.serviceType === 'bazi-persona') {
-      router.push('/fortune/bazi-persona');
-      return;
-    }
-
-    if (!isLoggedIn || !user) {
-      console.log('用户未登录，跳转到登录页面');
-      router.push('/user/login');
-      return;
-    }
-
-    console.log('用户已登录，开始创建预约记录');
-    // 创建预约记录
-    await createAppointmentRecord(
-      service.serviceType, 
-      service.name, 
-      service.price
-    );
-
-    // 无论是否成功创建记录，都跳转到联系页面
-    router.push('/contact');
+    // Payment removed. Direct users to contact page (LINE is shown there).
+    router.push(`/contact?service=${encodeURIComponent(service.serviceType)}`);
   };
 
   return (
@@ -175,10 +85,10 @@ export default function FortunePage() {
               </span>
               <Button
                 onClick={() => handleGetInTouch(service)}
-                disabled={isCreatingAppointment}
+                disabled={false}
                 className="bg-[#FF6F61] hover:bg-[#FF5A4D] text-white w-full sm:w-auto px-4 py-2 md:px-6 md:py-3 text-sm md:text-base"
               >
-                {isCreatingAppointment ? t('common.loading') + '...' : service.buttonText}
+                {service.buttonText}
               </Button>
             </div>
           </div>

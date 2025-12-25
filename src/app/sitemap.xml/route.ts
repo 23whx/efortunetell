@@ -1,4 +1,6 @@
-import { API_BASE_URL } from '@/config/api';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   /* 收集站点重要 URL，包括静态页面和已发布文章 */
@@ -9,10 +11,15 @@ export async function GET() {
   let dynamicPaths: string[] = [];
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/articles?status=published&limit=1000`, { cache: 'no-store' });
-    const data = await res.json();
-    if (data.success && Array.isArray(data.data)) {
-      dynamicPaths = data.data.map((a: { _id: string }) => `/blog/${a._id}`);
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('articles')
+      .select('id')
+      .eq('status', 'published')
+      .limit(1000);
+
+    if (!error && Array.isArray(data)) {
+      dynamicPaths = data.map((a: { id: string }) => `/blog/${a.id}`);
     }
   } catch (err) {
     console.error('[sitemap] Failed to fetch articles:', err);

@@ -3,12 +3,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import Button from '@/components/ui/button';
-import { API_ROUTES } from '@/config/api';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { ensureMyProfile, getMyProfile } from '@/lib/supabase/profile';
 
 export default function UserLoginPage() {
   const { t } = useLanguage();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -20,55 +21,43 @@ export default function UserLoginPage() {
     setIsLoading(true);
     
     try {
-      const response = await fetch(API_ROUTES.LOGIN, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+      const supabase = createSupabaseBrowserClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        // 保存token和用户信息到localStorage
-        console.log('登录成功，后端返回数据:', data);
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          console.log('已写入token到localStorage:', data.token);
-        } else {
-          console.warn('后端未返回token');
-        }
-        if (data.data && data.data.user) {
-          localStorage.setItem('user', JSON.stringify({
-            username: data.data.user.username,
-            _id: data.data.user._id
-          }));
-          console.log('已写入user到localStorage:', {
-            username: data.data.user.username,
-            _id: data.data.user._id
-          });
-        } else if (data.data && data.data.username) {
-          localStorage.setItem('user', JSON.stringify({
-            username: data.data.username
-          }));
-          console.log('已写入user到localStorage:', { 
-            username: data.data.username
-          });
-        } else {
-        localStorage.setItem('user', JSON.stringify({ 
-            username: username
-        }));
-          console.log('已写入user到localStorage:', { 
-            username
-          });
-        }
-        router.push('/user/profile');
-      } else {
-        setError(data.message || t('user.login.error'));
-      }
+      if (signInError) throw signInError;
+
+      // Make sure profile exists (fresh project)
+      await ensureMyProfile(supabase);
+
+      // If admin, send to admin dashboard; otherwise profile
+      const { role } = await getMyProfile(supabase);
+      router.push(role === 'admin' ? '/admin/dashboard' : '/user/profile');
     } catch (err) {
       console.error('登录错误:', err);
-      setError(t('error.networkError'));
+      setError(err instanceof Error ? err.message : t('error.networkError'));
     } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOAuth = async (provider: 'google' | 'github') => {
+    setError('');
+    setIsLoading(true);
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const origin = window.location.origin;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${origin}/auth/callback?next=/`,
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      console.error('OAuth 登录错误:', err);
+      setError(err instanceof Error ? err.message : t('error.networkError'));
       setIsLoading(false);
     }
   };
@@ -86,15 +75,15 @@ export default function UserLoginPage() {
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="username">{t('user.login.username')}</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email">Email</label>
             <Input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               className="border-[#FF6F61] focus:ring-[#FF6F61] focus:border-[#FF6F61] flex-1"
-              placeholder="长度限制6-18个字符串"
+              placeholder="name@example.com"
             />
           </div>
           <div className="mb-6 flex items-center gap-2">
@@ -120,19 +109,23 @@ export default function UserLoginPage() {
             </Button>
             <a href="/user/forgot-password" className="text-[#FF6F61] text-sm hover:underline whitespace-nowrap">忘记密码</a>
           </div>
-          <div className="mt-4 flex justify-between" style={{ display: 'none' }}>
-            <a 
-              href="https://api.efortunetell.blog/api/auth/google" 
-              className="inline-block bg-[#FF6F61] hover:bg-[#ff8a75] text-white py-2 px-4 rounded"
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <Button
+              type="button"
+              className="bg-gray-900 hover:bg-black text-white border-none"
+              disabled={isLoading}
+              onClick={() => handleOAuth('google')}
             >
-              使用Google登录
-            </a>
-            <a 
-              href="https://api.efortunetell.blog/api/auth/github" 
-              className="inline-block bg-[#FF6F61] hover:bg-[#ff8a75] text-white py-2 px-4 rounded"
+              Google
+            </Button>
+            <Button
+              type="button"
+              className="bg-gray-900 hover:bg-black text-white border-none"
+              disabled={isLoading}
+              onClick={() => handleOAuth('github')}
             >
-              使用GitHub登录
-            </a>
+              GitHub
+            </Button>
           </div>
         </form>
       </div>

@@ -6,7 +6,7 @@ import { Menu } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AdminSidebarProps {
-  activeItem: 'articles' | 'comments' | 'appointments' | 'images' | 'clean-images';
+  activeItem: 'articles' | 'appointments';
 }
 
 export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
@@ -51,28 +51,10 @@ export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
           {t('common.articles')}
         </Button>
         <Button
-          className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'comments' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
-          onClick={() => { router.push('/admin/comments'); setSidebarOpen(false); }}
-        >
-          {t('common.comments')}
-        </Button>
-        <Button
           className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'appointments' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
           onClick={() => { router.push('/admin/appointments'); setSidebarOpen(false); }}
         >
           {t('common.appointments')}
-        </Button>
-        <Button
-          className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'images' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
-          onClick={() => { router.push('/admin/images'); setSidebarOpen(false); }}
-        >
-          {t('admin.sidebar.images')}
-        </Button>
-        <Button
-          className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'clean-images' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
-          onClick={() => { router.push('/admin/clean-images'); setSidebarOpen(false); }}
-        >
-          🧹 图片清理
         </Button>
         
         <div className="mt-auto">

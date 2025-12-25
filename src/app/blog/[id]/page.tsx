@@ -1,86 +1,30 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { API_BASE_URL } from '@/config/api';
 import { ArrowLeft } from 'lucide-react';
-import BlogDetails from '@/components/blog/BlogDetails';
+import BlogDetails, { BlogArticle } from '@/components/blog/BlogDetails';
 import { Metadata } from 'next';
 import Script from 'next/script';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 interface BlogDetailPageProps {
   params: Promise<{ id: string }>
 }
 
-// 文章接口定义
-export interface Article {
-  _id: string;
-  title: string;
-  slug: string;
-  summary: string;
-  content: string;
-  category: string;
-  tags: string[];
-  author: {
-    _id: string;
-    username: string;
-    avatar?: string;
-  };
-  publishedAt: string;
-  createdAt: string;
-  updatedAt: string;
-  views: number;
-  likes: number;
-  bookmarks: number;
-  comments: CommentType[];
-  commentsCount: number;
-  coverImage: string;
-  coverSettings?: {
-    scale: number;
-    positionX: number;
-    positionY: number;
-  };
-  isPaid: boolean;
-}
-
-export type CommentType = {
-  _id: string;
-  user?: {
-    _id: string;
-    username: string;
-    avatar?: string;
-  };
-  username?: string; // 后端有时直接返回username字段
-  content: string;
-  date?: string;
-  createdAt?: string; // 后端返回的创建时间字段
-  replies?: CommentType[];
-};
-
 // 生成页面元数据
 export async function generateMetadata({ params }: BlogDetailPageProps): Promise<Metadata> {
   try {
     const { id } = await params;
-    const response = await fetch(`${API_BASE_URL}/api/articles/${id}`, { 
-      cache: 'no-store',
-      headers: {
-        'Cache-Control': 'no-cache',
-      }
-    });
-    
-    if (!response.ok) {
-      return {
-        title: '博客文章',
-        description: '查看我们的博客文章'
-      };
-    }
-    
-    const data = await response.json();
-    
-    if (data.success && data.data) {
-      const article = data.data;
+    const supabase = await createSupabaseServerClient();
+    const { data: article } = await supabase
+      .from('articles')
+      .select('id,title,summary,tags,cover_image_url,created_at')
+      .eq('id', id)
+      .maybeSingle();
 
+    if (article) {
       const baseUrl = 'https://efortunetell.blog';
-      const canonicalUrl = `${baseUrl}/blog/${article._id}`;
-      const imageUrl = article.coverImage?.startsWith('http') ? article.coverImage : `${baseUrl}${article.coverImage}`;
+      const canonicalUrl = `${baseUrl}/blog/${article.id}`;
+      const imageUrl = article.cover_image_url || undefined;
 
       return {
         title: article.title,
@@ -127,39 +71,37 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   
   if (!id) return notFound();
 
-  // 在服务器组件中获取文章数据
-  let article: Article | null = null;
+  let article: BlogArticle | null = null;
   let error: string | null = null;
   
   try {
-    console.log('🔍 [页面组件] 开始获取文章数据, ID:', id);
-    const response = await fetch(`${API_BASE_URL}/api/articles/${id}`, { 
-      cache: 'no-store',
-      headers: {
-        'Cache-Control': 'no-cache',
-      }
-    });
-    
-    console.log('🔍 [页面组件] API响应状态:', response.status);
-    
-    if (!response.ok) {
-      throw new Error(`获取文章失败: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    console.log('🔍 [页面组件] API返回数据:', JSON.stringify(data, null, 2));
-    
-    if (data.success && data.data) {
-      article = data.data;
-      console.log('🔍 [页面组件] 文章数据设置成功:', {
-        title: article?.title || '',
-        contentLength: article?.content?.length || 0,
-        coverImage: article?.coverImage || '',
-        contentPreview: article?.content?.substring(0, 100) || ''
-      });
-    } else {
-      throw new Error('获取文章数据格式错误');
-    }
+    const supabase = await createSupabaseServerClient();
+
+    const { data: row, error: fetchError } = await supabase
+      .from('articles')
+      .select('id,title,summary,content_html,category,tags,cover_image_url,created_at,author_id')
+      .eq('id', id)
+      .maybeSingle();
+    if (fetchError) throw fetchError;
+    if (!row) return notFound();
+
+    const { data: author } = await supabase
+      .from('profiles')
+      .select('display_name')
+      .eq('id', row.author_id)
+      .maybeSingle();
+
+    article = {
+      id: row.id,
+      title: row.title,
+      summary: row.summary,
+      content_html: row.content_html,
+      category: row.category,
+      tags: row.tags || [],
+      cover_image_url: row.cover_image_url,
+      created_at: row.created_at,
+      author_display_name: author?.display_name ?? null,
+    };
   } catch (err) {
     console.error('获取文章详情错误:', err);
     error = err instanceof Error ? err.message : '获取文章详情失败，请稍后重试';
@@ -171,16 +113,16 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     '@type': 'Article',
     headline: article?.title,
     description: article?.summary,
-    image: article?.coverImage ? [article.coverImage] : undefined,
+    image: article?.cover_image_url ? [article.cover_image_url] : undefined,
     author: {
       '@type': 'Person',
-      name: article?.author?.username,
+      name: article?.author_display_name,
     },
-    datePublished: article?.publishedAt || article?.createdAt,
-    dateModified: article?.updatedAt,
+    datePublished: article?.created_at,
+    dateModified: article?.created_at,
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://efortunetell.blog/blog/${article?._id}`,
+      '@id': `https://efortunetell.blog/blog/${article?.id}`,
     },
   };
 
