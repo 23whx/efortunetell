@@ -14,13 +14,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const canonical = `https://efortunetell.blog/services/${pillar.slug}`;
   return {
-    title: `${pillar.zhTitle} 专题`,
-    description: pillar.zhDesc,
+    title: `${pillar.enTitle} Pillar Page`,
+    description: pillar.enDesc,
     keywords: pillar.keywords,
     alternates: { canonical },
     openGraph: {
-      title: `${pillar.zhTitle} | ${pillar.enTitle}`,
-      description: pillar.zhDesc,
+      title: `${pillar.enTitle} Pillar Page`,
+      description: pillar.enDesc,
       url: canonical,
       type: 'website',
       images: [{ url: '/icon.png', width: 512, height: 512, alt: 'Rolley Divination Blog' }],

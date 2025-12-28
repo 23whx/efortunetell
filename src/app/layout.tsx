@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { headers } from "next/headers";
+import { detectLanguageFromHeaders } from "@/lib/i18n/detect";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +47,9 @@ export const metadata: Metadata = {
     languages: {
       "en-US": "/",
       "zh-CN": "/",
+      "ja-JP": "/",
+      "ko-KR": "/",
+      "ar": "/",
     },
   },
   openGraph: {
@@ -66,11 +71,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const h = await headers();
+  const country =
+    h.get("x-vercel-ip-country") ||
+    h.get("cf-ipcountry") ||
+    h.get("x-country") ||
+    null;
+  const acceptLanguage = h.get("accept-language");
+  const detected = detectLanguageFromHeaders({ country, acceptLanguage });
+  const htmlLang = detected.language === 'zh' ? 'zh-CN' : detected.language;
+  const htmlDir = detected.language === 'ar' ? 'rtl' : 'ltr';
+
   const siteUrl = "https://efortunetell.blog";
   const siteName = "Rolley Divination Blog";
 
@@ -95,7 +111,12 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html
+      lang={htmlLang}
+      dir={htmlDir}
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script
           async
@@ -112,7 +133,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased min-h-screen overflow-auto font-sans bg-[#FFFACD] text-gray-900">
-        <LanguageProvider>
+        <LanguageProvider initialLanguage={detected.language}>
           <Navbar />
           <div className="pt-16 md:pt-20">
             {children}

@@ -118,6 +118,52 @@
   --tracking-normal: 0em;
 }
 
+/* =========================================================
+   i18n typography + RTL polish (keep beautiful in all langs)
+   ========================================================= */
+
+/* Readable font stacks per language */
+html[lang^="ja"] body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Yu Gothic", "Meiryo", "Noto Sans JP", sans-serif;
+}
+
+html[lang^="ko"] body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+}
+
+html[lang="ar"] body,
+html[lang^="ar"] body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Noto Naskh Arabic", "Noto Sans Arabic", "Tahoma", sans-serif;
+  letter-spacing: 0;
+}
+
+/* RTL global layout polish */
+html[dir="rtl"] body {
+  direction: rtl;
+}
+
+html[dir="rtl"] .prose,
+html[dir="rtl"] p,
+html[dir="rtl"] h1,
+html[dir="rtl"] h2,
+html[dir="rtl"] h3,
+html[dir="rtl"] h4 {
+  text-align: right;
+}
+
+html[dir="rtl"] input,
+html[dir="rtl"] textarea {
+  text-align: right;
+}
+
+/* Keep code/urls readable in RTL */
+html[dir="rtl"] a,
+html[dir="rtl"] code,
+html[dir="rtl"] pre {
+  direction: ltr;
+  unicode-bidi: plaintext;
+}
+
 .dark {
   --background: oklch(0.14 0.00 285.82);
   --foreground: oklch(0.98 0 0);

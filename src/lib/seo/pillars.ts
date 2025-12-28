@@ -40,7 +40,7 @@ export const PILLARS: Pillar[] = [
     zhDesc: '六壬预测：神将取象、定成败和应期。',
     enDesc: 'Da Liu Ren: 3 transmissions/4 lessons, spirits & generals, timing, and real cases.',
     category: '大六壬',
-    keywords: ['da liu ren', '六壬', '三传四课', '神将', '应期'],
+    keywords: ['da liu ren', '六壬', '神将', '应期'],
   },
   {
     key: 'fengshui',

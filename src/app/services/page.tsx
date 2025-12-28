@@ -3,12 +3,12 @@ import { Metadata } from 'next';
 import { PILLARS } from '@/lib/seo/pillars';
 
 export const metadata: Metadata = {
-  title: '专题',
-  description: '八字 / 阴盘奇门 / 大六壬 / 风水 / 起名 专题文章与学习路线。',
+  title: 'Pillar Pages',
+  description: 'Pillar pages for BaZi, Yin Pan Qi Men Dun Jia, Da Liu Ren, Feng Shui, and Name Selection.',
   alternates: { canonical: 'https://efortunetell.blog/services' },
   openGraph: {
     title: '专题 | Rolley Divination Blog',
-    description: '八字 / 阴盘奇门 / 大六壬 / 风水 / 起名 专题文章与学习路线。',
+    description: 'Pillar pages for BaZi, Yin Pan Qi Men Dun Jia, Da Liu Ren, Feng Shui, and Name Selection.',
     url: 'https://efortunetell.blog/services',
     type: 'website',
     images: [{ url: '/icon.png', width: 512, height: 512, alt: 'Rolley Divination Blog' }],

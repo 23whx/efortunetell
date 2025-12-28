@@ -81,61 +81,36 @@ export async function GET(request: NextRequest) {
       });
 
       // IMPORTANT: never overwrite role here. Admin is managed manually in DB.
-      // We'll insert-if-missing, then update only safe fields.
-      const insertPayload = {
+      // Use upsert without role: existing role remains unchanged; missing row uses DB default.
+      const upsertPayload = {
         id: user.id,
         display_name: displayName,
         avatar_url: avatarUrl,
       };
 
-      const { error: insertError } = await authed
+      const { error: writeErr } = await authed
         .from('profiles')
-        .insert(insertPayload, { ignoreDuplicates: true });
-
-      const { error: updateError } = await authed
-        .from('profiles')
-        .update({ display_name: displayName, avatar_url: avatarUrl })
-        .eq('id', user.id);
-
-      const writeErr = insertError ?? updateError;
+        .upsert(upsertPayload, { onConflict: 'id' });
 
       if (writeErr) {
         console.error('[auth/callback] profiles write via supabase-js failed:', writeErr);
 
         // Fallback: call PostgREST directly to avoid any client header/session nuance.
         try {
-          // insert if missing (ignore duplicates)
-          const restInsert = await fetch(`${url}/rest/v1/profiles`, {
+          const restRes = await fetch(`${url}/rest/v1/profiles?on_conflict=id`, {
             method: 'POST',
             headers: {
               apikey: anonKey,
               Authorization: `Bearer ${session.access_token}`,
               'Content-Type': 'application/json',
-              Prefer: 'resolution=ignore-duplicates,return=minimal',
+              Prefer: 'resolution=merge-duplicates,return=minimal',
             },
-            body: JSON.stringify(insertPayload),
+            body: JSON.stringify(upsertPayload),
           });
 
-          if (!restInsert.ok && restInsert.status !== 409) {
-            const text = await restInsert.text().catch(() => '');
-            console.error('[auth/callback] profiles insert via REST failed:', restInsert.status, text);
-          }
-
-          // update safe fields
-          const restUpdate = await fetch(`${url}/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}`, {
-            method: 'PATCH',
-            headers: {
-              apikey: anonKey,
-              Authorization: `Bearer ${session.access_token}`,
-              'Content-Type': 'application/json',
-              Prefer: 'return=minimal',
-            },
-            body: JSON.stringify({ display_name: displayName, avatar_url: avatarUrl }),
-          });
-
-          if (!restUpdate.ok) {
-            const text = await restUpdate.text().catch(() => '');
-            console.error('[auth/callback] profiles update via REST failed:', restUpdate.status, text);
+          if (!restRes.ok) {
+            const text = await restRes.text().catch(() => '');
+            console.error('[auth/callback] profiles upsert via REST failed:', restRes.status, text);
           } else {
             console.log('[auth/callback] profiles write via REST OK for user:', user.id);
           }

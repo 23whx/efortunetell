@@ -1,7 +1,6 @@
 'use client';
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-type Language = 'zh' | 'en';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import type { Language } from '@/lib/i18n/detect';
 
 interface LanguageContextType {
   language: Language;
@@ -784,17 +783,64 @@ const translations = {
     'bazi.share.title': 'Bazi Personality Portrait - {title}',
     'bazi.share.copied': 'Share link copied to clipboard!',
     'bazi.share.failed': 'Share failed',
-  }
+  },
+  // Minimal Japanese/Korean/Arabic dictionaries.
+  // Missing keys will fall back to English automatically.
+  ja: {
+    'nav.home': 'ホーム',
+    'nav.blog': 'ブログ',
+    'nav.fortune': '鑑定サービス',
+    'nav.contact': 'お問い合わせ',
+    'nav.login': 'ログイン',
+    'nav.profile': 'プロフィール',
+    'nav.admin': '管理',
+    'common.logout': 'ログアウト',
+    'common.register': '登録',
+    'common.search': '検索',
+    'common.siteTitle': 'Rolley 玄学命理',
+  },
+  ko: {
+    'nav.home': '홈',
+    'nav.blog': '블로그',
+    'nav.fortune': '상담 서비스',
+    'nav.contact': '문의',
+    'nav.login': '로그인',
+    'nav.profile': '프로필',
+    'nav.admin': '관리',
+    'common.logout': '로그아웃',
+    'common.register': '회원가입',
+    'common.search': '검색',
+    'common.siteTitle': 'Rolley 명리 블로그',
+  },
+  ar: {
+    'nav.home': 'الرئيسية',
+    'nav.blog': 'المدونة',
+    'nav.fortune': 'خدمات الاستشارة',
+    'nav.contact': 'تواصل',
+    'nav.login': 'تسجيل الدخول',
+    'nav.profile': 'الملف الشخصي',
+    'nav.admin': 'لوحة الإدارة',
+    'common.logout': 'تسجيل الخروج',
+    'common.register': 'إنشاء حساب',
+    'common.search': 'بحث',
+    'common.siteTitle': 'مدونة Rolley',
+  },
 };
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('zh');
+export function LanguageProvider({
+  children,
+  initialLanguage = 'en',
+}: {
+  children: React.ReactNode;
+  initialLanguage?: Language;
+}) {
+  const [language, setLanguageState] = useState<Language>(initialLanguage);
 
   useEffect(() => {
-    // 从 localStorage 读取语言设置
+    // 从 localStorage 读取语言设置（用户手动选择优先级最高）
     if (typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('language') as Language;
-      if (savedLanguage && (savedLanguage === 'zh' || savedLanguage === 'en')) {
+      if (savedLanguage && ['zh', 'en', 'ja', 'ko', 'ar'].includes(savedLanguage)) {
         setLanguageState(savedLanguage);
       }
     }
@@ -807,9 +853,18 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const t = (key: string): string => {
-    return (translations[language] as Record<string, string>)[key] || key;
-  };
+  const t = useMemo(() => {
+    const dict = (translations as any)[language] as Record<string, string> | undefined;
+    const enDict = (translations as any).en as Record<string, string> | undefined;
+    return (key: string) => dict?.[key] ?? enDict?.[key] ?? key;
+  }, [language]);
+
+  // Sync html lang + dir (Arabic RTL)
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.lang = language === 'zh' ? 'zh-CN' : language;
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+  }, [language]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
