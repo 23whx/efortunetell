@@ -28,17 +28,9 @@ export function createSupabaseBrowserClient() {
     return out;
   };
 
-  const cookieOptionsToString = (
-    options?: {
-      domain?: string;
-      expires?: Date | string;
-      httpOnly?: boolean; // ignored in browser
-      maxAge?: number;
-      path?: string;
-      sameSite?: 'lax' | 'strict' | 'none';
-      secure?: boolean;
-    },
-  ) => {
+  // @supabase/ssr passes `options` typed as cookie serialize options; in some versions `sameSite`
+  // can be boolean (e.g. false). We normalize loosely for browser `document.cookie`.
+  const cookieOptionsToString = (options?: any) => {
     if (!options) return 'Path=/';
     const parts: string[] = [];
     parts.push(`Path=${options.path ?? '/'}`);
@@ -49,7 +41,10 @@ export function createSupabaseBrowserClient() {
         typeof options.expires === 'string' ? new Date(options.expires) : options.expires;
       if (!Number.isNaN(exp.getTime())) parts.push(`Expires=${exp.toUTCString()}`);
     }
-    if (options.sameSite) parts.push(`SameSite=${options.sameSite[0].toUpperCase()}${options.sameSite.slice(1)}`);
+    const ss = options.sameSite;
+    if (ss === 'lax' || ss === 'strict' || ss === 'none') {
+      parts.push(`SameSite=${ss[0].toUpperCase()}${ss.slice(1)}`);
+    }
     if (options.secure) parts.push('Secure');
     // httpOnly cannot be set via document.cookie; ignore.
     return parts.join('; ');

@@ -199,50 +199,64 @@ export default function BlogPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="sticky top-[72px] md:top-[88px] z-20 bg-[#faf9f6]/80 backdrop-blur-xl border-y border-gray-100 py-4 mb-8">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 flex flex-col md:flex-row gap-4 justify-between items-center">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar w-full md:w-auto">
-            {categories.map((category) => {
-              const isActive = (category === t('common.all') && selectedDisplayCategory === null) || selectedDisplayCategory === category;
-              return (
-                <button
-                  key={category}
-                  onClick={() => handleCategoryClick(category)}
-                  className={`shrink-0 px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${
-                    isActive 
-                    ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' 
-                    : 'bg-white text-gray-500 border border-gray-100 hover:border-[#FF6F61]/30 hover:text-gray-900'
-                  }`}
+      <div className="sticky top-[72px] md:top-[88px] z-20 bg-[#faf9f6]/90 backdrop-blur-md border-y border-gray-100 py-3 mb-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+            {/* Category Scrolling Area with Fade Masks */}
+            <div className="relative w-full md:w-auto flex-1 max-w-4xl overflow-hidden group">
+              {/* Left Fade Mask */}
+              <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#faf9f6] to-transparent z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
+              
+              <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide py-1 px-1">
+                {categories.map((category) => {
+                  const isActive = (category === t('common.all') && selectedDisplayCategory === null) || selectedDisplayCategory === category;
+                  return (
+                    <button
+                      key={category}
+                      onClick={() => handleCategoryClick(category)}
+                      className={`shrink-0 px-6 py-2 rounded-full text-sm font-black transition-all duration-500 ease-out ${
+                        isActive 
+                        ? 'bg-[#FF6F61] text-white shadow-[0_8px_20px_-6px_rgba(255,111,97,0.45)] scale-105' 
+                        : 'bg-white text-gray-500 border border-gray-100 hover:border-[#FF6F61]/30 hover:text-[#FF6F61] hover:shadow-md active:scale-95'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  );
+                })}
+                
+                {/* Internal Divider */}
+                <div className="w-px h-6 bg-gray-200 shrink-0 mx-2" />
+                
+                <Link
+                  href="/services"
+                  className="shrink-0 px-6 py-2 rounded-full bg-[#ffb347]/10 text-[#ffb347] border border-[#ffb347]/20 font-black text-sm hover:bg-[#ffb347] hover:text-white transition-all duration-500"
                 >
-                  {category}
-                </button>
-              );
-            })}
-          </div>
-          
-          <div className="relative group min-w-[140px] w-full md:w-auto">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'date' | 'likes' | 'bookmarks')}
-              className="appearance-none w-full bg-white text-gray-700 font-bold border border-gray-100 rounded-full px-6 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6F61]/20 cursor-pointer shadow-sm hover:shadow-md transition-all"
-            >
-              <option value="date">{t('sort.byDate')}</option>
-              <option value="likes">{t('sort.byLikes')}</option>
-              <option value="bookmarks">{t('sort.byBookmarks')}</option>
-            </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-              <div className="w-1 h-1 bg-gray-400 rounded-full mb-0.5" />
-              <div className="w-1 h-1 bg-gray-400 rounded-full" />
-            </div>
-          </div>
+                  {t('nav.services')} →
+                </Link>
+              </div>
 
-          <div className="w-full md:w-auto flex justify-end">
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-gray-100 text-gray-600 font-bold text-sm hover:border-[#FF6F61]/30 hover:text-[#FF6F61] transition-all"
-            >
-              专题入口 →
-            </Link>
+              {/* Right Fade Mask */}
+              <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#faf9f6] to-transparent z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            
+            <div className="flex items-center gap-4 w-full md:w-auto shrink-0">
+              <div className="relative group min-w-[160px] w-full md:w-auto">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'date' | 'likes' | 'bookmarks')}
+                  className="appearance-none w-full bg-white text-gray-700 font-bold border border-gray-100 rounded-full pl-6 pr-12 py-2.5 text-sm focus:outline-none focus:border-[#FF6F61] cursor-pointer shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <option value="date">{t('sort.byDate')}</option>
+                  <option value="likes">{t('sort.byLikes')}</option>
+                  <option value="bookmarks">{t('sort.byBookmarks')}</option>
+                </select>
+                <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none flex flex-col gap-0.5 opacity-40 group-hover:opacity-100 transition-opacity">
+                  <div className="w-1.5 h-1.5 bg-[#FF6F61] rounded-full" />
+                  <div className="w-1.5 h-1.5 bg-gray-300 rounded-full" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
