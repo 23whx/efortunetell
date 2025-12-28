@@ -101,4 +101,41 @@ export async function attachDraftImagesToArticle(draftKey: string, articleId: st
   if (error) throw error;
 }
 
+/**
+ * 根据 Public URL 删除图片（同步从数据库和存储中删除）
+ */
+export async function deleteArticleImageByUrl(publicUrl: string) {
+  const supabase = createSupabaseBrowserClient();
+
+  // 1. 查找记录获取存储路径
+  const { data: record, error: findErr } = await supabase
+    .from('article_images')
+    .select('storage_path, storage_bucket')
+    .eq('public_url', publicUrl)
+    .maybeSingle();
+
+  if (findErr || !record) return;
+
+  // 2. 从 Storage 中删除物理文件
+  const { error: storageErr } = await supabase.storage
+    .from(record.storage_bucket)
+    .remove([record.storage_path]);
+
+  if (storageErr) {
+    console.error('⚠️ [Storage] 文件删除失败:', storageErr);
+  }
+
+  // 3. 从数据库中删除记录
+  const { error: dbErr } = await supabase
+    .from('article_images')
+    .delete()
+    .eq('public_url', publicUrl);
+
+  if (dbErr) {
+    console.error('⚠️ [DB] 记录删除失败:', dbErr);
+  } else {
+    console.log('✅ 图片已从云端彻底清理:', publicUrl);
+  }
+}
+
 

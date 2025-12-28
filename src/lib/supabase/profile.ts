@@ -10,23 +10,40 @@ export type ProfileRow = {
   created_at: string;
 };
 
-export async function getMyProfile(supabase: SupabaseClient) {
-  const { data: auth } = await supabase.auth.getUser();
-  const user = auth.user;
-  if (!user) return { user: null, profile: null, role: null as ProfileRole | null };
-
+export async function getProfileById(supabase: SupabaseClient, userId: string) {
   const { data: profile, error } = await supabase
     .from('profiles')
     .select('*')
-    .eq('id', user.id)
+    .eq('id', userId)
     .maybeSingle();
 
   if (error) throw error;
 
   return {
-    user,
     profile: profile as ProfileRow | null,
     role: (profile?.role as ProfileRole | null) ?? null,
+  };
+}
+
+export async function getMyProfile(supabase: SupabaseClient) {
+  // Prefer local session (no network request). getUser() hits /auth/v1/user and may fail in some networks.
+  const { data: sessionData } = await supabase.auth.getSession();
+  const user = sessionData.session?.user ?? null;
+  if (!user) {
+    // Fallback only when session is absent (e.g. first load in some edge cases)
+    const { data: auth } = await supabase.auth.getUser();
+    const authUser = auth.user ?? null;
+    if (!authUser) return { user: null, profile: null, role: null as ProfileRole | null };
+    const { profile, role } = await getProfileById(supabase, authUser.id);
+    return { user: authUser, profile, role };
+  }
+
+  const { profile, role } = await getProfileById(supabase, user.id);
+
+  return {
+    user,
+    profile,
+    role,
   };
 }
 

@@ -62,7 +62,7 @@ function SearchResults() {
           }
           throw error;
         }
-
+        
         const authorIds = Array.from(new Set((data || []).map((a) => a.author_id).filter(Boolean)));
         const authorMap = new Map<string, string>();
         if (authorIds.length > 0) {

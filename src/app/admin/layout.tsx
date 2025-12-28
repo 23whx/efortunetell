@@ -23,9 +23,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="pt-20">{children}</div>
-    </>
+    <div className="min-h-screen bg-[#faf9f6]">
+      {children}
+    </div>
   );
 }

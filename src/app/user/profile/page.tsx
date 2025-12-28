@@ -41,7 +41,7 @@ export default function UserProfilePage() {
 
       if (!error) {
         setBookings((rows || []) as BookingRow[]);
-      }
+    }
       setLoading(false);
     };
 
@@ -77,7 +77,7 @@ export default function UserProfilePage() {
         <div className="bg-white rounded-lg shadow-md border border-[#FF6F61] p-6">
           <h2 className="text-xl font-bold text-[#FF6F61] mb-4">我的提交记录</h2>
 
-          {loading ? (
+              {loading ? (
             <div className="text-gray-500">加载中...</div>
           ) : bookings.length === 0 ? (
             <div className="text-gray-500">暂无记录</div>
@@ -88,19 +88,19 @@ export default function UserProfilePage() {
                   <div className="flex justify-between flex-wrap gap-2">
                     <div className="font-semibold text-gray-800">{b.service_type}</div>
                     <div className="text-sm text-gray-500">{new Date(b.created_at).toLocaleString()}</div>
-                  </div>
+                </div>
                   <div className="text-sm text-gray-700 mt-2">
                     <div>Email: {b.email}</div>
                     {b.birth_datetime && <div>出生时间: {b.birth_datetime}</div>}
                     {b.notes && <div className="mt-1">说明: {b.notes}</div>}
                     <div className="mt-1">状态: {b.status}</div>
-                  </div>
-                </div>
-              ))}
+            </div>
+                    </div>
+                  ))}
             </div>
           )}
         </div>
       </div>
     </div>
   );
-}
+} 

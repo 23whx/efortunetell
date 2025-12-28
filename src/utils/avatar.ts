@@ -10,29 +10,21 @@ interface User {
 }
 
 export const getAvatarPath = (user: User): string => {
-  console.log('🖼️ [getAvatarPath] 输入用户信息:', user);
-  
   if (user.avatar) {
-    console.log('🖼️ [getAvatarPath] 用户有自定义头像:', user.avatar);
     // 如果是完整的URL，直接返回
     if (user.avatar.startsWith('http://') || user.avatar.startsWith('https://')) {
-      console.log('🖼️ [getAvatarPath] 返回完整URL:', user.avatar);
       return user.avatar;
     }
     // 确保路径以 / 开头
-    const avatarPath = user.avatar.startsWith('/') ? user.avatar : `/${user.avatar}`;
-    console.log('🖼️ [getAvatarPath] 返回头像路径:', avatarPath);
-    return avatarPath;
+    return user.avatar.startsWith('/') ? user.avatar : `/${user.avatar}`;
   }
   
   // 根据用户角色返回对应的默认头像
   if (user.role === 'admin') {
-    console.log('🖼️ [getAvatarPath] 返回admin头像: /admin_img.jpg');
     return '/admin_img.jpg';
   }
   
   // 普通用户默认头像
-  console.log('🖼️ [getAvatarPath] 返回普通用户头像: /user_img.png');
   return '/user_img.png';
 };
 
@@ -56,6 +48,5 @@ export const getDisplayName = (user: User): string => {
     displayName += ' ⭐';
   }
   
-  console.log('👤 [getDisplayName] 用户:', user.username, '显示名称:', displayName);
   return displayName;
 }; 

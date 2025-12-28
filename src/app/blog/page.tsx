@@ -18,6 +18,7 @@ interface Article {
   category: string | null;
   tags: string[];
   cover_image_url: string | null;
+  cover_image_pos: { x: number; y: number; zoom: number } | null;
   created_at: string;
   author_display_name: string | null;
 }
@@ -36,6 +37,8 @@ export default function BlogPage() {
     [t('service.bazi')]: '八字',
     [t('service.liuren')]: '大六壬', 
     [t('service.qimen')]: '阴盘奇门',
+    [t('service.naming')]: '起名',
+    ['风水']: '风水',
     [t('category.plumFortune')]: '梅花易数',
     [t('category.discussion')]: '杂谈',
     [t('category.other')]: '其他'
@@ -46,6 +49,8 @@ export default function BlogPage() {
     t('service.bazi'), 
     t('service.liuren'), 
     t('service.qimen'), 
+    '风水',
+    t('service.naming'),
     t('category.plumFortune'),
     t('category.discussion'), 
     t('category.other')
@@ -71,14 +76,14 @@ export default function BlogPage() {
 
         let q = supabase
           .from('articles')
-          .select('id,title,slug,summary,content_html,category,tags,cover_image_url,created_at,author_id')
+          .select('id,title,slug,summary,content_html,category,tags,cover_image_url,cover_image_pos,created_at,author_id')
           .eq('status', 'published')
           .limit(100);
 
         if (selectedCategory) {
           q = q.eq('category', selectedCategory);
         }
-
+        
         const { data, error: qErr } = await q;
         if (qErr) {
           // Common fresh-project case: schema not applied yet.
@@ -114,6 +119,7 @@ export default function BlogPage() {
           category: a.category,
           tags: a.tags || [],
           cover_image_url: a.cover_image_url,
+          cover_image_pos: a.cover_image_pos,
           created_at: a.created_at,
           author_display_name: authorMap.get(a.author_id) || null,
         }));
@@ -167,132 +173,169 @@ export default function BlogPage() {
 
   if (!isClient) {
     return (
-      <div className="min-h-screen font-sans bg-[#FFFACD] flex justify-center items-center">
-        <div className="w-12 h-12 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-[#faf9f6] flex justify-center items-center">
+        <div className="w-12 h-12 border-4 border-[#FF6F61]/20 border-t-[#FF6F61] rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen font-sans bg-[#FFFACD]">
-      {/* Categories and Sort */}
-      <div className="sticky top-16 md:top-20 z-10 bg-[#FFFACD] py-3 md:py-4 px-4 md:px-6 border-b border-gray-200">
-        <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
-          {/* 分类按钮 - 移动端滚动，桌面端正常显示 */}
-          <div className="overflow-x-auto scrollbar-hide">
-            <div className="flex gap-2 md:gap-4 pb-2 md:pb-0 min-w-max">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant="custom"
-                  className={`shrink-0 rounded-lg font-medium px-3 py-2 md:px-4 text-sm md:text-base border border-[#FF6F61] text-[#FF6F61] hover:shadow-lg transition-all ${(category === t('common.all') && selectedDisplayCategory === null) || selectedDisplayCategory === category ? 'bg-[#FF6F61] text-white' : 'bg-transparent'}`}
-                  onClick={() => handleCategoryClick(category)}
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-          </div>
-          
-          {/* 排序选择器 */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'date' | 'likes' | 'bookmarks')}
-            className="bg-[#FFFACD] text-[#FF6F61] border border-[#FF6F61] rounded px-3 py-2 text-sm md:text-base focus:outline-none focus:ring-1 focus:ring-[#FF6F61] hover:bg-[#ffede3] transition-colors shrink-0"
-          >
-            <option value="date">{t('sort.byDate')}</option>
-            <option value="likes">{t('sort.byLikes')}</option>
-            <option value="bookmarks">{t('sort.byBookmarks')}</option>
-          </select>
+    <div className="min-h-screen bg-[#faf9f6] pb-20">
+      {/* Hero Section */}
+      <div className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-4 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#FF6F61]/5 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-[#ffb347]/5 rounded-full blur-[100px]" />
+        </div>
+        
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-tight">
+            探索 <span className="text-[#FF6F61]">东方智慧</span> <br className="hidden md:block" /> 与命运的奥秘
+          </h1>
+          <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
+            在这里，我们研习八字、奇门、六壬，<br className="md:hidden" /> 以古人之智，启今日之程。
+          </p>
         </div>
       </div>
 
-      {/* Articles */}
-      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8">
-        {loading && (
-          <div className="flex justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin"></div>
+      {/* Filter Bar */}
+      <div className="sticky top-[72px] md:top-[88px] z-20 bg-[#faf9f6]/80 backdrop-blur-xl border-y border-gray-100 py-4 mb-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar w-full md:w-auto">
+            {categories.map((category) => {
+              const isActive = (category === t('common.all') && selectedDisplayCategory === null) || selectedDisplayCategory === category;
+              return (
+                <button
+                  key={category}
+                  onClick={() => handleCategoryClick(category)}
+                  className={`shrink-0 px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${
+                    isActive 
+                    ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' 
+                    : 'bg-white text-gray-500 border border-gray-100 hover:border-[#FF6F61]/30 hover:text-gray-900'
+                  }`}
+                >
+                  {category}
+                </button>
+              );
+            })}
           </div>
-        )}
-        
-        {error && (
-          <div className="bg-red-100 text-red-700 p-4 rounded text-center my-10">
+          
+          <div className="relative group min-w-[140px] w-full md:w-auto">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'date' | 'likes' | 'bookmarks')}
+              className="appearance-none w-full bg-white text-gray-700 font-bold border border-gray-100 rounded-full px-6 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6F61]/20 cursor-pointer shadow-sm hover:shadow-md transition-all"
+            >
+              <option value="date">{t('sort.byDate')}</option>
+              <option value="likes">{t('sort.byLikes')}</option>
+              <option value="bookmarks">{t('sort.byBookmarks')}</option>
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+              <div className="w-1 h-1 bg-gray-400 rounded-full mb-0.5" />
+              <div className="w-1 h-1 bg-gray-400 rounded-full" />
+            </div>
+          </div>
+
+          <div className="w-full md:w-auto flex justify-end">
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-gray-100 text-gray-600 font-bold text-sm hover:border-[#FF6F61]/30 hover:text-[#FF6F61] transition-all"
+            >
+              专题入口 →
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Articles Grid */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[16/10] bg-gray-200 rounded-3xl mb-4" />
+                <div className="h-4 bg-gray-200 rounded-full w-24 mb-3" />
+                <div className="h-6 bg-gray-200 rounded-full w-full mb-2" />
+                <div className="h-6 bg-gray-200 rounded-full w-2/3" />
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 text-red-600 p-8 rounded-3xl text-center font-bold">
             {t('blog.error')}: {error}
           </div>
-        )}
-
-        {!loading && !error && setupHint && (
-          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded my-6">
-            {setupHint}
+        ) : articles.length === 0 ? (
+          <div className="text-center py-32 bg-white rounded-[40px] border border-dashed border-gray-200">
+            <p className="text-gray-400 text-xl font-medium">{t('blog.noArticles')}</p>
           </div>
-        )}
-        
-        {!loading && !error && articles.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-lg">{t('blog.noArticles')}</p>
-          </div>
-        )}
-        
-        {!loading && !error && articles.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
             {articles
               .slice()
               .sort((a, b) => {
                 if (sortBy === 'date') {
                   return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-                } else if (sortBy === 'likes') {
-                  return 0;
-                } else {
-                  return 0;
                 }
+                return 0;
               })
               .map((article, index) => (
                 <Link
                   href={`/blog/${article.id}`}
                   key={article.id}
-                  className="block bg-[#FFFACD] text-[hsl(0_0%_14.5%)] rounded-lg overflow-hidden hover:shadow-md hover:shadow-[#FF6F61]/20 transition-all duration-300 min-h-[280px] md:h-64 flex flex-col border border-[#FF6F61]"
+                  className="group block"
                 >
-                  <div className="h-24 md:h-20 relative">
-                    <Image
-                      src={getArticleImageSrc(article)}
-                      alt={article.title}
-                      fill
-                      priority={index < 6}
-                      className="object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/images/default-image.svg';
-                        target.alt = '图片加载失败';
+                  <div className="relative aspect-[16/10] rounded-[32px] overflow-hidden mb-6 shadow-sm group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
+                    <div 
+                      className="absolute inset-0 transition-transform duration-700 group-hover:scale-110"
+                      style={{
+                        transformOrigin: article.cover_image_pos ? `${article.cover_image_pos.x}% ${article.cover_image_pos.y}%` : 'center',
+                        transform: article.cover_image_pos ? `scale(${article.cover_image_pos.zoom})` : undefined
                       }}
-                      unoptimized={true}
-                    />
-                  </div>
-                  <div className="p-3 md:p-4 flex flex-col flex-grow">
-                    <span className="text-xs font-medium text-[#FF6F61]">{article.category || ''}</span>
-                    <h2 className="text-base md:text-lg font-semibold mt-1 mb-2 line-clamp-2">{article.title}</h2>
-                    <p className="text-[hsl(0_0%_55.6%)] text-sm mb-3 line-clamp-2 md:line-clamp-2 flex-grow">{article.summary || ''}</p>
-
-                    <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center text-xs text-[#FF6F61] mt-auto pt-2 border-t border-[#FF6F61]">
-                      <div className="flex items-center space-x-2 truncate">
-                        <div className="w-4 h-4 md:w-5 md:h-5 rounded-full flex-shrink-0 overflow-hidden">
-                          <Image
-                            src="/user_img.png"
-                            alt="Author avatar"
-                            width={20}
-                            height={20}
-                            className="w-full h-full object-cover"
-                            unoptimized={true}
-                          />
-                        </div>
-                        <span className="truncate text-xs md:text-sm">
-                          {article.author_display_name || 'Rollkey'} · {formatDate(article.created_at)}
+                    >
+                      <Image
+                        src={getArticleImageSrc(article)}
+                        alt={article.title}
+                        fill
+                        priority={index < 3}
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                    {article.category && (
+                      <div className="absolute top-4 left-4">
+                        <span className="px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-xs font-black text-[#FF6F61] shadow-sm uppercase tracking-wider">
+                          {article.category}
                         </span>
                       </div>
-                      <div className="flex gap-3 shrink-0 justify-start md:justify-end">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                          <span className="text-xs">发布</span>
-                        </div>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-3 px-2">
+                    <h2 className="text-2xl font-black text-gray-900 group-hover:text-[#FF6F61] transition-colors line-clamp-2 leading-[1.3] tracking-tight">
+                      {article.title}
+                    </h2>
+                    <p className="text-gray-500 line-clamp-2 text-sm leading-relaxed font-medium">
+                      {article.summary || article.content_html.replace(/<[^>]*>/g, '').slice(0, 100)}
+                    </p>
+                    <div className="flex items-center gap-3 pt-2">
+                      <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm flex-shrink-0">
+                        <Image
+                          src="/user_img.png"
+                          alt="Author"
+                          width={32}
+                          height={32}
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-gray-900 leading-none">
+                          {article.author_display_name || 'Rollkey'}
+                        </span>
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                          {formatDate(article.created_at)}
+                        </span>
                       </div>
                     </div>
                   </div>

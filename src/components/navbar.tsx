@@ -6,11 +6,11 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getAvatarPath } from '@/utils/avatar';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
-import { getMyProfile } from '@/lib/supabase/profile';
+import { getProfileById } from '@/lib/supabase/profile';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -18,41 +18,80 @@ export default function Navbar() {
   const { t } = useLanguage();
   const [user, setUser] = useState<{ email: string } | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [roleLoading, setRoleLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const lastKnownAdminRef = useRef<boolean>(false);
 
   // Sync Supabase session + role
   useEffect(() => {
     const supabase = createSupabaseBrowserClient();
 
-    const refresh = async () => {
-      const { data } = await supabase.auth.getUser();
-      const authUser = data.user;
-      if (!authUser) {
+    let cancelled = false;
+
+    const refreshFromSession = async () => {
+      // Prefer local session (no /auth/v1/user network call)
+      const { data: sessionData } = await supabase.auth.getSession();
+      const sessionUser = sessionData.session?.user ?? null;
+
+      if (!sessionUser) {
+        if (cancelled) return;
         setUser(null);
+        setRoleLoading(false);
         setIsAdmin(false);
+        lastKnownAdminRef.current = false;
         return;
       }
 
-      setUser({ email: authUser.email || '' });
+      if (cancelled) return;
+      setUser({ email: sessionUser.email || '' });
+
+      // Role fetch can fail on flaky networks; don't immediately demote UI.
+      setRoleLoading(true);
       try {
-        const { role } = await getMyProfile(supabase);
-        setIsAdmin(role === 'admin');
+        const { role } = await getProfileById(supabase, sessionUser.id);
+        if (cancelled) return;
+        const admin = role === 'admin';
+        setIsAdmin(admin);
+        lastKnownAdminRef.current = admin;
       } catch {
-        setIsAdmin(false);
+        if (cancelled) return;
+        setIsAdmin(lastKnownAdminRef.current);
+      } finally {
+        if (!cancelled) setRoleLoading(false);
       }
     };
+    
+    refreshFromSession();
 
-    refresh();
-
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
-      refresh();
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Session is provided here; avoid extra network calls.
+      if (!session?.user) {
+        setUser(null);
+        setRoleLoading(false);
+        setIsAdmin(false);
+        lastKnownAdminRef.current = false;
+        return;
+      }
+      setUser({ email: session.user.email || '' });
+      setRoleLoading(true);
+      getProfileById(supabase, session.user.id)
+        .then(({ role }) => {
+          const admin = role === 'admin';
+          setIsAdmin(admin);
+          lastKnownAdminRef.current = admin;
+        })
+        .catch(() => {
+          setIsAdmin(lastKnownAdminRef.current);
+        })
+        .finally(() => setRoleLoading(false));
     });
 
     return () => {
+      cancelled = true;
       sub.subscription.unsubscribe();
     };
-  }, [pathname]);
+  }, []); // 只在组件挂载时执行，认证状态变化通过 onAuthStateChange 监听
 
   // 关闭移动端菜单当路由变化时
   useEffect(() => {
@@ -89,266 +128,235 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 pt-4 md:pt-6 pb-3 md:pb-4 px-4 shadow-md">
+      <nav className="fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-xl border-b border-gray-100 z-50 py-3 md:py-4 px-4 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 md:gap-4">
-            <Link href="/" className="flex items-center gap-2">
-              <Image
-                src="/icon.png"
-                alt="Rolley Divination Blog Icon"
-                width={28}
-                height={28}
-                className="md:w-8 md:h-8 rounded-full"
-              />
-              <span className="text-lg md:text-xl font-bold text-gray-900 font-sans tracking-widest">
+          <div className="flex items-center gap-2 md:gap-4 group">
+            <Link href="/" className="flex items-center gap-2 transition-transform active:scale-95">
+              <div className="relative w-8 h-8 md:w-10 md:h-10">
+                <Image
+                  src="/icon.png"
+                  alt="Rolley Divination Blog Icon"
+                  fill
+                  className="rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow"
+                />
+              </div>
+              <span className="text-xl md:text-2xl font-black text-gray-900 font-sans tracking-[0.15em] uppercase">
                 {t('common.siteTitle')}
               </span>
             </Link>
           </div>
           
           {/* 桌面端导航 */}
-          <div className="hidden md:flex items-center gap-4">
-            {/* 导航链接，不是管理员时显示 */}
+          <div className="hidden md:flex items-center gap-6">
             {!isAdmin && (
               <>
-                <Link 
-                  href="/" 
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/' || pathname === '/blog' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
-                >
-                  {t('nav.blog')}
-                </Link>
-                <Link 
-                  href="/fortune" 
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/fortune' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
-                >
-                  {t('nav.fortune')}
-                </Link>
-                <form onSubmit={handleSearch} className="relative">
-                  <input 
-                    type="text" 
-                    placeholder={t('common.search') + '...'}
-                    className="bg-gray-100 text-gray-900 px-4 py-2 pl-10 rounded-lg w-64 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary font-sans"
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                  />
-                  <button type="submit" className="absolute left-3 top-2.5 text-gray-400 hover:text-gray-600 transition-colors">
-                    <Search className="w-5 h-5" />
-                  </button>
-                </form>
-              </>
-            )}
-            
-            {/* 管理员登录后显示管理员专有链接 */}
-            {isAdmin && (
-              <>
-                <Link 
-                  href="/admin/dashboard" 
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${pathname === '/admin/dashboard' ? 'bg-[#FF6F61] text-white' : 'text-gray-900 hover:bg-gray-100'}`}
-                >
-                  {t('common.dashboard')}
-                </Link>
-              </>
-            )}
-            
-            {/* 语言切换器 */}
-            <LanguageSwitcher />
-            
-            {/* 登录状态显示区域 */}
-            {isAdmin ? (
-              // 管理员登录后显示
-              <div className="flex items-center gap-2">
-                <Button 
-                  className="bg-[#FF6F61] text-white hover:bg-[#ff8a75] font-sans border-[#FF6F61] border flex items-center gap-1"
-                  onClick={handleAdminLogout}
-                >
-                  <LogOut className="w-4 h-4" />
-                  {t('common.logout')}
-                </Button>
-                <Link href="/admin/dashboard" className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#FF6F61] hover:opacity-80" title={t('nav.admin')}>
-                  <Image
-                    src={getAvatarPath({ username: user?.email || 'admin' })}
-                    alt="Admin Avatar"
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-cover"
-                    unoptimized={true}
-                  />
-                </Link>
-              </div>
-            ) : user ? (
-              // 普通用户登录后显示
-              <div className="flex items-center gap-2">
-                <Button 
-                  className="bg-black text-white hover:bg-gray-800 font-sans border-black border" 
-                  onClick={handleUserLogout}
-                >
-                  {t('common.logout')}
-                </Button>
-                <Link href="/user/profile" className="w-10 h-10 rounded-full overflow-hidden border-2 border-black hover:opacity-80" title={t('nav.profile')}>
-                  <Image
-                    src={getAvatarPath({ username: user.email || 'user' })}
-                    alt="User Avatar"
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-cover"
-                    unoptimized={true}
-                  />
-                </Link>
-              </div>
-            ) : (
-              // 未登录状态显示
-              <>
-                <Link href="/user/login">
-                  <Button className="bg-black text-white hover:bg-gray-800 font-sans border-black border">{t('nav.login')}</Button>
-                </Link>
-                <Link href="/user/register">
-                  <Button className="bg-black text-white hover:bg-gray-800 font-sans border-black border">{t('common.register')}</Button>
-                </Link>
-              </>
-            )}
-          </div>
-          
-          {/* 移动端导航菜单按钮 */}
-          <div className="md:hidden flex items-center gap-2">
-            <Button 
-              className="text-gray-900 hover:bg-gray-100 p-2"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </Button>
-          </div>
-        </div>
-      </nav>
-
-      {/* 移动端全屏菜单覆盖层 */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-white z-40 md:hidden pt-20">
-          <div className="flex flex-col h-full">
-            {/* 搜索栏 */}
-            {!isAdmin && (
-              <div className="p-4 border-b border-gray-200">
-                <form onSubmit={handleSearch} className="relative">
-                  <input 
-                    type="text" 
-                    placeholder={t('common.search') + '...'}
-                    className="w-full bg-gray-100 text-gray-900 px-4 py-3 pl-12 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary font-sans text-lg"
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                  />
-                  <button type="submit" className="absolute left-4 top-3.5 text-gray-400 hover:text-gray-600 transition-colors">
-                    <Search className="w-6 h-6" />
-                  </button>
-                </form>
-              </div>
-            )}
-
-            {/* 导航链接 */}
-            <div className="flex-1 overflow-y-auto">
-              {!isAdmin ? (
-                // 普通导航菜单
-                <div className="space-y-1 p-4">
+                <div className="flex items-center bg-gray-50/50 p-1 rounded-2xl border border-gray-100">
                   <Link 
                     href="/" 
-                    className={`block px-4 py-4 rounded-lg font-medium text-lg transition-colors ${pathname === '/' || pathname === '/blog' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
+                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname === '/' || pathname === '/blog' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
                   >
                     {t('nav.blog')}
                   </Link>
+                  <Link
+                    href="/services"
+                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname.startsWith('/services') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                  >
+                    专题
+                  </Link>
                   <Link 
                     href="/fortune" 
-                    className={`block px-4 py-4 rounded-lg font-medium text-lg transition-colors ${pathname === '/fortune' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
+                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname === '/fortune' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
                   >
                     {t('nav.fortune')}
                   </Link>
-                  <Link 
-                    href="/contact" 
-                    className={`block px-4 py-4 rounded-lg font-medium text-lg transition-colors ${pathname === '/contact' ? 'bg-primary text-primary-foreground' : 'text-gray-900 hover:bg-gray-100'}`}
+                </div>
+
+                <form onSubmit={handleSearch} className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-4 w-4 text-gray-400 group-focus-within:text-[#FF6F61] transition-colors" />
+                  </div>
+                  <input 
+                    type="text" 
+                    placeholder={t('common.search')}
+                    className="bg-gray-50/80 text-gray-900 text-sm pl-10 pr-4 py-2.5 rounded-xl w-48 focus:w-64 border border-transparent focus:border-[#FF6F61]/20 focus:bg-white focus:shadow-lg focus:shadow-[#FF6F61]/5 outline-none transition-all duration-500 font-sans"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                  />
+                </form>
+              </>
+            )}
+            
+            {isAdmin && (
+              <div className="flex items-center bg-gray-50/50 p-1 rounded-2xl border border-gray-100">
+                <Link 
+                  href="/admin/dashboard" 
+                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname.startsWith('/admin') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                >
+                  {t('common.dashboard')}
+                </Link>
+              </div>
+            )}
+            
+            <div className="h-6 w-[1px] bg-gray-200 mx-2" />
+            
+            <LanguageSwitcher />
+            
+            {/* 登录状态显示区域 */}
+            <div className="flex items-center gap-3">
+              {isAdmin ? (
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={handleAdminLogout}
+                    className="text-sm font-medium text-gray-500 hover:text-red-500 transition-colors flex items-center gap-1.5"
                   >
-                    {t('nav.contact')}
+                    <LogOut className="w-4 h-4" />
+                    {t('common.logout')}
+                  </button>
+                  <Link href="/admin/dashboard" className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-tr from-[#FF6F61] to-[#ffb347] rounded-full blur opacity-20 group-hover:opacity-40 transition-opacity" />
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                      <Image
+                        src={getAvatarPath({ username: user?.email || 'admin', role: 'admin' })}
+                        alt="Admin"
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  </Link>
+                </div>
+              ) : user ? (
+                <div className="flex items-center gap-3">
+                  {roleLoading && (
+                    <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">
+                      Syncing...
+                    </span>
+                  )}
+                  <button 
+                    onClick={handleUserLogout}
+                    className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+                  >
+                    {t('common.logout')}
+                  </button>
+                  <Link href="/user/profile" className="relative group">
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm group-hover:shadow-md transition-all">
+                      <Image
+                        src={getAvatarPath({ username: user.email || 'user' })}
+                        alt="User"
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
                   </Link>
                 </div>
               ) : (
-                // 管理员菜单
-                <div className="space-y-1 p-4">
-                  <Link 
-                    href="/admin/dashboard" 
-                    className={`block px-4 py-4 rounded-lg font-medium text-lg transition-colors ${pathname === '/admin/dashboard' ? 'bg-[#FF6F61] text-white' : 'text-gray-900 hover:bg-gray-100'}`}
-                  >
-                    {t('common.dashboard')}
+                <div className="flex items-center gap-2">
+                  <Link href="/user/login">
+                    <Button variant="default" size="sm" className="bg-transparent border-none hover:bg-gray-100 shadow-none">
+                      {t('nav.login')}
+                    </Button>
                   </Link>
-                  <Link 
-                    href="/admin/write" 
-                    className={`block px-4 py-4 rounded-lg font-medium text-lg transition-colors ${pathname === '/admin/write' ? 'bg-[#FF6F61] text-white' : 'text-gray-900 hover:bg-gray-100'}`}
-                  >
-                    写文章
-                  </Link>
-                  <Link 
-                    href="/admin/articles" 
-                    className={`block px-4 py-4 rounded-lg font-medium text-lg transition-colors ${pathname === '/admin/articles' ? 'bg-[#FF6F61] text-white' : 'text-gray-900 hover:bg-gray-100'}`}
-                  >
-                    管理文章
+                  <Link href="/user/register">
+                    <Button size="sm">
+                      {t('common.register')}
+                    </Button>
                   </Link>
                 </div>
               )}
             </div>
+          </div>
+          
+          {/* 移动端菜单按钮 */}
+          <button 
+            className="md:hidden p-2.5 rounded-xl bg-gray-50 border border-gray-100 text-gray-900 active:scale-90 transition-transform"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </nav>
 
-            {/* 底部区域：语言切换和用户信息 */}
-            <div className="border-t border-gray-200 p-4 space-y-4">
-              {/* 语言切换器 */}
+      {/* 移动端菜单 */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 md:hidden pt-24 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="flex flex-col h-full px-6">
+            {!isAdmin && (
+              <form onSubmit={handleSearch} className="mb-8">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input 
+                    type="text" 
+                    placeholder={t('common.search')}
+                    className="w-full bg-gray-100/50 text-gray-900 px-12 py-4 rounded-2xl border border-gray-100 focus:bg-white focus:shadow-lg focus:border-[#FF6F61]/20 outline-none transition-all text-lg"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                  />
+                </div>
+              </form>
+            )}
+
+            <div className="flex flex-col gap-2">
+              <Link 
+                href="/" 
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname === '/' || pathname === '/blog' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+              >
+                {t('nav.blog')}
+              </Link>
+              <Link
+                href="/services"
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname.startsWith('/services') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+              >
+                专题
+              </Link>
+              <Link 
+                href="/fortune" 
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname === '/fortune' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+              >
+                {t('nav.fortune')}
+              </Link>
+              {isAdmin && (
+                <Link 
+                  href="/admin/dashboard" 
+                  className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname.startsWith('/admin') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                >
+                  {t('common.dashboard')}
+                </Link>
+              )}
+            </div>
+
+            <div className="mt-auto mb-12 space-y-6">
               <div className="flex justify-center">
                 <LanguageSwitcher />
               </div>
-
-              {/* 用户信息和登录/注销按钮 */}
-              {isAdmin ? (
-                // 管理员登录后显示
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Image
-                      src={getAvatarPath({ username: user?.email || 'admin' })}
-                      alt="Admin Avatar"
-                      width={40}
-                      height={40}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-[#FF6F61]"
-                      unoptimized={true}
-                    />
+              
+              {user ? (
+                <div className="bg-gray-50/50 p-6 rounded-3xl border border-gray-100 space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                      <Image
+                        src={getAvatarPath({ username: user.email || 'user', role: isAdmin ? 'admin' : 'user' })}
+                        alt="Profile"
+                        width={56}
+                        height={56}
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
                     <div>
-                      <p className="font-medium text-gray-900">{user?.email || 'admin'}</p>
-                      <p className="text-sm text-gray-500">{t('nav.admin')}</p>
+                      <p className="font-bold text-gray-900">{user.email?.split('@')[0]}</p>
+                      <p className="text-sm text-gray-500 uppercase tracking-tighter font-semibold">{isAdmin ? t('nav.admin') : t('nav.user')}</p>
                     </div>
                   </div>
-                  <Button 
-                    className="w-full bg-[#FF6F61] text-white hover:bg-[#ff8a75] font-sans border-[#FF6F61] border flex items-center justify-center gap-2 py-3 text-lg"
-                    onClick={handleAdminLogout}
-                  >
-                    <LogOut className="w-5 h-5" />
-                    {t('common.logout')}
-                  </Button>
-                </div>
-              ) : user ? (
-                // 普通用户登录后显示
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Image
-                      src={getAvatarPath({ username: user.email || 'user' })}
-                      alt="User Avatar"
-                      width={40}
-                      height={40}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-black"
-                      unoptimized={true}
-                    />
-                    <div>
-                      <p className="font-medium text-gray-900">{user.email}</p>
-                      <p className="text-sm text-gray-500">{t('nav.user')}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Link href="/user/profile" className="block">
-                      <Button className="w-full bg-gray-100 text-gray-900 hover:bg-gray-200 font-sans border border-gray-300 py-3 text-lg">
-                        {t('nav.profile')}
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link href={isAdmin ? "/admin/dashboard" : "/user/profile"} className="w-full">
+                      <Button variant="default" className="w-full py-4 rounded-2xl">
+                        {isAdmin ? t('common.dashboard') : t('nav.profile')}
                       </Button>
                     </Link>
                     <Button 
-                      className="w-full bg-black text-white hover:bg-gray-800 font-sans border-black border py-3 text-lg" 
+                      variant="destructive"
+                      className="w-full py-4 rounded-2xl" 
                       onClick={handleUserLogout}
                     >
                       {t('common.logout')}
@@ -356,15 +364,14 @@ export default function Navbar() {
                   </div>
                 </div>
               ) : (
-                // 未登录状态显示
-                <div className="space-y-2">
-                  <Link href="/user/login" className="block">
-                    <Button className="w-full bg-black text-white hover:bg-gray-800 font-sans border-black border py-3 text-lg">
+                <div className="flex flex-col gap-3">
+                  <Link href="/user/login" className="w-full">
+                    <Button variant="default" className="w-full py-4 rounded-2xl text-lg">
                       {t('nav.login')}
                     </Button>
                   </Link>
-                  <Link href="/user/register" className="block">
-                    <Button className="w-full bg-gray-100 text-gray-900 hover:bg-gray-200 font-sans border border-gray-300 py-3 text-lg">
+                  <Link href="/user/register" className="w-full">
+                    <Button className="w-full py-4 rounded-2xl text-lg">
                       {t('common.register')}
                     </Button>
                   </Link>

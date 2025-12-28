@@ -37,7 +37,10 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
     }
   };
 
-  const shareText = description || summary || `我刚生成了八字性格画像"${title}"，快来看看！`;
+  const shareText =
+    description ||
+    summary ||
+    `我在 Rolley 玄学命理小站读到一篇很有意思的文章：《${title}》，分享给你～`;
   const encodedText = encodeURIComponent(shareText);
   const encodedUrl = encodeURIComponent(url);
 
@@ -128,7 +131,7 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
           {/* 分享标题 */}
           <div className="mb-6">
             <h4 className="font-medium text-gray-800 mb-2">
-              {language === 'zh' ? '分享您的八字性格画像' : 'Share Your BaZi Personality Portrait'}
+              {language === 'zh' ? '分享文章' : 'Share Article'}
             </h4>
             <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
               {title}

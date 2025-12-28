@@ -74,72 +74,113 @@ export default function AdminAppointmentsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFACD] flex">
+    <div className="min-h-screen bg-[#faf9f6] flex">
       <AdminSidebar activeItem="appointments" />
-      <main className="flex-1 ml-0 md:ml-56 p-4 md:p-8">
+      <main className="flex-1 ml-64 p-8 md:p-12">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg border border-[#FF6F61] p-6 md:p-8">
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
-              <h1 className="text-2xl font-bold text-[#FF6F61]">需求列表</h1>
-              <Button className="bg-[#FF6F61] text-white" onClick={load} disabled={loading}>
-                刷新
-              </Button>
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <h1 className="text-4xl font-black text-gray-900 mb-2">需求管理</h1>
+              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Appointments & Inquiries</p>
             </div>
+            <button 
+              className="px-8 py-3 rounded-2xl bg-[#FF6F61] text-white font-black shadow-xl shadow-[#FF6F61]/20 hover:scale-105 active:scale-95 transition-all"
+              onClick={load} 
+              disabled={loading}
+            >
+              刷新数据
+            </button>
+          </div>
 
+          <div className="bg-white rounded-[32px] border border-gray-100 shadow-xl shadow-gray-200/20 p-8">
             {error && (
-              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded border border-red-200">
-                {error}
+              <div className="mb-8 p-5 bg-red-50 text-red-600 rounded-3xl border border-red-100 flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+                <span className="font-bold">{error}</span>
               </div>
             )}
 
             {loading ? (
-              <div className="flex justify-center py-10">
-                <div className="w-10 h-10 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin"></div>
+              <div className="flex justify-center py-20">
+                <div className="w-12 h-12 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin shadow-lg shadow-[#FF6F61]/20"></div>
               </div>
             ) : rows.length === 0 ? (
-              <div className="text-center py-10 text-gray-500">暂无记录</div>
+              <div className="text-center py-20">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-50 mb-4">
+                  <span className="text-2xl text-gray-300">Empty</span>
+                </div>
+                <p className="text-gray-400 font-bold">暂无记录</p>
+              </div>
             ) : (
-              <div className="space-y-4">
+              <div className="grid gap-6">
                 {rows.map((r) => (
-                  <div key={r.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <span className="font-semibold text-lg text-gray-800">{r.service_type}</span>
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            {r.status}
+                  <div key={r.id} className="group p-8 rounded-[32px] border border-gray-100 bg-gray-50/30 hover:bg-white hover:shadow-xl hover:shadow-gray-200/30 transition-all duration-500">
+                    <div className="flex flex-col lg:flex-row justify-between gap-8">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-3 mb-4">
+                          <span className="px-4 py-1.5 rounded-full bg-white border border-gray-100 text-[#FF6F61] text-xs font-black uppercase tracking-widest shadow-sm">
+                            {r.service_type}
+                          </span>
+                          <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest ${
+                            r.status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'
+                          }`}>
+                            {r.status === 'completed' ? '已完成' : '待处理'}
                           </span>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
-                          <div>Email: {r.email}</div>
-                          <div>创建时间: {new Date(r.created_at).toLocaleString()}</div>
-                          {r.birth_datetime && <div className="md:col-span-2">出生时间: {r.birth_datetime}</div>}
-                          {r.notes && <div className="md:col-span-2">说明: {r.notes}</div>}
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Email Address</p>
+                            <p className="text-sm font-bold text-gray-700">{r.email}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Submission Date</p>
+                            <p className="text-sm font-bold text-gray-700">{new Date(r.created_at).toLocaleString()}</p>
+                          </div>
+                          {r.birth_datetime && (
+                            <div className="md:col-span-2 space-y-1">
+                              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Birth Datetime</p>
+                              <p className="text-sm font-bold text-gray-700 italic">{r.birth_datetime}</p>
+                            </div>
+                          )}
+                          {r.notes && (
+                            <div className="md:col-span-2 space-y-1">
+                              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Notes / Message</p>
+                              <p className="text-sm font-bold text-gray-700 leading-relaxed bg-white/50 p-4 rounded-2xl border border-gray-100/50">{r.notes}</p>
+                            </div>
+                          )}
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-2 min-w-[160px]">
-                        <Button
-                          className="bg-green-500 hover:bg-green-600 text-white border-none"
+                      <div className="flex flex-col gap-3 min-w-[180px] justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
                           onClick={() => updateStatus(r.id, 'completed')}
                           disabled={busyId === r.id || r.status === 'completed'}
+                          className={`w-full py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
+                            r.status === 'completed' 
+                              ? 'bg-gray-100 text-gray-300 cursor-not-allowed' 
+                              : 'bg-green-500 text-white shadow-lg shadow-green-200 hover:scale-105 active:scale-95'
+                          }`}
                         >
-                          {busyId === r.id ? '处理中...' : '标记完成'}
-                        </Button>
-                        <Button
-                          className="bg-yellow-500 hover:bg-yellow-600 text-white border-none"
+                          {busyId === r.id ? '...' : '标记完成'}
+                        </button>
+                        <button
                           onClick={() => updateStatus(r.id, 'pending')}
-                          disabled={busyId === r.id}
+                          disabled={busyId === r.id || r.status === 'pending'}
+                          className={`w-full py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
+                            r.status === 'pending'
+                              ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                              : 'bg-orange-500 text-white shadow-lg shadow-orange-200 hover:scale-105 active:scale-95'
+                          }`}
                         >
-                          {busyId === r.id ? '处理中...' : '标记跟进'}
-                        </Button>
-                        <Button
-                          className="bg-red-500 hover:bg-red-600 text-white border-none"
+                          标记待处理
+                        </button>
+                        <button
                           onClick={() => remove(r.id)}
                           disabled={busyId === r.id}
+                          className="w-full py-3 rounded-2xl bg-white border border-gray-100 text-gray-400 font-black text-xs uppercase tracking-widest hover:text-red-500 hover:bg-red-50 transition-all hover:scale-105 active:scale-95"
                         >
-                          {busyId === r.id ? '处理中...' : '删除'}
-                        </Button>
+                          {busyId === r.id ? '...' : '删除记录'}
+                        </button>
                       </div>
                     </div>
                   </div>

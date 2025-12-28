@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
     const supabase = await createSupabaseServerClient();
     const { data: article } = await supabase
       .from('articles')
-      .select('id,title,summary,tags,cover_image_url,created_at')
+      .select('id,title,summary,tags,cover_image_url,created_at,updated_at')
       .eq('id', id)
       .maybeSingle();
 
@@ -43,6 +43,10 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
           url: canonicalUrl,
           type: 'article',
           images: imageUrl ? [{ url: imageUrl }] : [],
+        },
+        robots: {
+          index: true,
+          follow: true,
         },
         twitter: {
           card: 'summary_large_image',
@@ -79,7 +83,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
     const { data: row, error: fetchError } = await supabase
       .from('articles')
-      .select('id,title,summary,content_html,category,tags,cover_image_url,created_at,author_id')
+      .select('id,title,summary,content_html,category,tags,cover_image_url,created_at,updated_at,author_id')
       .eq('id', id)
       .maybeSingle();
     if (fetchError) throw fetchError;
@@ -100,6 +104,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       tags: row.tags || [],
       cover_image_url: row.cover_image_url,
       created_at: row.created_at,
+      // @ts-expect-error: BlogArticle may not include updated_at; used only for SEO
+      updated_at: row.updated_at,
       author_display_name: author?.display_name ?? null,
     };
   } catch (err) {
@@ -108,6 +114,19 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   }
   
   // Build structured data for the article (JSON-LD)
+  const baseUrl = 'https://efortunetell.blog';
+  const articleUrl = `${baseUrl}/blog/${article?.id}`;
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${baseUrl}/blog` },
+      article?.title ? { '@type': 'ListItem', position: 3, name: article.title, item: articleUrl } : null,
+    ].filter(Boolean),
+  };
+
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -118,17 +137,29 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       '@type': 'Person',
       name: article?.author_display_name,
     },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Rolley Divination Blog',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${baseUrl}/icon.png`,
+      },
+    },
     datePublished: article?.created_at,
-    dateModified: article?.created_at,
+    // prefer updated_at when present
+    dateModified: (article as any)?.updated_at ?? article?.created_at,
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://efortunetell.blog/blog/${article?.id}`,
+      '@id': articleUrl,
     },
   };
 
   return (
     <>
       {/* Structured data for SEO */}
+      <Script id="breadcrumb-ld-json" type="application/ld+json">
+        {JSON.stringify(breadcrumbLd)}
+      </Script>
       <Script id="article-ld-json" type="application/ld+json">
         {JSON.stringify(structuredData)}
       </Script>

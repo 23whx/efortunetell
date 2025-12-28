@@ -4,6 +4,63 @@
 -- Required for gen_random_uuid()
 create extension if not exists pgcrypto;
 
+-- ==============================================
+-- Storage RLS Policies for blog-images bucket
+-- ==============================================
+
+-- Allow admins to insert/upload images
+drop policy if exists "Admin can upload images" on storage.objects;
+create policy "Admin can upload images"
+on storage.objects
+for insert
+to authenticated
+with check (
+  bucket_id = 'blog-images' and
+  exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+);
+
+-- Allow admins to update images (for upsert)
+drop policy if exists "Admin can update images" on storage.objects;
+create policy "Admin can update images"
+on storage.objects
+for update
+to authenticated
+using (
+  bucket_id = 'blog-images' and
+  exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+);
+
+-- Allow admins to select/read images (required for upsert)
+drop policy if exists "Admin can read images" on storage.objects;
+create policy "Admin can read images"
+on storage.objects
+for select
+to authenticated
+using (
+  bucket_id = 'blog-images' and
+  exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+);
+
+-- Allow admins to delete images
+drop policy if exists "Admin can delete images" on storage.objects;
+create policy "Admin can delete images"
+on storage.objects
+for delete
+to authenticated
+using (
+  bucket_id = 'blog-images' and
+  exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+);
+
+-- Allow public read access to blog images (so visitors can see blog post images)
+-- This is safe because only admins can upload
+drop policy if exists "Public can view blog images" on storage.objects;
+create policy "Public can view blog images"
+on storage.objects
+for select
+to public
+using (bucket_id = 'blog-images');
+
 -- Profiles: role-based access (admin via profiles.role='admin')
 create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
@@ -31,7 +88,14 @@ drop policy if exists "users can update own profile" on public.profiles;
 create policy "users can update own profile"
 on public.profiles for update
 to authenticated
-using (auth.uid() = id);
+using (auth.uid() = id)
+with check (
+  auth.uid() = id
+  and (
+    -- Non-admins cannot change role; admins can keep their role.
+    role = (select p.role from public.profiles p where p.id = auth.uid())
+  )
+);
 
 -- Helper for RLS checks
 create or replace function public.is_admin()
@@ -61,6 +125,7 @@ create table if not exists public.articles (
   tags text[] not null default '{}',
   status text not null default 'published' check (status in ('draft', 'published')),
   cover_image_url text,
+  cover_image_pos jsonb default '{"x": 50, "y": 50, "zoom": 1}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -218,5 +283,54 @@ create policy "admins can delete article_images"
 on public.article_images for delete
 to authenticated
 using (public.is_admin());
+
+-- ==============================================
+-- Storage RLS Policies for blog-images bucket
+-- ==============================================
+-- Note: These policies apply to the storage.objects table
+-- Make sure the bucket 'blog-images' is created in Supabase Dashboard > Storage
+-- with "Public bucket" = true OR use these policies for private buckets
+
+drop policy if exists "Admin can upload images" on storage.objects;
+create policy "Admin can upload images"
+on storage.objects for insert
+to authenticated
+with check (
+  bucket_id = 'blog-images' 
+  and exists (
+    select 1 from public.profiles 
+    where id = auth.uid() and role = 'admin'
+  )
+);
+
+drop policy if exists "Admin can update images" on storage.objects;
+create policy "Admin can update images"
+on storage.objects for update
+to authenticated
+using (
+  bucket_id = 'blog-images' 
+  and exists (
+    select 1 from public.profiles 
+    where id = auth.uid() and role = 'admin'
+  )
+);
+
+drop policy if exists "Admin can delete images" on storage.objects;
+create policy "Admin can delete images"
+on storage.objects for delete
+to authenticated
+using (
+  bucket_id = 'blog-images' 
+  and exists (
+    select 1 from public.profiles 
+    where id = auth.uid() and role = 'admin'
+  )
+);
+
+drop policy if exists "Anyone can view blog images" on storage.objects;
+create policy "Anyone can view blog images"
+on storage.objects for select
+to public
+using (bucket_id = 'blog-images');
 
 

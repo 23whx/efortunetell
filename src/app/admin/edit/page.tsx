@@ -187,14 +187,14 @@ export default function AdminEditPage() {
                 <Button className="bg-[#FF6F61] text-white" onClick={handleSave} disabled={saving || loading}>
                   {saving ? '保存中...' : '保存'}
                 </Button>
-              </div>
-            </div>
+          </div>
+        </div>
 
-            {error && (
+        {error && (
               <div className="mb-4 p-3 bg-red-100 text-red-700 rounded border border-red-200">
                 {error}
-              </div>
-            )}
+          </div>
+        )}
 
             {loading ? (
               <div className="flex justify-center py-10">
@@ -204,10 +204,10 @@ export default function AdminEditPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">标题 *</label>
-                  <input
+                    <input
                     className="w-full border border-[#FF6F61] rounded px-3 py-2"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
                   />
                   <div className="text-xs text-gray-500 mt-1">slug: {slug || '(空)'}</div>
                 </div>
@@ -219,27 +219,27 @@ export default function AdminEditPage() {
                     value={summary}
                     onChange={(e) => setSummary(e.target.value)}
                     rows={3}
-                  />
-                </div>
-
+                    />
+                  </div>
+                  
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
+                    <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">分类</label>
                     <input
                       className="w-full border border-[#FF6F61] rounded px-3 py-2"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
                     />
-                  </div>
-                  <div>
+                    </div>
+                    <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">标签（逗号分隔）</label>
-                    <input
+                      <input
                       className="w-full border border-[#FF6F61] rounded px-3 py-2"
-                      value={tags}
-                      onChange={(e) => setTags(e.target.value)}
-                    />
+                        value={tags}
+                        onChange={(e) => setTags(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>

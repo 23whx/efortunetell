@@ -37,33 +37,56 @@ export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
       {/* 侧边栏本体 */}
       <aside
         className={`
-          fixed z-30 top-0 left-0 h-full w-56 bg-white/95 border-r border-[#FF6F61] flex flex-col pt-32 pb-6 px-3 gap-4
-          shadow-xl rounded-r-2xl transition-transform duration-300 backdrop-blur-sm
+          fixed z-30 top-0 left-0 h-full w-64 bg-white border-r border-gray-100 flex flex-col pt-10 pb-6 px-4 gap-2
+          shadow-xl transition-transform duration-300
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          md:translate-x-0 md:w-56 md:flex md:shadow-none md:rounded-none md:bg-white md:backdrop-blur-0
+          md:translate-x-0 md:shadow-none md:bg-[#faf9f6]/50 md:backdrop-blur-xl
         `}
-        style={{ minWidth: '14rem', maxWidth: '14rem' }}
       >
-        <Button
-          className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'articles' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
+        <div className="px-2 mb-10">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-8 h-8 rounded-xl bg-[#FF6F61] flex items-center justify-center shadow-lg shadow-[#FF6F61]/20">
+              <span className="text-white font-black text-xs">R</span>
+            </div>
+            <span className="font-black text-sm tracking-widest text-gray-900 uppercase">Admin Panel</span>
+          </div>
+          <p className="text-[10px] font-bold text-gray-400 tracking-wider uppercase pl-11">Management</p>
+        </div>
+
+        <nav className="space-y-2">
+          <button
           onClick={() => { router.push('/admin/articles'); setSidebarOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-300 ${
+              activeItem === 'articles' 
+                ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' 
+                : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            }`}
         >
+            <div className={`w-1.5 h-1.5 rounded-full ${activeItem === 'articles' ? 'bg-white' : 'bg-gray-300'}`} />
           {t('common.articles')}
-        </Button>
-        <Button
-          className={`w-full text-black font-semibold transition-all duration-300 rounded-lg py-2 ${activeItem === 'appointments' ? 'bg-[#FF6F61] !text-black shadow-md' : 'bg-white !text-black border border-[#FF6F61]'}`}
+          </button>
+
+          <button
           onClick={() => { router.push('/admin/appointments'); setSidebarOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-300 ${
+              activeItem === 'appointments' 
+                ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' 
+                : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            }`}
         >
+            <div className={`w-1.5 h-1.5 rounded-full ${activeItem === 'appointments' ? 'bg-white' : 'bg-gray-300'}`} />
           {t('common.appointments')}
-        </Button>
+          </button>
+        </nav>
         
-        <div className="mt-auto">
-          <Button
-            className="w-full bg-white !text-black border border-[#FF6F61] font-semibold transition-all duration-300 rounded-lg py-2"
+        <div className="mt-auto pt-6 border-t border-gray-100">
+          <button
             onClick={() => router.push('/admin/dashboard')}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-all duration-300"
           >
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-300" />
             {t('common.back')}
-          </Button>
+          </button>
         </div>
       </aside>
     </>

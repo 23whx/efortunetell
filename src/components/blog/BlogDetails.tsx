@@ -41,14 +41,14 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
       <div className="max-w-4xl mx-auto bg-white shadow-sm">
         {coverImageUrl && (
           <div className="w-full h-80 relative overflow-hidden">
-            <Image
-              src={coverImageUrl}
-              alt={article.title}
-              fill
-              className="object-cover"
-              priority
-              unoptimized={true}
-            />
+              <Image
+                src={coverImageUrl}
+                alt={article.title}
+                fill
+                className="object-cover"
+                priority
+                unoptimized={true}
+              />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
         )}
@@ -57,9 +57,9 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               {article.category && (
-                <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#fff5f4', color: '#ff6f61' }}>
-                  {article.category}
-                </span>
+              <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#fff5f4', color: '#ff6f61' }}>
+                {article.category}
+              </span>
               )}
               {article.tags?.map((tag) => (
                 <span
@@ -133,7 +133,7 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
                 display: block;
               }
             `}</style>
-            <div
+            <div 
               className="article-content"
               dangerouslySetInnerHTML={{ __html: processedContent }}
             />
@@ -161,4 +161,4 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
       />
     </div>
   );
-}
+} 
