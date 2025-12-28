@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { Calendar } from "lucide-react";
 import Button from '@/components/ui/button';
@@ -61,6 +61,81 @@ export default function BlogPage() {
   const [sortBy, setSortBy] = useState<'date' | 'likes' | 'bookmarks'>('date');
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Advanced Scroll & Drag logic for Category Bar
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftState, setScrollLeftState] = useState(0);
+  const [hasMoved, setHasMoved] = useState(false); // 用于区分点击和拖拽
+  const [showLeftBlur, setShowLeftBlur] = useState(false);
+  const [showRightBlur, setShowRightBlur] = useState(true);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+    setShowLeftBlur(scrollLeft > 10);
+    setShowRightBlur(scrollLeft < scrollWidth - clientWidth - 10);
+  };
+
+  // 鼠标按下：开始记录位置
+  const onMouseDown = (e: React.MouseEvent) => {
+    if (!scrollRef.current) return;
+    setIsDragging(true);
+    setHasMoved(false);
+    // 记录初始位置
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeftState(scrollRef.current.scrollLeft);
+  };
+
+  // 鼠标移动：计算滚动偏移
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5; // 滚动倍率
+    
+    // 如果移动距离超过 5 像素，判定为拖拽而非点击
+    if (Math.abs(walk) > 5) {
+      setHasMoved(true);
+    }
+    
+    scrollRef.current.scrollLeft = scrollLeftState - walk;
+  };
+
+  // 鼠标松开/离开：结束拖拽
+  const onMouseUp = () => setIsDragging(false);
+  const onMouseLeave = () => setIsDragging(false);
+
+  const scrollByAmount = (amount: number) => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollTo({
+      left: scrollRef.current.scrollLeft + amount,
+      behavior: 'smooth'
+    });
+  };
+
+  // 拦截点击事件：如果是拖拽行为，则阻止按钮触发
+  const handleCategoryClickWithDrag = (e: React.MouseEvent, category: string) => {
+    if (hasMoved) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    handleCategoryClick(category);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleScroll();
+    }, 100);
+    window.addEventListener('resize', handleScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [articles, isClient]);
+
   const [error, setError] = useState<string | null>(null);
   const [setupHint, setSetupHint] = useState<string | null>(null);
 
@@ -84,7 +159,27 @@ export default function BlogPage() {
           q = q.eq('category', selectedCategory);
         }
         
-        const { data, error: qErr } = await q;
+        let { data, error: qErr } = await q;
+        
+        // Handle missing column error gracefully (fallback for users who haven't updated schema)
+        if (qErr && (qErr as any).code === '42703') {
+          console.warn('cover_image_pos column missing, falling back...');
+          const fallbackQ = supabase
+            .from('articles')
+            .select('id,title,slug,summary,content_html,category,tags,cover_image_url,created_at,author_id')
+            .eq('status', 'published')
+            .limit(100);
+            
+          if (selectedCategory) {
+            fallbackQ.eq('category', selectedCategory);
+          }
+          
+          const { data: fallbackData, error: fallbackErr } = await fallbackQ;
+          if (fallbackErr) throw fallbackErr;
+          data = fallbackData;
+          qErr = null;
+        }
+
         if (qErr) {
           // Common fresh-project case: schema not applied yet.
           // PGRST205: table not found in schema cache.
@@ -198,54 +293,90 @@ export default function BlogPage() {
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <div className="sticky top-[72px] md:top-[88px] z-20 bg-[#faf9f6]/90 backdrop-blur-md border-y border-gray-100 py-3 mb-8">
+      {/* Filter Bar - Modern Sliding Design */}
+      <div className="sticky top-[72px] md:top-[88px] z-20 bg-[#faf9f6]/80 backdrop-blur-xl py-4 mb-10 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
-            {/* Category Scrolling Area with Fade Masks */}
-            <div className="relative w-full md:w-auto flex-1 max-w-4xl overflow-hidden group">
-              {/* Left Fade Mask */}
-              <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#faf9f6] to-transparent z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
-              
-              <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide py-1 px-1">
-                {categories.map((category) => {
-                  const isActive = (category === t('common.all') && selectedDisplayCategory === null) || selectedDisplayCategory === category;
-                  return (
-                    <button
-                      key={category}
-                      onClick={() => handleCategoryClick(category)}
-                      className={`shrink-0 px-6 py-2 rounded-full text-sm font-black transition-all duration-500 ease-out ${
-                        isActive 
-                        ? 'bg-[#FF6F61] text-white shadow-[0_8px_20px_-6px_rgba(255,111,97,0.45)] scale-105' 
-                        : 'bg-white text-gray-500 border border-gray-100 hover:border-[#FF6F61]/30 hover:text-[#FF6F61] hover:shadow-md active:scale-95'
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  );
-                })}
-                
-                {/* Internal Divider */}
-                <div className="w-px h-6 bg-gray-200 shrink-0 mx-2" />
-                
-                <Link
-                  href="/services"
-                  className="shrink-0 px-6 py-2 rounded-full bg-[#ffb347]/10 text-[#ffb347] border border-[#ffb347]/20 font-black text-sm hover:bg-[#ffb347] hover:text-white transition-all duration-500"
+            
+            {/* Category Sliding Area */}
+            <div className="relative flex-1 w-full md:w-auto overflow-hidden group">
+              {/* Left Gradient & Button */}
+              <div 
+                className={`absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#faf9f6] to-transparent z-10 pointer-events-none transition-opacity duration-300 flex items-center ${showLeftBlur ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <button 
+                  onClick={() => scrollByAmount(-200)}
+                  className="pointer-events-auto ml-1 w-9 h-9 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center hover:bg-[#FF6F61] hover:text-white transition-all active:scale-90"
                 >
-                  {t('nav.services')} →
-                </Link>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
               </div>
 
-              {/* Right Fade Mask */}
-              <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#faf9f6] to-transparent z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
+              {/* Scrollable Container */}
+              <div 
+                ref={scrollRef}
+                onMouseDown={onMouseDown}
+                onMouseMove={onMouseMove}
+                onMouseUp={onMouseUp}
+                onMouseLeave={onMouseLeave}
+                onScroll={handleScroll}
+                className={`flex items-center gap-3 overflow-x-auto scrollbar-hide py-2 px-1 cursor-grab active:cursor-grabbing select-none ${isDragging ? 'scroll-auto' : 'scroll-smooth'}`}
+              >
+                <div className="flex items-center gap-3 flex-nowrap min-w-max">
+                  {categories.map((category) => {
+                    const isActive = (category === t('common.all') && selectedDisplayCategory === null) || selectedDisplayCategory === category;
+                    return (
+                      <button
+                        key={category}
+                        onMouseUp={(e) => handleCategoryClickWithDrag(e, category)}
+                        className={`shrink-0 px-6 py-2.5 rounded-2xl text-sm font-black transition-all duration-300 ${
+                          isActive 
+                          ? 'bg-[#FF6F61] text-white shadow-[0_8px_20px_-6px_rgba(255,111,97,0.45)] scale-105' 
+                          : 'bg-white text-gray-500 border border-gray-100 hover:border-[#FF6F61]/30 hover:text-[#FF6F61] active:scale-95'
+                        }`}
+                      >
+                        {category}
+                      </button>
+                    );
+                  })}
+                  
+                  <div className="w-px h-6 bg-gray-200 shrink-0 mx-1" />
+                  
+                  <Link
+                    href="/services"
+                    onMouseUp={(e) => {
+                      if (hasMoved) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                    className="shrink-0 px-6 py-2.5 rounded-2xl bg-[#ffb347]/10 text-[#ffb347] border border-[#ffb347]/20 font-black text-sm hover:bg-[#ffb347] hover:text-white transition-all duration-300"
+                  >
+                    {t('nav.services')} →
+                  </Link>
+                </div>
+              </div>
+
+              {/* Right Gradient & Button */}
+              <div 
+                className={`absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#faf9f6] to-transparent z-10 pointer-events-none transition-opacity duration-300 flex items-center justify-end ${showRightBlur ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <button 
+                  onClick={() => scrollByAmount(200)}
+                  className="pointer-events-auto mr-1 w-9 h-9 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center hover:bg-[#FF6F61] hover:text-white transition-all active:scale-90"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
             </div>
-            
-            <div className="flex items-center gap-4 w-full md:w-auto shrink-0">
-              <div className="relative group min-w-[160px] w-full md:w-auto">
+
+            {/* Sort Dropdown */}
+            <div className="shrink-0 w-full md:w-auto">
+              <div className="relative group min-w-[160px]">
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as 'date' | 'likes' | 'bookmarks')}
-                  className="appearance-none w-full bg-white text-gray-700 font-bold border border-gray-100 rounded-full pl-6 pr-12 py-2.5 text-sm focus:outline-none focus:border-[#FF6F61] cursor-pointer shadow-sm hover:shadow-md transition-all duration-300"
+                  className="appearance-none w-full bg-white text-gray-700 font-bold border border-gray-100 rounded-2xl pl-6 pr-12 py-2.5 text-sm focus:outline-none focus:border-[#FF6F61] cursor-pointer shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <option value="date">{t('sort.byDate')}</option>
                   <option value="likes">{t('sort.byLikes')}</option>
