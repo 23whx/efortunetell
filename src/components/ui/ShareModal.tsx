@@ -14,15 +14,15 @@ interface ShareModalProps {
 }
 
 interface SharePlatform {
-  name: string;
-  nameEn: string;
+  id: string;
+  nameKey: string;
   icon: string;
   color: string;
-  onClick: () => void;
+  onClick: (t: (key: string) => string, handleCopy: () => Promise<void>) => void;
 }
 
 export default function ShareModal({ isOpen, onClose, title, url, description = '', summary = '', coverImage }: ShareModalProps) {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
@@ -33,21 +33,21 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.error('复制失败:', error);
+      console.error('Copy failed:', error);
     }
   };
 
   const shareText =
     description ||
     summary ||
-    `我在 Rolley 玄学命理小站读到一篇很有意思的文章：《${title}》，分享给你～`;
+    t('share.defaultText').replace('{title}', title);
   const encodedText = encodeURIComponent(shareText);
   const encodedUrl = encodeURIComponent(url);
 
   const platforms: SharePlatform[] = [
     {
-      name: 'X (Twitter)',
-      nameEn: 'X (Twitter)',
+      id: 'x',
+      nameKey: 'X (Twitter)',
       icon: '🐦',
       color: 'bg-black text-white',
       onClick: () => {
@@ -55,8 +55,8 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
       }
     },
     {
-      name: 'Facebook',
-      nameEn: 'Facebook',
+      id: 'facebook',
+      nameKey: 'share.facebook',
       icon: '📘',
       color: 'bg-blue-600 text-white',
       onClick: () => {
@@ -64,47 +64,43 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
       }
     },
     {
-      name: 'Instagram',
-      nameEn: 'Instagram',
+      id: 'instagram',
+      nameKey: 'share.instagram',
       icon: '📷',
       color: 'bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white',
-      onClick: () => {
-        // Instagram doesn't support direct URL sharing, so we copy the content
-        handleCopyLink();
-        alert(language === 'zh' ? 'Instagram 不支持直接分享链接，链接已复制到剪贴板，请手动分享' : 'Instagram does not support direct link sharing. Link copied to clipboard.');
+      onClick: (t, handleCopy) => {
+        handleCopy();
+        alert(t('share.instagramHint'));
       }
     },
     {
-      name: '微信',
-      nameEn: 'WeChat',
+      id: 'wechat',
+      nameKey: 'share.wechat',
       icon: '💬',
       color: 'bg-green-500 text-white',
-      onClick: () => {
-        // 微信分享需要特殊处理，这里先复制链接
-        handleCopyLink();
-        alert(language === 'zh' ? '微信分享链接已复制到剪贴板，请在微信中粘贴分享' : 'WeChat share link copied to clipboard, please paste in WeChat');
+      onClick: (t, handleCopy) => {
+        handleCopy();
+        alert(t('share.wechatHint'));
       }
     },
     {
-      name: '微信朋友圈',
-      nameEn: 'WeChat Moments',
+      id: 'wechatMoments',
+      nameKey: 'share.wechatMoments',
       icon: '🌟',
       color: 'bg-green-600 text-white',
-      onClick: () => {
-        // 朋友圈分享需要特殊处理，这里先复制链接
-        handleCopyLink();
-        alert(language === 'zh' ? '朋友圈分享链接已复制到剪贴板，请在微信朋友圈中粘贴分享' : 'WeChat Moments share link copied to clipboard, please paste in WeChat Moments');
+      onClick: (t, handleCopy) => {
+        handleCopy();
+        alert(t('share.wechatMomentsHint'));
       }
     },
     {
-      name: '小红书',
-      nameEn: 'XiaoHongShu',
+      id: 'xiaohongshu',
+      nameKey: 'share.xiaohongshu',
       icon: '📖',
       color: 'bg-red-500 text-white',
-      onClick: () => {
-        // 小红书分享需要特殊处理，这里先复制链接
-        handleCopyLink();
-        alert(language === 'zh' ? '小红书分享链接已复制到剪贴板，请在小红书App中分享' : 'XiaoHongShu share link copied to clipboard, please share in XiaoHongShu app');
+      onClick: (t, handleCopy) => {
+        handleCopy();
+        alert(t('share.xiaohongshuHint'));
       }
     }
   ];
@@ -112,11 +108,11 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
-        {/* 头部 */}
+        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
             <Share2 size={20} />
-            {language === 'zh' ? '分享' : 'Share'}
+            {t('share.title')}
           </h3>
           <button
             onClick={onClose}
@@ -126,43 +122,43 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
           </button>
         </div>
 
-        {/* 内容 */}
+        {/* Content */}
         <div className="p-6">
-          {/* 分享标题 */}
+          {/* Share Title */}
           <div className="mb-6">
             <h4 className="font-medium text-gray-800 mb-2">
-              {language === 'zh' ? '分享文章' : 'Share Article'}
+              {t('share.article')}
             </h4>
             <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
               {title}
             </p>
           </div>
 
-          {/* 平台列表 */}
+          {/* Platform List */}
           <div className="space-y-3 mb-6">
             <h5 className="font-medium text-gray-700 text-sm">
-              {language === 'zh' ? '选择分享平台' : 'Choose Platform'}
+              {t('share.choosePlatform')}
             </h5>
             <div className="grid grid-cols-2 gap-3">
-              {platforms.map((platform, index) => (
+              {platforms.map((platform) => (
                 <button
-                  key={index}
-                  onClick={platform.onClick}
+                  key={platform.id}
+                  onClick={() => platform.onClick(t, handleCopyLink)}
                   className={`flex items-center gap-3 p-3 rounded-lg transition-all hover:scale-105 ${platform.color}`}
                 >
                   <span className="text-lg">{platform.icon}</span>
                   <span className="font-medium text-sm">
-                    {language === 'zh' ? platform.name : platform.nameEn}
+                    {t(platform.nameKey) !== platform.nameKey ? t(platform.nameKey) : platform.nameKey}
                   </span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* 复制链接 */}
+          {/* Copy Link */}
           <div className="border-t pt-4">
             <h5 className="font-medium text-gray-700 text-sm mb-3">
-              {language === 'zh' ? '或复制链接' : 'Or Copy Link'}
+              {t('share.copyLink')}
             </h5>
             <div className="flex gap-2">
               <input
@@ -182,12 +178,12 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
                 {copied ? (
                   <>
                     <Check size={16} />
-                    {language === 'zh' ? '已复制' : 'Copied'}
+                    {t('share.copied')}
                   </>
                 ) : (
                   <>
                     <Copy size={16} />
-                    {language === 'zh' ? '复制' : 'Copy'}
+                    {t('share.copy')}
                   </>
                 )}
               </button>
@@ -197,4 +193,4 @@ export default function ShareModal({ isOpen, onClose, title, url, description = 
       </div>
     </div>
   );
-} 
+}

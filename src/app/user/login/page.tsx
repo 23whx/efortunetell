@@ -35,7 +35,7 @@ export default function UserLoginPage() {
       const { role } = await getMyProfile(supabase);
       router.push(role === 'admin' ? '/admin/dashboard' : '/user/profile');
     } catch (err) {
-      console.error('登录错误:', err);
+      console.error('Login error:', err);
       setError(err instanceof Error ? err.message : t('error.networkError'));
     } finally {
       setIsLoading(false);
@@ -56,7 +56,7 @@ export default function UserLoginPage() {
       });
       if (error) throw error;
     } catch (err) {
-      console.error('OAuth 登录错误:', err);
+      console.error('OAuth login error:', err);
       setError(err instanceof Error ? err.message : t('error.networkError'));
       setIsLoading(false);
     }
@@ -75,7 +75,7 @@ export default function UserLoginPage() {
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email">Email</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email">{t('common.email')}</label>
             <Input
               id="email"
               type="email"
@@ -95,7 +95,7 @@ export default function UserLoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               className="border-[#FF6F61] focus:ring-[#FF6F61] focus:border-[#FF6F61] flex-1"
-              placeholder="区分大小写，长度限制6-18个字符串"
+              placeholder={t('user.login.passwordHint')}
             />
           </div>
           
@@ -105,9 +105,9 @@ export default function UserLoginPage() {
               className="bg-[#FF6F61] hover:bg-[#ff8a75] text-white border-none px-8"
               disabled={isLoading}
             >
-              {isLoading ? t('common.loading') + '...' : t('user.login.submit')}
+              {isLoading ? t('common.loading') : t('user.login.submit')}
             </Button>
-            <a href="/user/forgot-password" className="text-[#FF6F61] text-sm hover:underline whitespace-nowrap">忘记密码</a>
+            <a href="/user/forgot-password" className="text-[#FF6F61] text-sm hover:underline whitespace-nowrap">{t('user.login.forgotPassword')}</a>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
             <Button

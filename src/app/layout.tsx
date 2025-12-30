@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -117,22 +118,31 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <script
+      <body className="antialiased min-h-screen overflow-auto font-sans bg-[#FFFACD] text-gray-900">
+        {/* Google AdSense */}
+        <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4880646654838411"
           crossOrigin="anonymous"
+          strategy="afterInteractive"
         />
-        <script
+        
+        {/* JSON-LD for WebSite */}
+        <Script
+          id="website-jsonld"
           type="application/ld+json"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }}
         />
-        <script
+        
+        {/* JSON-LD for Organization */}
+        <Script
+          id="organization-jsonld"
           type="application/ld+json"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }}
         />
-      </head>
-      <body className="antialiased min-h-screen overflow-auto font-sans bg-[#FFFACD] text-gray-900">
+        
         <LanguageProvider initialLanguage={detected.language}>
           <Navbar />
           <div className="pt-16 md:pt-20">

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import Button from '@/components/ui/button';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type BookingRow = {
   id: string;
@@ -16,6 +17,7 @@ type BookingRow = {
 };
 
 export default function AdminAppointmentsPage() {
+  const { t } = useLanguage();
   const [rows, setRows] = useState<BookingRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,7 @@ export default function AdminAppointmentsPage() {
       if (error) throw error;
       setRows((data || []) as BookingRow[]);
     } catch (e) {
-      setError(e instanceof Error ? e.message : '加载失败');
+      setError(e instanceof Error ? e.message : t('admin.appointments.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -52,14 +54,14 @@ export default function AdminAppointmentsPage() {
       if (error) throw error;
       setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
     } catch (e) {
-      setError(e instanceof Error ? e.message : '更新失败');
+      setError(e instanceof Error ? e.message : t('admin.appointments.updateFailed'));
     } finally {
       setBusyId(null);
     }
   };
 
   const remove = async (id: string) => {
-    if (!confirm('确定要删除该记录吗？')) return;
+    if (!confirm(t('admin.appointments.confirmDelete'))) return;
     setBusyId(id);
     try {
       const supabase = createSupabaseBrowserClient();
@@ -67,7 +69,7 @@ export default function AdminAppointmentsPage() {
       if (error) throw error;
       setRows((prev) => prev.filter((r) => r.id !== id));
     } catch (e) {
-      setError(e instanceof Error ? e.message : '删除失败');
+      setError(e instanceof Error ? e.message : t('admin.appointments.deleteFailed'));
     } finally {
       setBusyId(null);
     }
@@ -80,15 +82,15 @@ export default function AdminAppointmentsPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h1 className="text-4xl font-black text-gray-900 mb-2">需求管理</h1>
-              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Appointments & Inquiries</p>
+              <h1 className="text-4xl font-black text-gray-900 mb-2">{t('admin.appointments.title')}</h1>
+              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">{t('common.appointments')}</p>
             </div>
             <button 
               className="px-8 py-3 rounded-2xl bg-[#FF6F61] text-white font-black shadow-xl shadow-[#FF6F61]/20 hover:scale-105 active:scale-95 transition-all"
               onClick={load} 
               disabled={loading}
             >
-              刷新数据
+              {t('admin.appointments.refresh')}
             </button>
           </div>
 
@@ -106,9 +108,9 @@ export default function AdminAppointmentsPage() {
             ) : rows.length === 0 ? (
               <div className="text-center py-20">
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-50 mb-4">
-                  <span className="text-2xl text-gray-300">Empty</span>
+                  <span className="text-2xl text-gray-300">∅</span>
                 </div>
-                <p className="text-gray-400 font-bold">暂无记录</p>
+                <p className="text-gray-400 font-bold">{t('admin.appointments.empty')}</p>
               </div>
             ) : (
               <div className="grid gap-6">
@@ -118,33 +120,35 @@ export default function AdminAppointmentsPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-3 mb-4">
                           <span className="px-4 py-1.5 rounded-full bg-white border border-gray-100 text-[#FF6F61] text-xs font-black uppercase tracking-widest shadow-sm">
-                            {r.service_type}
+                            {t(`service.${r.service_type}`) !== `service.${r.service_type}` 
+                              ? t(`service.${r.service_type}`) 
+                              : r.service_type}
                           </span>
                           <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest ${
                             r.status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'
                           }`}>
-                            {r.status === 'completed' ? '已完成' : '待处理'}
+                            {r.status === 'completed' ? t('admin.appointments.status.completed') : t('admin.appointments.status.pending')}
                           </span>
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
                           <div className="space-y-1">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Email Address</p>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('admin.appointments.email')}</p>
                             <p className="text-sm font-bold text-gray-700">{r.email}</p>
                           </div>
                           <div className="space-y-1">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Submission Date</p>
-                            <p className="text-sm font-bold text-gray-700">{new Date(r.created_at).toLocaleString()}</p>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('admin.appointments.date')}</p>
+                            <p className="text-sm font-bold text-gray-700">{new Date(r.created_at).toLocaleString(t('common.locale') || 'en-US')}</p>
                           </div>
                           {r.birth_datetime && (
                             <div className="md:col-span-2 space-y-1">
-                              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Birth Datetime</p>
+                              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('admin.appointments.birth')}</p>
                               <p className="text-sm font-bold text-gray-700 italic">{r.birth_datetime}</p>
                             </div>
                           )}
                           {r.notes && (
                             <div className="md:col-span-2 space-y-1">
-                              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Notes / Message</p>
+                              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('admin.appointments.notes')}</p>
                               <p className="text-sm font-bold text-gray-700 leading-relaxed bg-white/50 p-4 rounded-2xl border border-gray-100/50">{r.notes}</p>
                             </div>
                           )}
@@ -161,7 +165,7 @@ export default function AdminAppointmentsPage() {
                               : 'bg-green-500 text-white shadow-lg shadow-green-200 hover:scale-105 active:scale-95'
                           }`}
                         >
-                          {busyId === r.id ? '...' : '标记完成'}
+                          {busyId === r.id ? '...' : t('admin.appointments.action.complete')}
                         </button>
                         <button
                           onClick={() => updateStatus(r.id, 'pending')}
@@ -172,14 +176,14 @@ export default function AdminAppointmentsPage() {
                               : 'bg-orange-500 text-white shadow-lg shadow-orange-200 hover:scale-105 active:scale-95'
                           }`}
                         >
-                          标记待处理
+                          {t('admin.appointments.action.pending')}
                         </button>
                         <button
                           onClick={() => remove(r.id)}
                           disabled={busyId === r.id}
                           className="w-full py-3 rounded-2xl bg-white border border-gray-100 text-gray-400 font-black text-xs uppercase tracking-widest hover:text-red-500 hover:bg-red-50 transition-all hover:scale-105 active:scale-95"
                         >
-                          {busyId === r.id ? '...' : '删除记录'}
+                          {busyId === r.id ? '...' : t('admin.appointments.action.delete')}
                         </button>
                       </div>
                     </div>

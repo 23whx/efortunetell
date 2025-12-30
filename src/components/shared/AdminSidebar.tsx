@@ -48,9 +48,9 @@ export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
             <div className="w-8 h-8 rounded-xl bg-[#FF6F61] flex items-center justify-center shadow-lg shadow-[#FF6F61]/20">
               <span className="text-white font-black text-xs">R</span>
             </div>
-            <span className="font-black text-sm tracking-widest text-gray-900 uppercase">Admin Panel</span>
+            <span className="font-black text-sm tracking-widest text-gray-900 uppercase">{t('admin.sidebar.panel')}</span>
           </div>
-          <p className="text-[10px] font-bold text-gray-400 tracking-wider uppercase pl-11">Management</p>
+          <p className="text-[10px] font-bold text-gray-400 tracking-wider uppercase pl-11">{t('admin.sidebar.management')}</p>
         </div>
 
         <nav className="space-y-2">

@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import { Mail } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function BaziBookingPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   
   const [birthDateTime, setBirthDateTime] = useState('');
   const [email, setEmail] = useState('');
@@ -19,11 +21,11 @@ export default function BaziBookingPage() {
   const handleSubmit = async () => {
     setError(null);
     if (!birthDateTime) {
-      setError('请先填写出生时间');
+      setError(t('fortune.booking.errorBirthTime'));
       return;
     }
     if (!email) {
-      setError('请填写您的邮箱地址');
+      setError(t('fortune.booking.errorEmail'));
       return;
     }
     
@@ -44,8 +46,8 @@ export default function BaziBookingPage() {
 
       setSuccess(true);
     } catch (err) {
-      console.error('提交预约失败:', err);
-      setError(err instanceof Error ? err.message : '提交失败，请稍后重试');
+      console.error('Submit booking error:', err);
+      setError(err instanceof Error ? err.message : t('error.serverError'));
     } finally {
       setIsLoading(false);
     }
@@ -55,16 +57,16 @@ export default function BaziBookingPage() {
   return (
     <div className="min-h-screen bg-[#FFFACD] p-8">
         <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg border border-[#FF6F61] p-8 text-center">
-          <h1 className="text-2xl font-bold text-[#FF6F61] mb-4">提交成功</h1>
+          <h1 className="text-2xl font-bold text-[#FF6F61] mb-4">{t('fortune.booking.successTitle')}</h1>
           <p className="text-gray-700 mb-6">
-            我已收到你的需求。请直接添加 LINE：<span className="font-semibold select-all">whx953829</span>
+            {t('fortune.booking.successMessage')}<span className="font-semibold select-all">whx953829</span>
           </p>
           <div className="flex justify-center gap-3">
             <Button className="bg-[#FF6F61] text-white" onClick={() => router.push('/contact')}>
-              去联系方式页面
+              {t('fortune.booking.contactPage')}
             </Button>
             <Button className="bg-gray-200 text-gray-800" onClick={() => router.push('/fortune')}>
-              返回服务列表
+              {t('fortune.booking.backToList')}
             </Button>
           </div>
         </div>
@@ -75,11 +77,13 @@ export default function BaziBookingPage() {
   return (
     <div className="min-h-screen bg-[#FFFACD] p-8">
       <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg border border-[#FF6F61] p-8">
-        <h1 className="text-2xl font-bold text-[#FF6F61] mb-6 text-center">八字预约（无需支付）</h1>
+        <h1 className="text-2xl font-bold text-[#FF6F61] mb-6 text-center">
+          {t('service.bazi')} {t('fortune.booking.title')} ({t('fortune.booking.free')})
+        </h1>
           
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-            出生时间 <span className="text-red-500">*</span>
+            {t('fortune.booking.birthTime')} <span className="text-red-500">*</span>
             </label>
             <input
               type="datetime-local"
@@ -93,7 +97,7 @@ export default function BaziBookingPage() {
           <div className="mb-6">
             <label className="flex items-center text-gray-700 text-sm font-bold mb-2">
               <Mail className="mr-2 text-[#FF6F61]" size={16} />
-            邮箱地址 <span className="text-red-500">*</span>
+            {t('common.email')} <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -103,17 +107,17 @@ export default function BaziBookingPage() {
               className="border border-[#FF6F61] rounded w-full py-2 px-3"
               required
             />
-          <p className="text-xs text-gray-500 mt-1">用于后续沟通与确认。</p>
+          <p className="text-xs text-gray-500 mt-1">{t('fortune.booking.emailHint')}</p>
       </div>
       
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">补充说明（可选）</label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">{t('fortune.booking.notes')} ({t('common.optional')})</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             className="border border-[#FF6F61] rounded w-full py-2 px-3"
             rows={4}
-            placeholder="你想咨询的重点/背景信息..."
+            placeholder={t('fortune.booking.notesPlaceholder')}
           />
             </div>
             
@@ -125,12 +129,12 @@ export default function BaziBookingPage() {
             
         <div className="flex justify-center">
           <Button className="bg-[#FF6F61] text-white px-6 py-2" onClick={handleSubmit} disabled={isLoading}>
-            {isLoading ? '提交中...' : '提交需求'}
+            {isLoading ? t('fortune.booking.submitting') : t('fortune.booking.submit')}
               </Button>
             </div>
 
         <div className="mt-6 text-center text-sm text-gray-600">
-          提交后会显示 LINE：<span className="font-semibold select-all">whx953829</span>，也可直接去 <a className="text-[#FF6F61] underline" href="/contact">联系方式</a>。
+          {t('fortune.booking.afterSubmitHint')}
         </div>
       </div>
     </div>

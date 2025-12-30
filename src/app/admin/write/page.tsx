@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import dynamic from 'next/dynamic';
 import { ChevronLeft, Send, Save, Image as ImageIcon, X, Settings2, Info, Move, Minus, Plus, Grid, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // 动态导入编辑器以避免 SSR 问题
 const Editor = dynamic(() => import('@/components/editor/Editor'), { 
@@ -29,6 +30,7 @@ function slugify(input: string) {
 
 export default function AdminWritePage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const articleId = searchParams.get('id');
 
@@ -48,8 +50,8 @@ export default function AdminWritePage() {
   const [showPresets, setShowPresets] = useState(false);
 
   const presets = [
-    { name: '八字', url: '/cover/bazi.png' },
-    { name: '奇门', url: '/cover/qimen.png' },
+    { name: t('blog.category.bazi'), url: '/cover/bazi.png' },
+    { name: t('blog.category.qimen'), url: '/cover/qimen.png' },
   ];
 
   // 加载现有文章
@@ -78,14 +80,14 @@ export default function AdminWritePage() {
         }
       } catch (e) {
         console.error('加载文章失败:', e);
-        setError('无法加载文章数据');
+        setError(t('admin.write.message.loadFailed'));
       } finally {
         setLoading(false);
       }
     };
 
     loadArticle();
-  }, [articleId]);
+  }, [articleId, t]);
 
   const draftKey = useMemo(() => {
     try {
@@ -110,7 +112,7 @@ export default function AdminWritePage() {
       setCoverImageUrl(res.publicUrl);
       setCoverImagePos({ x: 50, y: 50, zoom: 1 }); // 重置位置
     } catch (e) {
-      setError(e instanceof Error ? e.message : '封面图上传失败');
+      setError(e instanceof Error ? e.message : t('admin.write.cover.uploadFailed'));
     } finally {
       setUploadingCover(false);
     }
@@ -164,11 +166,11 @@ export default function AdminWritePage() {
   const handleSave = async (targetStatus?: 'draft' | 'published') => {
     setError(null);
     if (!title.trim()) {
-      setError('给文章起个动人的标题吧');
+      setError(t('admin.write.message.titleRequired'));
       return;
     }
     if (!contentHtml.trim() || contentHtml === '<p></p>') {
-      setError('内容不能为空哦');
+      setError(t('admin.write.message.contentRequired'));
       return;
     }
 
@@ -177,7 +179,7 @@ export default function AdminWritePage() {
       const supabase = createSupabaseBrowserClient();
       const { data: auth } = await supabase.auth.getUser();
       const user = auth.user;
-      if (!user) throw new Error('未登录');
+      if (!user) throw new Error(t('fortune.loginRequired'));
 
       const finalStatus = targetStatus || status;
 
@@ -206,7 +208,7 @@ export default function AdminWritePage() {
           .update(articleData)
           .eq('id', articleId);
         if (error) throw error;
-          } else {
+      } else {
         // 新建文章
         const { data: inserted, error } = await supabase
           .from('articles')
@@ -214,14 +216,14 @@ export default function AdminWritePage() {
           .select('id')
           .maybeSingle();
         if (error) throw error;
-        if (!inserted?.id) throw new Error('保存失败（未返回文章ID）');
+        if (!inserted?.id) throw new Error(t('admin.write.message.saveFailed'));
         resultId = inserted.id;
       }
 
       await attachDraftImagesToArticle(draftKey, resultId!);
-        router.push('/admin/articles');
+      router.push('/admin/articles');
     } catch (e) {
-      setError(e instanceof Error ? e.message : '保存失败');
+      setError(e instanceof Error ? e.message : t('admin.write.message.saveFailed'));
     } finally {
       setSaving(false);
     }
@@ -251,12 +253,14 @@ export default function AdminWritePage() {
               <ChevronLeft className="w-6 h-6" />
       </button>
             <div className="h-6 w-[1px] bg-gray-200" />
-            <span className="text-sm font-black text-gray-400 uppercase tracking-[0.2em]">新建文章</span>
+            <span className="text-sm font-black text-gray-400 uppercase tracking-[0.2em]">
+              {articleId ? t('admin.write.title.edit') : t('admin.write.title.new')}
+            </span>
           </div>
 
           <div className="flex items-center gap-3">
             <span className="text-[10px] font-black text-gray-400 mr-4 uppercase tracking-widest">
-              {saving ? '正在保存...' : '已同步至云端'}
+              {saving ? t('common.loading') : (t('admin.write.message.synced') || 'Synced to Cloud')}
             </span>
             
             {status !== 'published' && (
@@ -267,7 +271,7 @@ export default function AdminWritePage() {
                 className="rounded-xl shadow-none border-none bg-gray-50 hover:bg-gray-100 text-gray-500 font-bold"
               >
                 <Save className="w-4 h-4 mr-2" />
-                存草稿
+                {t('admin.write.button.saveDraft')}
               </Button>
             )}
 
@@ -277,7 +281,7 @@ export default function AdminWritePage() {
               className="rounded-xl px-8 shadow-xl shadow-[#FF6F61]/20"
         >
               <Send className="w-4 h-4 mr-2" />
-              {status === 'published' ? '更新文章' : '发布文章'}
+              {status === 'published' ? t('common.save') : t('admin.write.button.publish')}
         </Button>
             <button 
               onClick={() => setShowSettings(!showSettings)}
@@ -306,7 +310,7 @@ export default function AdminWritePage() {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="请输入标题..."
+              placeholder={t('admin.write.field.title') + '...'}
               className="w-full text-5xl md:text-6xl font-black text-gray-900 placeholder:text-gray-100 border-none outline-none bg-transparent mb-12 tracking-tighter leading-[1.1]"
               autoFocus
             />
@@ -325,7 +329,7 @@ export default function AdminWritePage() {
           <div className="space-y-10">
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-[0.2em]">文章封面</h3>
+                <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-[0.2em]">{t('admin.write.cover.title')}</h3>
                 {coverImageUrl && (
                   <button onClick={() => setCoverImageUrl('')} className="text-gray-300 hover:text-red-500 transition-colors">
                     <X className="w-4 h-4" />
@@ -384,7 +388,7 @@ export default function AdminWritePage() {
 
                       <div className="absolute bottom-4 left-4 right-4 bg-black/40 backdrop-blur-xl rounded-2xl p-3 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
                         <Move className="w-4 h-4 text-white/70" />
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest flex-1">拖拽调整位置</span>
+                        <span className="text-[10px] font-black text-white uppercase tracking-widest flex-1">{t('admin.write.cover.hint')}</span>
                       </div>
                     </div>
 
@@ -422,7 +426,7 @@ export default function AdminWritePage() {
                         <ImageIcon className="w-6 h-6 text-gray-300 group-hover:text-[#FF6F61] transition-colors" />
                       )}
             </div>
-                    <span className="text-xs font-black text-gray-400 uppercase tracking-widest group-hover:text-[#FF6F61] transition-colors">上传封面图</span>
+                    <span className="text-xs font-black text-gray-400 uppercase tracking-widest group-hover:text-[#FF6F61] transition-colors">{t('admin.write.cover.upload')}</span>
                     <input 
                       type="file" 
                       className="hidden" 
@@ -440,7 +444,7 @@ export default function AdminWritePage() {
                 >
                   <div className="flex items-center gap-2">
                     <Grid className="w-4 h-4" />
-                    选择预置封面
+                    {t('admin.write.cover.selectPreset')}
                   </div>
                   <ChevronDown className={`w-4 h-4 transition-transform ${showPresets ? 'rotate-180' : ''}`} />
                 </button>
@@ -470,21 +474,21 @@ export default function AdminWritePage() {
 
             <div className="space-y-8">
             <div>
-                <label className="block text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] mb-4">分类</label>
+                <label className="block text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] mb-4">{t('admin.write.field.category')}</label>
                 <div className="relative">
               <select 
                     className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:ring-4 focus:ring-[#FF6F61]/5 focus:bg-white focus:border-[#FF6F61]/20 appearance-none transition-all cursor-pointer"
                 value={category} 
                     onChange={(e) => setCategory(e.target.value)}
               >
-                    <option value="">请选择分类</option>
-                <option value="八字">八字</option>
-                <option value="大六壬">大六壬</option>
-                <option value="阴盘奇门">阴盘奇门</option>
-                    <option value="风水">风水</option>
-                    <option value="起名">起名</option>
-                <option value="梅花易数">梅花易数</option>
-                <option value="杂谈">杂谈</option>
+                    <option value="">{t('admin.write.field.category')}</option>
+                <option value="八字">{t('blog.category.bazi')}</option>
+                <option value="大六壬">{t('blog.category.liuren')}</option>
+                <option value="阴盘奇门">{t('blog.category.qimen')}</option>
+                    <option value="风水">{t('blog.category.fengshui')}</option>
+                    <option value="起名">{t('blog.category.naming')}</option>
+                <option value="梅花易数">{t('category.plumFortune')}</option>
+                <option value="杂谈">{t('category.discussion')}</option>
               </select>
                   <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                     <Settings2 className="w-4 h-4" />
@@ -493,10 +497,10 @@ export default function AdminWritePage() {
             </div>
 
             <div>
-                <label className="block text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] mb-4">标签</label>
+                <label className="block text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] mb-4">{t('admin.write.field.tags')}</label>
                 <input
                   type="text"
-                  placeholder="用逗号分隔..."
+                  placeholder={t('admin.write.field.tags') + "..."}
                   className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:ring-4 focus:ring-[#FF6F61]/5 focus:bg-white focus:border-[#FF6F61]/20 transition-all outline-none"
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
@@ -504,9 +508,9 @@ export default function AdminWritePage() {
                   </div>
 
               <div>
-                <label className="block text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] mb-4">摘要</label>
+                <label className="block text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] mb-4">{t('admin.write.field.summary')}</label>
               <textarea
-                  placeholder="选填，若不填将自动截取正文..."
+                  placeholder={t('admin.write.field.summary') + "..."}
                   className="w-full bg-gray-50/50 border border-gray-100 rounded-[28px] px-6 py-5 text-sm font-bold text-gray-700 focus:ring-4 focus:ring-[#FF6F61]/5 focus:bg-white focus:border-[#FF6F61]/20 transition-all min-h-[160px] resize-none outline-none leading-relaxed"
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
@@ -518,10 +522,10 @@ export default function AdminWritePage() {
                   <div className="w-8 h-8 rounded-full bg-[#FF6F61] flex items-center justify-center shadow-lg shadow-[#FF6F61]/20">
                     <Info className="w-4 h-4 text-white" />
             </div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">写作建议</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">{t('admin.write.tip.title')}</span>
             </div>
                 <p className="text-[11px] text-[#FF6F61]/70 font-bold leading-relaxed">
-                  直接将图片拖入正文即可自动上传。选中文字可触发气泡菜单进行快速排版。建议文章摘要控制在 100 字以内以获得最佳展示效果。
+                  {t('admin.write.tip.content')}
                 </p>
                     </div>
                   </div>
@@ -550,5 +554,4 @@ export default function AdminWritePage() {
       `}</style>
     </div>
   );
-
 }

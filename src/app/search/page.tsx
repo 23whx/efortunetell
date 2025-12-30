@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Calendar } from "lucide-react";
 import { formatDate } from '@/utils/date';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // 文章接口定义
 interface Article {
@@ -25,6 +26,7 @@ interface Article {
 function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
+  const { t } = useLanguage();
   
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +58,7 @@ function SearchResults() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const code = (error as any)?.code;
           if (code === 'PGRST205') {
-            setSetupHint('Supabase 还没建表：请先在 Supabase SQL Editor 执行项目里的 supabase/schema.sql');
+            setSetupHint(t('blog.setupHint'));
             setArticles([]);
             return;
           }
@@ -89,14 +91,14 @@ function SearchResults() {
         setArticles(mapped);
       } catch (error) {
         console.error('搜索错误:', error);
-        setError(error instanceof Error ? error.message : '搜索失败，请稍后重试');
+        setError(error instanceof Error ? error.message : t('search.failed'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchSearchResults();
-  }, [query]);
+  }, [query, t]);
 
   // 获取封面图片URL（Supabase Storage public URL）
   const getCoverImage = (article: Article) => {
@@ -105,7 +107,7 @@ function SearchResults() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-6 md:py-8">
-      <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-[#FF6F61]">搜索结果: {query}</h1>
+      <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-[#FF6F61]">{t('search.results')}: {query}</h1>
       
       {loading && (
         <div className="flex justify-center py-20">
@@ -114,73 +116,82 @@ function SearchResults() {
       )}
       
       {error && (
-        <div className="bg-red-100 text-red-700 p-4 rounded text-center my-6 md:my-10">
-          搜索失败：{error}
+        <div className="bg-red-100 text-red-700 p-4 rounded text-center my-6 md:my-10 font-bold">
+          {t('search.failed')}: {error}
         </div>
       )}
 
       {!loading && !error && setupHint && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded text-center my-6 md:my-10">
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded text-center my-6 md:my-10 font-medium">
           {setupHint}
         </div>
       )}
       
       {!loading && !error && articles.length === 0 && (
-        <div className="text-center text-gray-500 py-12 md:py-20">
-          <p className="text-gray-500 text-base md:text-lg px-4">
-            没有找到包含 &ldquo;{query}&rdquo; 的文章
+        <div className="text-center text-gray-500 py-12 md:py-20 bg-white/50 rounded-3xl border border-dashed border-gray-200 mx-4">
+          <p className="text-gray-500 text-base md:text-lg px-4 font-medium">
+            {t('search.noArticlesFound').replace('{query}', query)}
           </p>
         </div>
       )}
       
       {!loading && !error && articles.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {articles.map((article) => (
             <Link
               href={`/blog/${article.id}`}
               key={article.id}
-              className="block bg-[#FFFACD] text-[hsl(0_0%_14.5%)] rounded-lg overflow-hidden hover:shadow-md hover:shadow-[#FF6F61]/20 transition-all duration-300 min-h-[280px] md:h-64 flex flex-col border border-[#FF6F61]"
+              className="group block bg-white rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 border border-gray-100"
             >
-              <div className="h-24 md:h-20 relative">
+              <div className="aspect-[16/10] relative overflow-hidden">
                 <Image
                   src={getCoverImage(article)}
                   alt={article.title}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = '/images/default-image.svg';
-                    target.alt = '图片加载失败';
                   }}
                   unoptimized={true}
                 />
+                {article.category && (
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-[10px] font-black text-[#FF6F61] shadow-sm uppercase tracking-wider">
+                      {t(`blog.category.${article.category.toLowerCase()}`) !== `blog.category.${article.category.toLowerCase()}` 
+                        ? t(`blog.category.${article.category.toLowerCase()}`) 
+                        : article.category}
+                    </span>
+                  </div>
+                )}
               </div>
-              <div className="p-3 md:p-4 flex flex-col flex-grow">
-                <span className="text-xs font-medium text-[#FF6F61]">{article.category || ''}</span>
-                <h2 className="text-base md:text-lg font-semibold mt-1 mb-2 line-clamp-2">{article.title}</h2>
-                <p className="text-[hsl(0_0%_55.6%)] text-sm mb-3 line-clamp-2 flex-grow">{article.summary}</p>
+              <div className="p-6 flex flex-col h-[180px]">
+                <h2 className="text-lg font-black text-gray-900 group-hover:text-[#FF6F61] transition-colors line-clamp-2 mb-2 leading-tight">
+                  {article.title}
+                </h2>
+                <p className="text-gray-500 text-sm line-clamp-2 mb-4 flex-grow leading-relaxed">
+                  {article.summary}
+                </p>
 
-                <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center text-xs text-[#FF6F61] mt-auto pt-2 border-t border-[#FF6F61]">
-                  <div className="flex items-center space-x-2 truncate">
-                    <div className="w-4 h-4 md:w-5 md:h-5 rounded-full flex-shrink-0 overflow-hidden">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-50 mt-auto">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-100">
                       <Image
                         src="/user_img.png"
-                        alt="Author avatar"
-                        width={20}
-                        height={20}
-                        className="w-full h-full object-cover"
+                        alt="Author"
+                        width={24}
+                        height={24}
+                        className="object-cover"
                         unoptimized={true}
                       />
                     </div>
-                    <span className="truncate text-xs md:text-sm">
-                      {article.author_display_name || 'Rollkey'} · {formatDate(article.created_at)}
+                    <span className="text-[10px] font-bold text-gray-400">
+                      {article.author_display_name || 'Rollkey'}
                     </span>
                   </div>
-                  <div className="flex gap-3 shrink-0 justify-start md:justify-end">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                      <span className="text-xs">发布</span>
-                    </div>
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <Calendar className="w-3 h-3" />
+                    <span>{formatDate(article.created_at, t('common.locale') || 'en-US')}</span>
                   </div>
                 </div>
               </div>
@@ -193,12 +204,13 @@ function SearchResults() {
 }
 
 export default function SearchPage() {
+  const { t } = useLanguage();
   return (
-    <div className="min-h-screen font-sans bg-[#FFFACD]">
+    <div className="min-h-screen bg-[#faf9f6]">
       <Suspense fallback={
         <div className="container mx-auto px-4 md:px-6 py-6 md:py-8">
           <div className="flex justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-[#FF6F61]/20 border-t-[#FF6F61] rounded-full animate-spin"></div>
           </div>
         </div>
       }>
@@ -206,4 +218,4 @@ export default function SearchPage() {
       </Suspense>
     </div>
   );
-} 
+}

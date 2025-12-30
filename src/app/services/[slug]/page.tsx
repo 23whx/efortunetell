@@ -4,13 +4,14 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getPillarBySlug } from '@/lib/seo/pillars';
+import { getServerT } from '@/lib/i18n/server';
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const pillar = getPillarBySlug(slug);
-  if (!pillar) return { title: '专题不存在' };
+  if (!pillar) return { title: 'Pillar not found' };
 
   const canonical = `https://efortunetell.blog/services/${pillar.slug}`;
   return {
@@ -33,6 +34,7 @@ export default async function PillarPage({ params }: Props) {
   const pillar = getPillarBySlug(slug);
   if (!pillar) return notFound();
 
+  const { language, t } = await getServerT();
   const supabase = await createSupabaseServerClient();
   const { data: articles } = await supabase
     .from('articles')
@@ -43,11 +45,21 @@ export default async function PillarPage({ params }: Props) {
     .limit(50);
 
   const canonical = `https://efortunetell.blog/services/${pillar.slug}`;
+  
+  // Normalize key for translation (liuren/qimen instead of daliuren/qimen-yinpan)
+  const translationKey = pillar.key.replace('daliuren', 'liuren').replace('qimen-yinpan', 'qimen');
+  const title = t(`services.${translationKey}.title`) !== `services.${translationKey}.title` 
+    ? t(`services.${translationKey}.title`) 
+    : (language === 'zh' ? pillar.zhTitle : pillar.enTitle);
+  const desc = t(`services.${translationKey}.desc`) !== `services.${translationKey}.desc`
+    ? t(`services.${translationKey}.desc`)
+    : (language === 'zh' ? pillar.zhDesc : pillar.enDesc);
+
   const ld = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `${pillar.zhTitle} 专题`,
-    description: pillar.zhDesc,
+    name: `${title} ${t('services.title')}`,
+    description: desc,
     url: canonical,
     isPartOf: {
       '@type': 'WebSite',
@@ -68,39 +80,39 @@ export default async function PillarPage({ params }: Props) {
             {pillar.enTitle}
           </div>
           <h1 className="mt-2 text-4xl md:text-6xl font-black text-gray-900 tracking-tight">
-            {pillar.zhTitle}
+            {title}
           </h1>
           <p className="mt-4 text-gray-500 font-medium leading-relaxed max-w-3xl">
-            {pillar.zhDesc}
+            {desc}
           </p>
 
           <div className="mt-6 flex flex-wrap gap-2">
-            {pillar.keywords.map((k) => (
+            {pillar.keywordKeys.map((k) => (
               <span
                 key={k}
                 className="px-3 py-1.5 rounded-full bg-white text-gray-500 text-[10px] font-black uppercase tracking-widest border border-gray-100"
               >
-                {k}
+                {t(k)}
               </span>
             ))}
           </div>
         </div>
 
         <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
-          <h2 className="text-xl font-black text-gray-900">最新文章</h2>
+          <h2 className="text-xl font-black text-gray-900">{t('services.latestArticles')}</h2>
           <Link
             href="/blog"
             className="text-sm font-black text-[#FF6F61] hover:text-[#ff8a75] transition-colors"
           >
-            查看全部博客 →
+            {t('services.viewAllBlog')} →
           </Link>
         </div>
 
         {(articles || []).length === 0 ? (
           <div className="bg-white rounded-[32px] border border-dashed border-gray-200 p-10 text-center">
-            <p className="text-gray-500 font-bold">这个专题暂时还没有文章。</p>
+            <p className="text-gray-500 font-bold">{t('services.noArticles')}</p>
             <p className="mt-2 text-sm text-gray-400 font-medium">
-              你可以先去 <Link href="/blog" className="text-[#FF6F61] font-black">博客</Link> 看其它内容，或在后台发布第一篇。
+              {t('services.noArticlesTip')}
             </p>
           </div>
         ) : (
@@ -140,5 +152,3 @@ export default async function PillarPage({ params }: Props) {
     </div>
   );
 }
-
-

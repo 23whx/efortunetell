@@ -19,7 +19,7 @@ export default function RegisterPage() {
 
   const validatePassword = (value: string) => {
     if (value.length < 6) {
-      setPasswordError('密码最少需要6个字符');
+      setPasswordError(t('user.register.passwordMinLength'));
       return false;
     } else {
       setPasswordError('');
@@ -66,7 +66,7 @@ export default function RegisterPage() {
         router.push('/user/login');
       }
     } catch (err) {
-      console.error('注册错误:', err);
+      console.error('Registration error:', err);
       setError(err instanceof Error ? err.message : t('error.networkError'));
     } finally {
       setIsLoading(false);
@@ -84,7 +84,7 @@ export default function RegisterPage() {
         )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4 flex items-center gap-2">
-            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email"><span className="text-red-500">*</span>Email</label>
+            <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email"><span className="text-red-500">*</span>{t('common.email')}</label>
             <Input
               id="email"
               type="email"
@@ -104,7 +104,7 @@ export default function RegisterPage() {
               onChange={handlePasswordChange}
               required
               className="border-[#FF6F61] focus:ring-[#FF6F61] focus:border-[#FF6F61] flex-1"
-              placeholder="请输入密码"
+              placeholder={t('user.register.passwordPlaceholder')}
             />
           </div>
           {passwordError && (
@@ -117,7 +117,7 @@ export default function RegisterPage() {
             className="w-full bg-[#FF6F61] hover:bg-[#ff8a75] text-white border-none"
             disabled={isLoading}
           >
-            {isLoading ? t('common.loading') + '...' : t('user.register.submit')}
+            {isLoading ? t('common.loading') : t('user.register.submit')}
           </Button>
         </form>
       </div>

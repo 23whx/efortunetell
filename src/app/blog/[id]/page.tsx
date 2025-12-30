@@ -5,6 +5,7 @@ import BlogDetails, { BlogArticle } from '@/components/blog/BlogDetails';
 import { Metadata } from 'next';
 import Script from 'next/script';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getServerT } from '@/lib/i18n/server';
 
 interface BlogDetailPageProps {
   params: Promise<{ id: string }>
@@ -12,6 +13,7 @@ interface BlogDetailPageProps {
 
 // 生成页面元数据
 export async function generateMetadata({ params }: BlogDetailPageProps): Promise<Metadata> {
+  const { t } = await getServerT();
   try {
     const { id } = await params;
     const supabase = await createSupabaseServerClient();
@@ -58,13 +60,13 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
     }
     
     return {
-      title: '博客文章',
-      description: '查看我们的博客文章'
+      title: t('common.blog'),
+      description: t('home.description')
     };
-      } catch {
+  } catch {
     return {
-      title: '博客文章',
-      description: '查看我们的博客文章'
+      title: t('common.blog'),
+      description: t('home.description')
     };
   }
 }
@@ -72,6 +74,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
 // 服务器组件，用于获取数据
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const { id } = await params;
+  const { t } = await getServerT();
   
   if (!id) return notFound();
 
@@ -109,8 +112,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       author_display_name: author?.display_name ?? null,
     };
   } catch (err) {
-    console.error('获取文章详情错误:', err);
-    error = err instanceof Error ? err.message : '获取文章详情失败，请稍后重试';
+    console.error('Error fetching article details:', err);
+    error = err instanceof Error ? err.message : t('blog.error');
   }
   
   // Build structured data for the article (JSON-LD)
@@ -172,7 +175,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             style={{ color: '#ff6f61' }}
           >
             <ArrowLeft size={20} className="mr-2" />
-            <span className="font-medium">返回博客列表</span>
+            <span className="font-medium">{t('blog.backToList')}</span>
           </Link>
           
           {error ? (
@@ -184,7 +187,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium">加载文章失败</h3>
+                  <h3 className="text-sm font-medium">{t('blog.error')}</h3>
                   <p className="mt-1 text-sm">{error}</p>
                 </div>
               </div>
@@ -192,8 +195,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           ) : !article ? (
             <div className="flex justify-center py-20">
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="mt-4 text-gray-600">正在加载文章...</p>
+                <div className="w-12 h-12 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600">{t('blog.loading')}</p>
               </div>
             </div>
           ) : (
@@ -204,4 +207,4 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       </div>
     </>
   );
-} 
+}

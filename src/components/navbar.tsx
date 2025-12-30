@@ -161,7 +161,7 @@ export default function Navbar() {
                     href="/services"
                     className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname.startsWith('/services') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
                   >
-                    专题
+                    {t('nav.services')}
                   </Link>
                   <Link 
                     href="/fortune" 
@@ -229,7 +229,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-3">
                   {roleLoading && (
                     <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">
-                      Syncing...
+                      {t('common.syncing') || 'Syncing...'}
                     </span>
                   )}
                   <button 
@@ -307,7 +307,7 @@ export default function Navbar() {
                 href="/services"
                 className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname.startsWith('/services') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
               >
-                专题
+                {t('nav.services')}
               </Link>
               <Link 
                 href="/fortune" 

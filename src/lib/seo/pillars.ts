@@ -9,6 +9,7 @@ export type Pillar = {
   enDesc: string;
   category: string; // matches public.articles.category
   keywords: string[];
+  keywordKeys: string[];
 };
 
 export const PILLARS: Pillar[] = [
@@ -21,6 +22,7 @@ export const PILLARS: Pillar[] = [
     enDesc: 'Learn BaZi with practical frameworks: Ten Gods, structures, useful god, and yearly luck.',
     category: '八字',
     keywords: ['bazi', 'four pillars', 'ten gods', '用神', '格局', '流年'],
+    keywordKeys: ['keyword.bazi', 'keyword.fourPillars', 'keyword.tenGods', 'keyword.usefulGod', 'keyword.structure', 'keyword.yearlyLuck'],
   },
   {
     key: 'qimen-yinpan',
@@ -31,6 +33,7 @@ export const PILLARS: Pillar[] = [
     enDesc: 'Yin Pan QMDJ: chart structure, palace interpretation, decision frameworks, and examples.',
     category: '阴盘奇门',
     keywords: ['qimen', 'qimen dunjia', 'yin pan', '奇门遁甲', '阴盘奇门'],
+    keywordKeys: ['keyword.qimen', 'keyword.qimenDunjia', 'keyword.yinPan', 'keyword.yinPanQimen'],
   },
   {
     key: 'daliuren',
@@ -41,6 +44,7 @@ export const PILLARS: Pillar[] = [
     enDesc: 'Da Liu Ren: 3 transmissions/4 lessons, spirits & generals, timing, and real cases.',
     category: '大六壬',
     keywords: ['da liu ren', '六壬', '神将', '应期'],
+    keywordKeys: ['keyword.daLiuRen', 'keyword.liuRen', 'keyword.spiritsGenerals', 'keyword.timing'],
   },
   {
     key: 'fengshui',
@@ -51,6 +55,7 @@ export const PILLARS: Pillar[] = [
     enDesc: 'From form to formulas: house luck, flying stars, layout, and practical checklists.',
     category: '风水',
     keywords: ['feng shui', '飞星', '宅运', '阳宅', '布局'],
+    keywordKeys: ['keyword.fengShui', 'keyword.flyingStars', 'keyword.houseLuck', 'keyword.yangZhai', 'keyword.layout'],
   },
   {
     key: 'naming',
@@ -61,11 +66,10 @@ export const PILLARS: Pillar[] = [
     enDesc: 'Name selection: balancing elements, phonetics/meaning, and practical do & don’t.',
     category: '起名',
     keywords: ['name selection', '起名', '姓名学', '五行', '补偏'],
+    keywordKeys: ['keyword.nameSelection', 'keyword.naming', 'keyword.nameology', 'keyword.fiveElements', 'keyword.balancing'],
   },
 ];
 
 export function getPillarBySlug(slug: string) {
   return PILLARS.find((p) => p.slug === slug) ?? null;
 }
-
-

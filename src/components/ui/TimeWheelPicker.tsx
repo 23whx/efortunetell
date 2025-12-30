@@ -12,18 +12,18 @@ interface TimeWheelPickerProps {
 
 // 十二地支对应的时间范围
 const EARTHLY_BRANCHES = [
-  { name: '子', nameEn: 'Zi', startHour: 23, endHour: 1, color: '#1E3A8A' },    // 23:00-1:00
-  { name: '丑', nameEn: 'Chou', startHour: 1, endHour: 3, color: '#7C3AED' },   // 1:00-3:00
-  { name: '寅', nameEn: 'Yin', startHour: 3, endHour: 5, color: '#059669' },    // 3:00-5:00
-  { name: '卯', nameEn: 'Mao', startHour: 5, endHour: 7, color: '#DC2626' },    // 5:00-7:00
-  { name: '辰', nameEn: 'Chen', startHour: 7, endHour: 9, color: '#EA580C' },   // 7:00-9:00
-  { name: '巳', nameEn: 'Si', startHour: 9, endHour: 11, color: '#D97706' },    // 9:00-11:00
-  { name: '午', nameEn: 'Wu', startHour: 11, endHour: 13, color: '#DC2626' },   // 11:00-13:00
-  { name: '未', nameEn: 'Wei', startHour: 13, endHour: 15, color: '#7C2D12' },  // 13:00-15:00
-  { name: '申', nameEn: 'Shen', startHour: 15, endHour: 17, color: '#374151' }, // 15:00-17:00
-  { name: '酉', nameEn: 'You', startHour: 17, endHour: 19, color: '#6B7280' },  // 17:00-19:00
-  { name: '戌', nameEn: 'Xu', startHour: 19, endHour: 21, color: '#92400E' },   // 19:00-21:00
-  { name: '亥', nameEn: 'Hai', startHour: 21, endHour: 23, color: '#1F2937' }   // 21:00-23:00
+  { id: 'zi', startHour: 23, endHour: 1, color: '#1E3A8A' },    // 23:00-1:00
+  { id: 'chou', startHour: 1, endHour: 3, color: '#7C3AED' },   // 1:00-3:00
+  { id: 'yin', startHour: 3, endHour: 5, color: '#059669' },    // 3:00-5:00
+  { id: 'mao', startHour: 5, endHour: 7, color: '#DC2626' },    // 5:00-7:00
+  { id: 'chen', startHour: 7, endHour: 9, color: '#EA580C' },   // 7:00-9:00
+  { id: 'si', startHour: 9, endHour: 11, color: '#D97706' },    // 9:00-11:00
+  { id: 'wu', startHour: 11, endHour: 13, color: '#DC2626' },   // 11:00-13:00
+  { id: 'wei', startHour: 13, endHour: 15, color: '#7C2D12' },  // 13:00-15:00
+  { id: 'shen', startHour: 15, endHour: 17, color: '#374151' }, // 15:00-17:00
+  { id: 'you', startHour: 17, endHour: 19, color: '#6B7280' },  // 17:00-19:00
+  { id: 'xu', startHour: 19, endHour: 21, color: '#92400E' },   // 19:00-21:00
+  { id: 'hai', startHour: 21, endHour: 23, color: '#1F2937' }   // 21:00-23:00
 ];
 
 // 获取当前时间对应的地支
@@ -40,7 +40,7 @@ function getCurrentBranch(hour: number): typeof EARTHLY_BRANCHES[0] {
 }
 
 export default function TimeWheelPicker({ selectedHour, selectedMinute, onChange, className = '' }: TimeWheelPickerProps) {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [hours] = useState(Array.from({ length: 24 }, (_, i) => i));
   const [minutes] = useState(Array.from({ length: 60 }, (_, i) => i));
@@ -150,10 +150,10 @@ export default function TimeWheelPicker({ selectedHour, selectedMinute, onChange
                   className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-sm"
                   style={{ backgroundColor: currentBranch.color }}
                 >
-                  {currentBranch.name}
+                  {t(`branch.${currentBranch.id}`)}
                 </div>
                 <span className="text-sm text-gray-600">
-                  {language === 'zh' ? currentBranch.name : currentBranch.nameEn}时
+                  {t(`branch.${currentBranch.id}`)}{t('branch.suffix')}
                 </span>
               </div>
             </div>
@@ -177,11 +177,11 @@ export default function TimeWheelPicker({ selectedHour, selectedMinute, onChange
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-lg"
                   style={{ backgroundColor: currentBranch.color }}
                 >
-                  {currentBranch.name}
+                  {t(`branch.${currentBranch.id}`)}
                 </div>
                 <div className="text-sm text-gray-600">
                   <div className="font-medium">
-                    {language === 'zh' ? currentBranch.name : currentBranch.nameEn}时
+                    {t(`branch.${currentBranch.id}`)}{t('branch.suffix')}
                   </div>
                   <div className="text-xs text-gray-500">
                     {currentBranch.startHour}:00-{currentBranch.endHour}:00
@@ -196,7 +196,7 @@ export default function TimeWheelPicker({ selectedHour, selectedMinute, onChange
             {/* 小时选择 */}
             <div className="flex-1 relative">
               <div className="text-center py-1 text-sm font-medium text-gray-700 bg-gray-50">
-                {language === 'zh' ? '时' : 'Hour'}
+                {t('common.hour')}
               </div>
               <div 
                 ref={hourRef}
@@ -233,7 +233,7 @@ export default function TimeWheelPicker({ selectedHour, selectedMinute, onChange
             {/* 分钟选择 */}
             <div className="flex-1 relative">
               <div className="text-center py-1 text-sm font-medium text-gray-700 bg-gray-50">
-                {language === 'zh' ? '分' : 'Min'}
+                {t('common.minute')}
               </div>
               <div 
                 ref={minuteRef}
@@ -268,7 +268,7 @@ export default function TimeWheelPicker({ selectedHour, selectedMinute, onChange
           {/* 手动输入选项 */}
           <div className="px-4 py-3 border-t border-gray-200 bg-gray-50">
             <div className="text-xs text-gray-600 mb-2">
-              {language === 'zh' ? '或手动输入时间:' : 'Or input manually:'}
+              {t('fortune.booking.manualInput') || 'Or input manually:'}
             </div>
             <div className="flex items-center gap-2">
               <input
@@ -304,7 +304,7 @@ export default function TimeWheelPicker({ selectedHour, selectedMinute, onChange
               onClick={() => setIsOpen(false)}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md transition-colors font-medium"
             >
-              {language === 'zh' ? '确认' : 'Confirm'}
+              {t('common.confirm')}
             </button>
           </div>
         </div>

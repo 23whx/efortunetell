@@ -1,30 +1,21 @@
-import Link from 'next/link';
-import { Metadata } from 'next';
-import { PILLARS } from '@/lib/seo/pillars';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Pillar Pages',
-  description: 'Pillar pages for BaZi, Yin Pan Qi Men Dun Jia, Da Liu Ren, Feng Shui, and Name Selection.',
-  alternates: { canonical: 'https://efortunetell.blog/services' },
-  openGraph: {
-    title: '专题 | Rolley Divination Blog',
-    description: 'Pillar pages for BaZi, Yin Pan Qi Men Dun Jia, Da Liu Ren, Feng Shui, and Name Selection.',
-    url: 'https://efortunetell.blog/services',
-    type: 'website',
-    images: [{ url: '/icon.png', width: 512, height: 512, alt: 'Rolley Divination Blog' }],
-  },
-};
+import Link from 'next/link';
+import { PILLARS } from '@/lib/seo/pillars';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ServicesIndexPage() {
+  const { t, language } = useLanguage();
+
   return (
     <div className="min-h-screen bg-[#faf9f6]">
       <div className="max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
         <div className="text-center mb-14">
           <h1 className="text-4xl md:text-6xl font-black text-gray-900 tracking-tight">
-            专题 <span className="text-[#FF6F61]">Pillar Pages</span>
+            {t('services.title')} <span className="text-[#FF6F61]">{t('services.featured')}</span>
           </h1>
           <p className="mt-4 text-gray-500 font-medium leading-relaxed">
-            按主题聚合：每个专题页汇总相关文章、核心概念与学习路线（对搜索引擎也更友好）。
+            {t('services.subtitle')}
           </p>
         </div>
 
@@ -41,7 +32,12 @@ export default function ServicesIndexPage() {
                     {p.enTitle}
                   </div>
                   <div className="mt-2 text-3xl font-black text-gray-900 group-hover:text-[#FF6F61] transition-colors">
-                    {p.zhTitle}
+                    {(() => {
+                      const translationKey = p.key.replace('daliuren', 'liuren').replace('qimen-yinpan', 'qimen');
+                      return t(`services.${translationKey}.title`) !== `services.${translationKey}.title`
+                        ? t(`services.${translationKey}.title`)
+                        : p.zhTitle;
+                    })()}
                   </div>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-[#FF6F61]/10 flex items-center justify-center text-[#FF6F61] font-black">
@@ -50,16 +46,21 @@ export default function ServicesIndexPage() {
               </div>
 
               <p className="mt-6 text-sm text-gray-500 leading-relaxed font-medium">
-                {p.zhDesc}
+                {(() => {
+                  const translationKey = p.key.replace('daliuren', 'liuren').replace('qimen-yinpan', 'qimen');
+                  return t(`services.${translationKey}.desc`) !== `services.${translationKey}.desc`
+                    ? t(`services.${translationKey}.desc`)
+                    : p.zhDesc;
+                })()}
               </p>
 
               <div className="mt-6 flex flex-wrap gap-2">
-                {p.keywords.slice(0, 4).map((k) => (
+                {p.keywordKeys.slice(0, 4).map((k) => (
                   <span
                     key={k}
                     className="px-3 py-1.5 rounded-full bg-gray-50 text-gray-500 text-[10px] font-black uppercase tracking-widest border border-gray-100"
                   >
-                    {k}
+                    {t(k)}
                   </span>
                 ))}
               </div>

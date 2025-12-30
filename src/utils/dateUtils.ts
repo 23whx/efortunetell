@@ -4,97 +4,37 @@ import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 // 支持的时区列表
 export const TIMEZONES = [
   // 亚洲时区
-  { id: 'Asia/Shanghai', name: '中国时间 (UTC+8)', offset: '+08:00' },
-  { id: 'Asia/Tokyo', name: '日本时间 (UTC+9)', offset: '+09:00' },
-  { id: 'Asia/Seoul', name: '韩国时间 (UTC+9)', offset: '+09:00' },
-  { id: 'Asia/Singapore', name: '新加坡时间 (UTC+8)', offset: '+08:00' },
-  { id: 'Asia/Hong_Kong', name: '香港时间 (UTC+8)', offset: '+08:00' },
-  { id: 'Asia/Taipei', name: '台北时间 (UTC+8)', offset: '+08:00' },
-  { id: 'Asia/Bangkok', name: '曼谷时间 (UTC+7)', offset: '+07:00' },
-  { id: 'Asia/Jakarta', name: '雅加达时间 (UTC+7)', offset: '+07:00' },
-  { id: 'Asia/Manila', name: '马尼拉时间 (UTC+8)', offset: '+08:00' },
-  { id: 'Asia/Kuala_Lumpur', name: '吉隆坡时间 (UTC+8)', offset: '+08:00' },
-  { id: 'Asia/Ho_Chi_Minh', name: '胡志明市时间 (UTC+7)', offset: '+07:00' },
-  { id: 'Asia/Mumbai', name: '印度时间 (UTC+5:30)', offset: '+05:30' },
-  { id: 'Asia/Dubai', name: '迪拜时间 (UTC+4)', offset: '+04:00' },
-  { id: 'Asia/Riyadh', name: '沙特时间 (UTC+3)', offset: '+03:00' },
-  { id: 'Asia/Tehran', name: '德黑兰时间 (UTC+3:30)', offset: '+03:30' },
-  { id: 'Asia/Kolkata', name: '加尔各答时间 (UTC+5:30)', offset: '+05:30' },
-  { id: 'Asia/Karachi', name: '卡拉奇时间 (UTC+5)', offset: '+05:00' },
-  { id: 'Asia/Dhaka', name: '达卡时间 (UTC+6)', offset: '+06:00' },
-  { id: 'Asia/Almaty', name: '阿拉木图时间 (UTC+6)', offset: '+06:00' },
-  { id: 'Asia/Tashkent', name: '塔什干时间 (UTC+5)', offset: '+05:00' },
-  { id: 'Asia/Yekaterinburg', name: '叶卡捷琳堡时间 (UTC+5)', offset: '+05:00' },
-  { id: 'Asia/Omsk', name: '鄂木斯克时间 (UTC+6)', offset: '+06:00' },
-  { id: 'Asia/Krasnoyarsk', name: '克拉斯诺亚尔斯克时间 (UTC+7)', offset: '+07:00' },
-  { id: 'Asia/Irkutsk', name: '伊尔库茨克时间 (UTC+8)', offset: '+08:00' },
-  { id: 'Asia/Yakutsk', name: '雅库茨克时间 (UTC+9)', offset: '+09:00' },
-  { id: 'Asia/Vladivostok', name: '海参崴时间 (UTC+10)', offset: '+10:00' },
+  { id: 'Asia/Shanghai', nameKey: 'timezone.china', name: '中国时间 (UTC+8)', offset: '+08:00' },
+  { id: 'Asia/Tokyo', nameKey: 'timezone.tokyo', name: '日本时间 (UTC+9)', offset: '+09:00' },
+  { id: 'Asia/Seoul', nameKey: 'timezone.seoul', name: '韩国时间 (UTC+9)', offset: '+09:00' },
+  { id: 'Asia/Singapore', name: 'Singapore (UTC+8)', offset: '+08:00' },
+  { id: 'Asia/Hong_Kong', name: 'Hong Kong (UTC+8)', offset: '+08:00' },
+  { id: 'Asia/Taipei', name: 'Taipei (UTC+8)', offset: '+08:00' },
+  { id: 'Asia/Bangkok', name: 'Bangkok (UTC+7)', offset: '+07:00' },
+  { id: 'Asia/Dubai', nameKey: 'timezone.dubai', name: 'Dubai (UTC+4)', offset: '+04:00' },
+  { id: 'Asia/Riyadh', name: 'Riyadh (UTC+3)', offset: '+03:00' },
 
   // 欧洲时区
-  { id: 'Europe/London', name: '伦敦时间 (UTC+0/UTC+1)', offset: '+00:00/+01:00' },
-  { id: 'Europe/Dublin', name: '都柏林时间 (UTC+0/UTC+1)', offset: '+00:00/+01:00' },
-  { id: 'Europe/Paris', name: '巴黎时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Berlin', name: '柏林时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Rome', name: '罗马时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Madrid', name: '马德里时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Amsterdam', name: '阿姆斯特丹时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Brussels', name: '布鲁塞尔时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Vienna', name: '维也纳时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Zurich', name: '苏黎世时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Stockholm', name: '斯德哥尔摩时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Copenhagen', name: '哥本哈根时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Helsinki', name: '赫尔辛基时间 (UTC+2/UTC+3)', offset: '+02:00/+03:00' },
-  { id: 'Europe/Warsaw', name: '华沙时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Prague', name: '布拉格时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Budapest', name: '布达佩斯时间 (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
-  { id: 'Europe/Athens', name: '雅典时间 (UTC+2/UTC+3)', offset: '+02:00/+03:00' },
-  { id: 'Europe/Istanbul', name: '伊斯坦布尔时间 (UTC+3)', offset: '+03:00' },
-  { id: 'Europe/Moscow', name: '莫斯科时间 (UTC+3)', offset: '+03:00' },
-  { id: 'Europe/Kiev', name: '基辅时间 (UTC+2/UTC+3)', offset: '+02:00/+03:00' },
-  { id: 'Europe/Bucharest', name: '布加勒斯特时间 (UTC+2/UTC+3)', offset: '+02:00/+03:00' },
+  { id: 'Europe/London', nameKey: 'timezone.london', name: 'London (UTC+0/UTC+1)', offset: '+00:00/+01:00' },
+  { id: 'Europe/Paris', name: 'Paris (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
+  { id: 'Europe/Berlin', name: 'Berlin (UTC+1/UTC+2)', offset: '+01:00/+02:00' },
+  { id: 'Europe/Istanbul', name: 'Istanbul (UTC+3)', offset: '+03:00' },
 
   // 北美时区
-  { id: 'America/New_York', name: '美东时间 (UTC-5/UTC-4)', offset: '-05:00/-04:00' },
-  { id: 'America/Chicago', name: '美中时间 (UTC-6/UTC-5)', offset: '-06:00/-05:00' },
-  { id: 'America/Denver', name: '美山时间 (UTC-7/UTC-6)', offset: '-07:00/-06:00' },
-  { id: 'America/Los_Angeles', name: '美西时间 (UTC-8/UTC-7)', offset: '-08:00/-07:00' },
-  { id: 'America/Anchorage', name: '阿拉斯加时间 (UTC-9/UTC-8)', offset: '-09:00/-08:00' },
-  { id: 'Pacific/Honolulu', name: '夏威夷时间 (UTC-10)', offset: '-10:00' },
-  { id: 'America/Toronto', name: '多伦多时间 (UTC-5/UTC-4)', offset: '-05:00/-04:00' },
-  { id: 'America/Vancouver', name: '温哥华时间 (UTC-8/UTC-7)', offset: '-08:00/-07:00' },
-  { id: 'America/Montreal', name: '蒙特利尔时间 (UTC-5/UTC-4)', offset: '-05:00/-04:00' },
-  { id: 'America/Mexico_City', name: '墨西哥城时间 (UTC-6/UTC-5)', offset: '-06:00/-05:00' },
-
-  // 南美时区
-  { id: 'America/Sao_Paulo', name: '圣保罗时间 (UTC-3/UTC-2)', offset: '-03:00/-02:00' },
-  { id: 'America/Argentina/Buenos_Aires', name: '布宜诺斯艾利斯时间 (UTC-3)', offset: '-03:00' },
-  { id: 'America/Lima', name: '利马时间 (UTC-5)', offset: '-05:00' },
-  { id: 'America/Bogota', name: '波哥大时间 (UTC-5)', offset: '-05:00' },
-  { id: 'America/Caracas', name: '加拉加斯时间 (UTC-4)', offset: '-04:00' },
-  { id: 'America/Santiago', name: '圣地亚哥时间 (UTC-4/UTC-3)', offset: '-04:00/-03:00' },
-
-  // 非洲时区
-  { id: 'Africa/Cairo', name: '开罗时间 (UTC+2)', offset: '+02:00' },
-  { id: 'Africa/Lagos', name: '拉各斯时间 (UTC+1)', offset: '+01:00' },
-  { id: 'Africa/Nairobi', name: '内罗毕时间 (UTC+3)', offset: '+03:00' },
-  { id: 'Africa/Johannesburg', name: '约翰内斯堡时间 (UTC+2)', offset: '+02:00' },
-  { id: 'Africa/Casablanca', name: '卡萨布兰卡时间 (UTC+1/UTC+0)', offset: '+01:00/+00:00' },
-  { id: 'Africa/Algiers', name: '阿尔及尔时间 (UTC+1)', offset: '+01:00' },
+  { id: 'America/New_York', nameKey: 'timezone.newyork', name: 'Eastern Time (UTC-5/UTC-4)', offset: '-05:00/-04:00' },
+  { id: 'America/Chicago', name: 'Central Time (UTC-6/UTC-5)', offset: '-06:00/-05:00' },
+  { id: 'America/Denver', name: 'Mountain Time (UTC-7/UTC-6)', offset: '-07:00/-06:00' },
+  { id: 'America/Los_Angeles', nameKey: 'timezone.losangeles', name: 'Pacific Time (UTC-8/UTC-7)', offset: '-08:00/-07:00' },
+  { id: 'America/Toronto', name: 'Toronto (UTC-5/UTC-4)', offset: '-05:00/-04:00' },
+  { id: 'America/Vancouver', name: 'Vancouver (UTC-8/UTC-7)', offset: '-08:00/-07:00' },
 
   // 大洋洲时区
-  { id: 'Australia/Sydney', name: '悉尼时间 (UTC+10/UTC+11)', offset: '+10:00/+11:00' },
-  { id: 'Australia/Melbourne', name: '墨尔本时间 (UTC+10/UTC+11)', offset: '+10:00/+11:00' },
-  { id: 'Australia/Brisbane', name: '布里斯班时间 (UTC+10)', offset: '+10:00' },
-  { id: 'Australia/Perth', name: '珀斯时间 (UTC+8)', offset: '+08:00' },
-  { id: 'Australia/Adelaide', name: '阿德莱德时间 (UTC+9:30/UTC+10:30)', offset: '+09:30/+10:30' },
-  { id: 'Pacific/Auckland', name: '奥克兰时间 (UTC+12/UTC+13)', offset: '+12:00/+13:00' },
-  { id: 'Pacific/Fiji', name: '斐济时间 (UTC+12/UTC+13)', offset: '+12:00/+13:00' },
-  { id: 'Pacific/Guam', name: '关岛时间 (UTC+10)', offset: '+10:00' },
+  { id: 'Australia/Sydney', name: 'Sydney (UTC+10/UTC+11)', offset: '+10:00/+11:00' },
+  { id: 'Australia/Perth', name: 'Perth (UTC+8)', offset: '+08:00' },
+  { id: 'Pacific/Auckland', name: 'Auckland (UTC+12/UTC+13)', offset: '+12:00/+13:00' },
 
   // 特殊时区
-  { id: 'UTC', name: '协调世界时 (UTC+0)', offset: '+00:00' },
-  { id: 'GMT', name: '格林威治时间 (GMT)', offset: '+00:00' },
+  { id: 'UTC', nameKey: 'timezone.utc', name: 'UTC (UTC+0)', offset: '+00:00' },
 ];
 
 // 默认时区
@@ -239,7 +179,7 @@ export function getTimezoneLabel(timezone: string): string {
  * @returns 时区完整信息对象
  */
 export function getTimezoneInfo(timezone: string): { id: string; name: string; offset: string } | undefined {
-  return TIMEZONES.find(t => t.id === timezone);
+  return (TIMEZONES as any).find((t: any) => t.id === timezone);
 }
 
 /**

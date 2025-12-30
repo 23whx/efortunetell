@@ -5,6 +5,7 @@ import AdminSidebar from '@/components/shared/AdminSidebar';
 import Button from '@/components/ui/button';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type ArticleRow = {
   id: string;
@@ -17,6 +18,7 @@ type ArticleRow = {
 
 export default function AdminArticlesPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [rows, setRows] = useState<ArticleRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +38,7 @@ export default function AdminArticlesPage() {
       if (error) throw error;
       setRows((data || []) as ArticleRow[]);
     } catch (e) {
-      setError(e instanceof Error ? e.message : '加载失败');
+      setError(e instanceof Error ? e.message : t('admin.articles.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -53,7 +55,7 @@ export default function AdminArticlesPage() {
   }, [q, rows]);
 
   const remove = async (id: string) => {
-    if (!confirm('确定要删除该文章吗？')) return;
+    if (!confirm(t('admin.articles.confirmDelete'))) return;
     setBusyId(id);
     try {
       const supabase = createSupabaseBrowserClient();
@@ -61,7 +63,7 @@ export default function AdminArticlesPage() {
       if (error) throw error;
       setRows((prev) => prev.filter((r) => r.id !== id));
     } catch (e) {
-      setError(e instanceof Error ? e.message : '删除失败');
+      setError(e instanceof Error ? e.message : t('admin.articles.deleteFailed'));
     } finally {
       setBusyId(null);
     }
@@ -74,8 +76,8 @@ export default function AdminArticlesPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h1 className="text-4xl font-black text-gray-900 mb-2">文章管理</h1>
-              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Article Management</p>
+              <h1 className="text-4xl font-black text-gray-900 mb-2">{t('admin.articles.title')}</h1>
+              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">{t('admin.sidebar.articles')}</p>
             </div>
             <div className="flex gap-4">
               <button 
@@ -83,13 +85,13 @@ export default function AdminArticlesPage() {
                 onClick={load} 
                 disabled={loading}
               >
-                刷新
+                {t('admin.articles.refresh')}
               </button>
               <button 
                 className="px-8 py-3 rounded-2xl bg-[#FF6F61] text-white font-black shadow-xl shadow-[#FF6F61]/20 hover:scale-105 active:scale-95 transition-all"
                 onClick={() => router.push('/admin/write')}
               >
-                新建文章
+                {t('admin.articles.new')}
               </button>
             </div>
           </div>
@@ -99,7 +101,7 @@ export default function AdminArticlesPage() {
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="搜索文章标题或 Slug..."
+                placeholder={t('admin.articles.search')}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-gray-700 focus:ring-4 focus:ring-[#FF6F61]/5 focus:bg-white focus:border-[#FF6F61]/20 transition-all outline-none"
               />
             </div>
@@ -117,9 +119,9 @@ export default function AdminArticlesPage() {
             ) : filtered.length === 0 ? (
               <div className="text-center py-20">
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-50 mb-4">
-                  <span className="text-2xl text-gray-300">Empty</span>
+                  <span className="text-2xl text-gray-300">∅</span>
                 </div>
-                <p className="text-gray-400 font-bold">暂无相关文章</p>
+                <p className="text-gray-400 font-bold">{t('admin.articles.empty')}</p>
               </div>
             ) : (
               <div className="grid gap-4">
@@ -130,11 +132,13 @@ export default function AdminArticlesPage() {
                         <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                           r.status === 'published' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'
                         }`}>
-                          {r.status === 'published' ? '已发布' : '草稿'}
+                          {r.status === 'published' ? t('admin.articles.status.published') : t('admin.articles.status.draft')}
                         </span>
                         {r.category && (
                           <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest">
-                            {r.category}
+                            {t(`blog.category.${r.category.toLowerCase()}`) !== `blog.category.${r.category.toLowerCase()}` 
+                              ? t(`blog.category.${r.category.toLowerCase()}`) 
+                              : r.category}
                           </span>
                         )}
                       </div>
@@ -145,7 +149,7 @@ export default function AdminArticlesPage() {
                         <p className="text-xs font-bold text-gray-400">slug: {r.slug}</p>
                         <div className="w-1 h-1 rounded-full bg-gray-200" />
                         <p className="text-xs font-bold text-gray-400">
-                          {new Date(r.created_at).toLocaleDateString()}
+                          {new Date(r.created_at).toLocaleDateString(t('common.locale') || 'en-US')}
                         </p>
                       </div>
                     </div>
@@ -154,14 +158,14 @@ export default function AdminArticlesPage() {
                         onClick={() => router.push(`/admin/write?id=${encodeURIComponent(r.id)}`)}
                         className="p-3 rounded-2xl bg-white text-gray-400 hover:text-[#FF6F61] hover:bg-[#FF6F61]/5 transition-all shadow-sm border border-gray-100"
                       >
-                        编辑
+                        {t('admin.articles.edit')}
                       </button>
                       <button
                         onClick={() => remove(r.id)}
                         disabled={busyId === r.id}
                         className="p-3 rounded-2xl bg-white text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm border border-gray-100"
                       >
-                        {busyId === r.id ? '...' : '删除'}
+                        {busyId === r.id ? '...' : t('admin.articles.delete')}
                       </button>
                     </div>
                   </div>

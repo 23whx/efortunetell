@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Calendar, Share2, ArrowUp } from 'lucide-react';
 import { formatDate } from '@/utils/date';
 import ShareModal from '@/components/ui/ShareModal';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export type BlogArticle = {
   id: string;
@@ -19,6 +20,7 @@ export type BlogArticle = {
 };
 
 export default function BlogDetails({ article }: { article: BlogArticle }) {
+  const { t } = useLanguage();
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
 
@@ -58,7 +60,9 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               {article.category && (
               <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#fff5f4', color: '#ff6f61' }}>
-                {article.category}
+                {t(`blog.category.${article.category.toLowerCase()}`) !== `blog.category.${article.category.toLowerCase()}` 
+                  ? t(`blog.category.${article.category.toLowerCase()}`) 
+                  : article.category}
               </span>
               )}
               {article.tags?.map((tag) => (
@@ -87,7 +91,7 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
                   <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden">
                     <Image
                       src="/user_img.png"
-                      alt="Author avatar"
+                      alt={t('blog.authorAvatar')}
                       width={40}
                       height={40}
                       className="w-full h-full object-cover"
@@ -101,7 +105,7 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-5 h-5 text-gray-400" />
                   <span className="text-gray-500">
-                    {formatDate(article.created_at)}
+                    {formatDate(article.created_at, t('common.locale') || 'en-US')}
                   </span>
                 </div>
               </div>
@@ -111,7 +115,7 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
                 className="flex items-center space-x-2 px-4 py-2 rounded-full font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
               >
                 <Share2 className="w-5 h-5" />
-                <span>分享</span>
+                <span>{t('blog.share')}</span>
               </button>
             </div>
           </div>

@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack -p 14761",
+    "dev": "node scripts/dev.js",
+    "dev:direct": "next dev --webpack -p 14761",
     "build": "next build",
     "build:force": "next build",
     "start": "next start -p 14761",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean-port": "node scripts/clean-port.js"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",

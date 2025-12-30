@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { TIMEZONES, DEFAULT_TIMEZONE } from '@/utils/dateUtils';
 import { ChevronDown, Globe } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface TimezoneSelectorProps {
   selectedTimezone: string;
@@ -13,11 +14,24 @@ export default function TimezoneSelector({
   onChange,
   className = ''
 }: TimezoneSelectorProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   
   // 获取当前选中的时区信息
   const currentTimezone = TIMEZONES.find(tz => tz.id === selectedTimezone) || TIMEZONES[0];
   
+  const getTimezoneName = (tz: any) => {
+    if (tz.nameKey) {
+      const translated = t(tz.nameKey);
+      if (translated !== tz.nameKey) {
+        // Find the offset part from the original name if possible
+        const offsetMatch = tz.name.match(/\(UTC.*\)/);
+        return offsetMatch ? `${translated} ${offsetMatch[0]}` : translated;
+      }
+    }
+    return tz.name;
+  };
+
   return (
     <div className={`relative ${className}`}>
       <button
@@ -26,7 +40,7 @@ export default function TimezoneSelector({
         onClick={() => setIsOpen(!isOpen)}
       >
         <Globe size={16} className="text-[#FF6F61]" />
-        <span>{currentTimezone.name}</span>
+        <span>{getTimezoneName(currentTimezone)}</span>
         <ChevronDown size={16} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       
@@ -45,7 +59,7 @@ export default function TimezoneSelector({
               }}
             >
               <div className="flex justify-between items-center">
-                <span>{timezone.name}</span>
+                <span>{getTimezoneName(timezone)}</span>
                 {timezone.id === selectedTimezone && (
                   <span className="text-[#FF6F61]">✓</span>
                 )}

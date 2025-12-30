@@ -35,6 +35,7 @@ import {
 import { useCallback, useState, useRef, useEffect } from 'react';
 import { SketchPicker } from 'react-color';
 import { deleteArticleImageByUrl } from '@/lib/supabase/article-images';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface EditorProps {
   content: string;
@@ -43,6 +44,7 @@ interface EditorProps {
 }
 
 export default function Editor({ content, onChange, onImageUpload }: EditorProps) {
+  const { t } = useLanguage();
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const [showFontDropdown, setShowFontDropdown] = useState(false);
@@ -99,7 +101,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
         },
       }),
       Placeholder.configure({
-        placeholder: '从这里开始书写你的东方智慧...',
+        placeholder: t('editor.placeholder') || '从这里开始书写你的东方智慧...',
       }),
       Image.configure({
         allowBase64: true,
@@ -165,7 +167,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
             
             // 先插入一个占位符（加载中的图片）
             const tempNode = schema.nodes.paragraph.create(null, [
-              schema.text('🖼️ 上传中...')
+              schema.text(t('editor.uploading') || '🖼️ 上传中...')
             ]);
             const tempTr = view.state.tr.insert(insertPos, tempNode);
             view.dispatch(tempTr);
@@ -179,7 +181,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
               let deleteTo = -1;
               
               state.doc.descendants((node, pos) => {
-                if (!found && node.isText && node.text?.includes('🖼️ 上传中...')) {
+                if (!found && node.isText && node.text?.includes(t('editor.uploading') || '🖼️ 上传中...')) {
                   deleteFrom = pos;
                   deleteTo = pos + node.nodeSize;
                   found = true;
@@ -208,7 +210,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
               let deleteTo = -1;
               
               state.doc.descendants((node, pos) => {
-                if (!found && node.isText && node.text?.includes('🖼️ 上传中...')) {
+                if (!found && node.isText && node.text?.includes(t('editor.uploading') || '🖼️ 上传中...')) {
                   deleteFrom = pos;
                   deleteTo = pos + node.nodeSize;
                   found = true;
@@ -217,7 +219,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
               });
               
               if (found && deleteFrom >= 0) {
-                const errorText = schema.text(`❌ 图片上传失败: ${error.message || '未知错误'}`);
+                const errorText = schema.text(`${t('editor.uploadFailed')}: ${error.message || '未知错误'}`);
                 const errorNode = schema.nodes.paragraph.create(null, [errorText]);
                 const tr = state.tr
                   .delete(deleteFrom, deleteTo)
@@ -373,7 +375,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
             <button
               onClick={() => setShowFontDropdown(!showFontDropdown)}
               className={`flex items-center gap-1 p-2.5 rounded-2xl transition-all ${editor.isActive('textStyle', { fontFamily: undefined }) ? 'text-gray-400 hover:bg-gray-50' : 'bg-gray-100 text-gray-900'}`}
-              title="修改字体"
+              title={t('editor.changeFont')}
             >
               <Type className="w-5 h-5" />
               <ChevronDown className="w-3 h-3" />
@@ -381,13 +383,13 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
             {showFontDropdown && (
               <div className="absolute top-full left-0 mt-2 z-[60] w-48 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-2xl rounded-2xl p-2 animate-in fade-in zoom-in duration-200">
                 {[
-                  { label: '默认字体', value: 'Inter, system-ui, sans-serif' },
-                  { label: '微软雅黑', value: '"Microsoft YaHei", sans-serif' },
-                  { label: '宋体', value: 'SimSun, serif' },
-                  { label: '楷体', value: 'KaiTi, serif' },
-                  { label: '仿宋', value: 'FangSong, serif' },
-                  { label: '英文衬线', value: 'Georgia, serif' },
-                  { label: '英文等宽', value: '"Courier New", monospace' },
+                  { label: t('editor.font.default'), value: 'Inter, system-ui, sans-serif' },
+                  { label: t('editor.font.yahei'), value: '"Microsoft YaHei", sans-serif' },
+                  { label: t('editor.font.simsun'), value: 'SimSun, serif' },
+                  { label: t('editor.font.kaiti'), value: 'KaiTi, serif' },
+                  { label: t('editor.font.fangsong'), value: 'FangSong, serif' },
+                  { label: t('editor.font.serif'), value: 'Georgia, serif' },
+                  { label: t('editor.font.mono'), value: '"Courier New", monospace' },
                 ].map((font) => (
                   <button
                     key={font.value}
@@ -409,7 +411,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
                     }}
                     className="w-full text-left px-4 py-2 rounded-xl text-xs font-bold text-red-400 hover:bg-red-50 transition-all"
                   >
-                    重置字体
+                    {t('editor.resetFont')}
                   </button>
                 </div>
               </div>
@@ -422,7 +424,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
               onClick={() => setShowColorPicker(!showColorPicker)}
               className={`p-2.5 rounded-2xl transition-all ${editor.getAttributes('textStyle').color ? 'bg-gray-100 text-gray-900' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
               style={{ color: editor.getAttributes('textStyle').color }}
-              title="修改文字颜色"
+              title={t('editor.changeColor')}
             >
               <Palette className="w-5 h-5" />
             </button>
@@ -443,7 +445,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
               onClick={() => setShowBgColorPicker(!showBgColorPicker)}
               className={`p-2.5 rounded-2xl transition-all ${editor.isActive('highlight') ? 'bg-yellow-100 text-yellow-600' : 'text-gray-400 hover:text-yellow-600 hover:bg-gray-50'}`}
               style={{ backgroundColor: editor.getAttributes('highlight').color }}
-              title="修改文字背景颜色"
+              title={t('editor.changeBgColor')}
             >
               <Highlighter className="w-5 h-5" />
             </button>
@@ -515,7 +517,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
           className="ml-auto p-2.5 rounded-2xl text-[#FF6F61] bg-[#FF6F61]/5 hover:bg-[#FF6F61] hover:text-white hover:shadow-lg hover:shadow-[#FF6F61]/20 transition-all flex items-center gap-2 px-5"
         >
           <ImageIcon className="w-5 h-5" />
-          <span className="text-sm font-bold tracking-tight">插入图片</span>
+          <span className="text-sm font-bold tracking-tight">{t('editor.insertImage')}</span>
         </button>
       </div>
 
@@ -553,7 +555,7 @@ export default function Editor({ content, onChange, onImageUpload }: EditorProps
         .tiptap h1 { font-size: 2.5rem; font-weight: 900; margin-top: 4rem; margin-bottom: 2rem; color: #111; letter-spacing: -0.02em; }
         .tiptap h2 { font-size: 2rem; font-weight: 800; margin-top: 3.5rem; margin-bottom: 1.5rem; color: #222; letter-spacing: -0.01em; }
         .tiptap img {
-           transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .tiptap img.ProseMirror-selectednode {
           outline: 3px solid #FF6F61;

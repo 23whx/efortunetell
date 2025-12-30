@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import Button from '@/components/ui/button';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ForgotPasswordPage() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -26,9 +28,9 @@ export default function ForgotPasswordPage() {
         redirectTo: `${origin}/auth/callback?next=/user/update-password`,
       });
       if (error) throw error;
-      setSuccess('重置密码邮件已发送，请检查邮箱并点击链接继续。');
+      setSuccess(t('user.forgotPassword.success'));
     } catch {
-      setError('网络错误，请稍后重试');
+      setError(t('blog.networkError') || '网络错误，请稍后重试');
     } finally {
       setIsLoading(false);
     }
@@ -37,7 +39,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen flex items-center justify-center mt-[-50px] bg-[#FFFACD]">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg border border-[#FF6F61]">
-        <h1 className="text-2xl font-bold mb-6 text-center text-[#FF6F61]">找回密码</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-[#FF6F61]">{t('user.forgotPassword.title')}</h1>
         {error && (
           <div className="mb-4 p-2 bg-[#FF6F61]/10 text-[#FF6F61] text-sm rounded border border-[#FF6F61]">{error}</div>
         )}
@@ -46,7 +48,7 @@ export default function ForgotPasswordPage() {
         )}
         <form onSubmit={handleSendResetEmail}>
             <div className="mb-6 flex items-center gap-2">
-              <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email">邮箱</label>
+              <label className="block font-medium text-[#FF6F61] w-20 text-right" htmlFor="email">{t('common.email')}</label>
               <Input
                 id="email"
                 type="email"
@@ -54,15 +56,15 @@ export default function ForgotPasswordPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="border-[#FF6F61] focus:ring-[#FF6F61] focus:border-[#FF6F61] flex-1"
-                placeholder="请输入您的注册邮箱"
+                placeholder={t('user.forgotPassword.emailPlaceholder')}
               />
             </div>
             <div className="flex justify-between items-center">
               <Button type="submit" className="bg-[#FF6F61] hover:bg-[#ff8a75] text-white border-none px-8" disabled={isLoading}>
-              {isLoading ? '发送中...' : '发送重置邮件'}
+              {isLoading ? t('user.forgotPassword.sending') : t('user.forgotPassword.sendButton')}
               </Button>
               <Button type="button" className="bg-gray-200 hover:bg-gray-300 text-gray-700 border-none" onClick={() => router.push('/user/login')}>
-                返回登录
+                {t('common.back')}
               </Button>
             </div>
           </form>

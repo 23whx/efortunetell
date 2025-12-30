@@ -34,11 +34,11 @@ export default function BlogPage() {
   // 分类映射：将翻译键映射到后端存储的中文分类名
   const categoryMapping = {
     [t('common.all')]: null,
-    [t('service.bazi')]: '八字',
-    [t('service.liuren')]: '大六壬', 
-    [t('service.qimen')]: '阴盘奇门',
-    [t('service.naming')]: '起名',
-    ['风水']: '风水',
+    [t('blog.category.bazi')]: '八字',
+    [t('blog.category.liuren')]: '大六壬', 
+    [t('blog.category.qimen')]: '阴盘奇门',
+    [t('blog.category.naming')]: '起名',
+    [t('blog.category.fengshui')]: '风水',
     [t('category.plumFortune')]: '梅花易数',
     [t('category.discussion')]: '杂谈',
     [t('category.other')]: '其他'
@@ -46,11 +46,11 @@ export default function BlogPage() {
   
   const categories = [
     t('common.all'), 
-    t('service.bazi'), 
-    t('service.liuren'), 
-    t('service.qimen'), 
-    '风水',
-    t('service.naming'),
+    t('blog.category.bazi'), 
+    t('blog.category.liuren'), 
+    t('blog.category.qimen'), 
+    t('blog.category.fengshui'),
+    t('blog.category.naming'),
     t('category.plumFortune'),
     t('category.discussion'), 
     t('category.other')
@@ -186,7 +186,7 @@ export default function BlogPage() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const code = (qErr as any)?.code;
           if (code === 'PGRST205') {
-            setSetupHint('Supabase 还没建表：请先在 Supabase SQL Editor 执行项目里的 supabase/schema.sql');
+            setSetupHint(t('blog.setupHint') || 'Supabase 还没建表：请先在 Supabase SQL Editor 执行项目里的 supabase/schema.sql');
             setArticles([]);
             return;
           }
@@ -285,10 +285,15 @@ export default function BlogPage() {
         
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-tight">
-            探索 <span className="text-[#FF6F61]">东方智慧</span> <br className="hidden md:block" /> 与命运的奥秘
+            {t('home.hero.title').split(t('home.hero.easternWisdom')).map((part, i, arr) => (
+              <span key={i}>
+                {part}
+                {i < arr.length - 1 && <span className="text-[#FF6F61]">{t('home.hero.easternWisdom')}</span>}
+              </span>
+            ))}
           </h1>
           <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
-            在这里，我们研习八字、奇门、六壬，<br className="md:hidden" /> 以古人之智，启今日之程。
+            {t('home.hero.subtitle')}
           </p>
         </div>
       </div>
@@ -450,7 +455,9 @@ export default function BlogPage() {
                     {article.category && (
                       <div className="absolute top-4 left-4">
                         <span className="px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-xs font-black text-[#FF6F61] shadow-sm uppercase tracking-wider">
-                          {article.category}
+                          {t(`blog.category.${article.category.toLowerCase()}`) !== `blog.category.${article.category.toLowerCase()}` 
+                            ? t(`blog.category.${article.category.toLowerCase()}`) 
+                            : article.category}
                         </span>
                       </div>
                     )}
@@ -479,7 +486,7 @@ export default function BlogPage() {
                           {article.author_display_name || 'Rollkey'}
                         </span>
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
-                          {formatDate(article.created_at)}
+                          {formatDate(article.created_at, t('common.locale') || 'en-US')}
                         </span>
                       </div>
                     </div>
