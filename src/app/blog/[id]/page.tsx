@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import BlogDetails, { BlogArticle } from '@/components/blog/BlogDetails';
+import Comments from '@/components/blog/Comments';
 import { Metadata } from 'next';
 import Script from 'next/script';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -200,8 +201,13 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               </div>
             </div>
           ) : (
-            // 将文章数据传递给客户端组件
-            <BlogDetails article={article} />
+            <>
+              {/* 将文章数据传递给客户端组件 */}
+              <BlogDetails article={article} />
+              
+              {/* 评论区 */}
+              <Comments articleId={article.id} />
+            </>
           )}
         </div>
       </div>

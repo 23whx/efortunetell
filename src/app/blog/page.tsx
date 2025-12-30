@@ -176,7 +176,8 @@ export default function BlogPage() {
           
           const { data: fallbackData, error: fallbackErr } = await fallbackQ;
           if (fallbackErr) throw fallbackErr;
-          data = fallbackData;
+          // Add cover_image_pos field with null value for type compatibility
+          data = fallbackData?.map(article => ({ ...article, cover_image_pos: null })) || null;
           qErr = null;
         }
 

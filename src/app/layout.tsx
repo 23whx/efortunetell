@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/navbar";
+import Footer from "@/components/shared/Footer";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { headers } from "next/headers";
 import { detectLanguageFromHeaders } from "@/lib/i18n/detect";
@@ -144,9 +145,12 @@ export default async function RootLayout({
         />
         
         <LanguageProvider initialLanguage={detected.language}>
-          <Navbar />
-          <div className="pt-16 md:pt-20">
-            {children}
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="pt-16 md:pt-20 flex-1">
+              {children}
+            </main>
+            <Footer />
           </div>
         </LanguageProvider>
       </body>
