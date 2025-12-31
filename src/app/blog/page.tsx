@@ -21,6 +21,7 @@ interface Article {
   cover_image_pos: { x: number; y: number; zoom: number } | null;
   created_at: string;
   author_display_name: string | null;
+  author_avatar_url: string | null;
 }
 
 export default function BlogPage() {
@@ -195,30 +196,39 @@ export default function BlogPage() {
         }
 
         const authorIds = Array.from(new Set((data || []).map((a) => a.author_id).filter(Boolean)));
-        const authorMap = new Map<string, string>();
+        const authorMap = new Map<string, { display_name: string; avatar_url: string | null }>();
 
         if (authorIds.length > 0) {
           const { data: profiles } = await supabase
             .from('profiles')
-            .select('id,display_name')
+            .select('id,display_name,avatar_url')
             .in('id', authorIds);
 
-          (profiles || []).forEach((p) => authorMap.set(p.id, p.display_name || ''));
+          (profiles || []).forEach((p) => {
+            authorMap.set(p.id, {
+              display_name: p.display_name || '',
+              avatar_url: p.avatar_url || null
+            });
+          });
         }
 
-        const mapped: Article[] = (data || []).map((a) => ({
-          id: a.id,
-          title: a.title,
-          slug: a.slug,
-          summary: a.summary,
-          content_html: a.content_html,
-          category: a.category,
-          tags: a.tags || [],
-          cover_image_url: a.cover_image_url,
-          cover_image_pos: a.cover_image_pos,
-          created_at: a.created_at,
-          author_display_name: authorMap.get(a.author_id) || null,
-        }));
+        const mapped: Article[] = (data || []).map((a) => {
+          const author = authorMap.get(a.author_id);
+          return {
+            id: a.id,
+            title: a.title,
+            slug: a.slug,
+            summary: a.summary,
+            content_html: a.content_html,
+            category: a.category,
+            tags: a.tags || [],
+            cover_image_url: a.cover_image_url,
+            cover_image_pos: a.cover_image_pos,
+            created_at: a.created_at,
+            author_display_name: author?.display_name || null,
+            author_avatar_url: author?.avatar_url || null,
+          };
+        });
 
         setArticles(mapped);
       } catch (error) {
@@ -472,13 +482,13 @@ export default function BlogPage() {
                       {article.summary || article.content_html.replace(/<[^>]*>/g, '').slice(0, 100)}
                     </p>
                     <div className="flex items-center gap-3 pt-2">
-                      <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm flex-shrink-0 bg-gray-100">
                         <Image
-                          src="/user_img.png"
-                          alt="Author"
+                          src={article.author_avatar_url || '/user_img.png'}
+                          alt={article.author_display_name || 'Author'}
                           width={32}
                           height={32}
-                          className="object-cover"
+                          className="object-cover w-full h-full"
                           unoptimized
                         />
                       </div>
