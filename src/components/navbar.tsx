@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, User, LogOut, Menu, X } from 'lucide-react';
+import { Search, User, LogOut, Menu, X, ChevronDown, Sparkles, LayoutGrid, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -21,7 +21,20 @@ export default function Navbar() {
   const [roleLoading, setRoleLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isExploreOpen, setIsExploreOpen] = useState(false);
   const lastKnownAdminRef = useRef<boolean>(false);
+  const exploreDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close explore dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (exploreDropdownRef.current && !exploreDropdownRef.current.contains(event.target as Node)) {
+        setIsExploreOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Sync Supabase session + role
   useEffect(() => {
@@ -156,24 +169,46 @@ export default function Navbar() {
                 >
                   {t('nav.blog')}
                 </Link>
-                <Link
-                  href="/services"
-                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname.startsWith('/services') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
-                >
-                  {t('nav.services')}
-                </Link>
-                <Link
-                  href="/ai-chat"
-                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname === '/ai-chat' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
-                >
-                  {t('nav.aiChat')}
-                </Link>
-                <Link 
-                  href="/fortune" 
-                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname === '/fortune' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
-                >
-                  {t('nav.fortune')}
-                </Link>
+
+                <div className="relative" ref={exploreDropdownRef}>
+                  <button
+                    onClick={() => setIsExploreOpen(!isExploreOpen)}
+                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap flex items-center gap-1 ${pathname.startsWith('/services') || pathname === '/ai-chat' || pathname === '/fortune' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                  >
+                    {t('nav.explore')}
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExploreOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {isExploreOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-[60]">
+                      <Link
+                        href="/services"
+                        onClick={() => setIsExploreOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname.startsWith('/services') ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                      >
+                        <LayoutGrid className="w-4 h-4" />
+                        {t('nav.services')}
+                      </Link>
+                      <Link
+                        href="/ai-chat"
+                        onClick={() => setIsExploreOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname === '/ai-chat' ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                        {t('nav.aiChat')}
+                      </Link>
+                      <Link
+                        href="/fortune"
+                        onClick={() => setIsExploreOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname === '/fortune' ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        {t('nav.fortune')}
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
                 {isAdmin && (
                   <Link 
                     href="/admin/dashboard" 

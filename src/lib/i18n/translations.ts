@@ -80,6 +80,7 @@ export const translations = {
     // 导航
     'nav.home': '首页',
     'nav.blog': '博客',
+    'nav.explore': '探索',
     'nav.services': '专题',
     'nav.aiChat': 'AI问答',
     'nav.fortune': '算命服务',
@@ -756,6 +757,7 @@ export const translations = {
     // Navigation
     'nav.home': 'Home',
     'nav.blog': 'Blog',
+    'nav.explore': 'Explore',
     'nav.services': 'Features',
     'nav.aiChat': 'AI Chat',
     'nav.fortune': 'Fortune Services',
@@ -1430,6 +1432,7 @@ export const translations = {
 
     'nav.home': 'ホーム',
     'nav.blog': 'ブログ',
+    'nav.explore': '探索',
     'nav.services': '特集',
     'nav.aiChat': 'AI チャット',
     'nav.fortune': '鑑定サービス',
@@ -2076,6 +2079,7 @@ export const translations = {
 
     'nav.home': '홈',
     'nav.blog': '블로그',
+    'nav.explore': '탐색',
     'nav.services': '특집',
     'nav.aiChat': 'AI 챗',
     'nav.fortune': '상담 서비스',
@@ -2722,6 +2726,7 @@ export const translations = {
 
     'nav.home': 'الرئيسية',
     'nav.blog': 'المدونة',
+    'nav.explore': 'استكشاف',
     'nav.services': 'المواضيع',
     'nav.aiChat': 'محادثة AI',
     'nav.fortune': 'خدمات الاستشارة',

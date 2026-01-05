@@ -9,7 +9,7 @@ import { ragQueryAnswer } from '@/lib/rag/search';
 
 export async function POST(request: NextRequest) {
   try {
-    const { question, language = 'zh', stream = false } = await request.json();
+    const { question, language = 'zh', stream: useStream = false } = await request.json();
     
     if (!question || typeof question !== 'string') {
       return NextResponse.json(
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
     
     // 非流式响应
-    if (!stream) {
+    if (!useStream) {
       const result = await ragQueryAnswer(question, {
         language,
         matchThreshold: 0.7,
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const { ragQueryAnswerStream } = await import('@/lib/rag/search');
     const encoder = new TextEncoder();
     
-    const stream = new ReadableStream({
+    const responseStream = new ReadableStream({
       async start(controller) {
         try {
           for await (const chunk of ragQueryAnswerStream(question, {
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       },
     });
     
-    return new NextResponse(stream, {
+    return new NextResponse(responseStream, {
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',

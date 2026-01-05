@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MessageSquare, Reply, Trash2, Send, LogIn } from 'lucide-react';
-import { Button } from '../ui/button';
+import Button from '../ui/button';
 import { useRouter } from 'next/navigation';
 
 interface Comment {
