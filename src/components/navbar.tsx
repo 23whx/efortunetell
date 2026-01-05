@@ -143,9 +143,9 @@ export default function Navbar() {
     <>
       <nav className="fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-xl border-b border-gray-100 z-50 py-3 md:py-4 px-4 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 md:gap-4 group">
-            <Link href="/" className="flex items-center gap-2 transition-transform active:scale-95">
-              <div className="relative w-8 h-8 md:w-10 md:h-10">
+          <div className="flex items-center gap-2 md:gap-3 group flex-shrink">
+            <Link href="/" className="flex items-center gap-2 transition-transform active:scale-95 flex-shrink">
+              <div className="relative w-8 h-8 md:w-9 md:h-9 flex-shrink-0">
                 <Image
                   src="/icon.png"
                   alt="Rolley Divination Blog Icon"
@@ -153,19 +153,19 @@ export default function Navbar() {
                   className="rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow"
                 />
               </div>
-              <span className="text-xl md:text-2xl font-black text-gray-900 font-sans tracking-[0.15em] uppercase whitespace-nowrap">
+              <span className="text-lg md:text-xl xl:text-2xl font-black text-gray-900 font-sans tracking-[0.05em] xl:tracking-[0.15em] uppercase whitespace-nowrap overflow-hidden text-ellipsis">
                 {t('common.siteTitle')}
               </span>
             </Link>
           </div>
           
           {/* 桌面端导航 */}
-          <div className="hidden md:flex items-center gap-3 lg:gap-6 flex-nowrap">
+          <div className="hidden md:flex items-center gap-2 lg:gap-3 xl:gap-6 flex-nowrap flex-shrink-0">
             <>
               <div className="flex items-center bg-gray-50/50 p-1 rounded-2xl border border-gray-100 flex-nowrap">
                 <Link 
                   href="/" 
-                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname === '/' || pathname === '/blog' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                  className={`px-3 lg:px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname === '/' || pathname === '/blog' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
                 >
                   {t('nav.blog')}
                 </Link>
@@ -173,11 +173,12 @@ export default function Navbar() {
                 <div className="relative" ref={exploreDropdownRef}>
                   <button
                     onClick={() => setIsExploreOpen(!isExploreOpen)}
-                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap flex items-center gap-1 ${pathname.startsWith('/services') || pathname === '/ai-chat' || pathname === '/fortune' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                    className={`px-3 lg:px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap flex items-center gap-1 ${pathname.startsWith('/services') || pathname === '/ai-chat' || pathname === '/fortune' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
                   >
                     {t('nav.explore')}
                     <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExploreOpen ? 'rotate-180' : ''}`} />
                   </button>
+                  {/* ... dropdown content remains same ... */}
 
                   {isExploreOpen && (
                     <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-[60]">
@@ -219,38 +220,38 @@ export default function Navbar() {
                 )}
               </div>
 
-              <form onSubmit={handleSearch} className="relative group">
+              <form onSubmit={handleSearch} className="relative group flex-shrink">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-4 w-4 text-gray-400 group-focus-within:text-[#FF6F61] transition-colors" />
                 </div>
                 <input 
                   type="text" 
                     placeholder={t('common.search')}
-                    className="bg-gray-50/80 text-gray-900 text-sm pl-10 pr-4 py-2.5 rounded-xl w-32 lg:w-48 focus:w-64 border border-transparent focus:border-[#FF6F61]/20 focus:bg-white focus:shadow-lg focus:shadow-[#FF6F61]/5 outline-none transition-all duration-500 font-sans"
+                    className="bg-gray-50/80 text-gray-900 text-sm pl-10 pr-4 py-2.5 rounded-xl w-24 lg:w-32 xl:w-48 focus:w-64 border border-transparent focus:border-[#FF6F61]/20 focus:bg-white focus:shadow-lg focus:shadow-[#FF6F61]/5 outline-none transition-all duration-500 font-sans"
                     value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
               </form>
             </>
             
-            <div className="h-6 w-[1px] bg-gray-200 mx-2" />
+            <div className="h-6 w-[1px] bg-gray-200 mx-1 xl:mx-2" />
             
             <LanguageSwitcher />
             
             {/* 登录状态显示区域 */}
-            <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex items-center gap-2 xl:gap-3 flex-shrink-0">
               {isAdmin ? (
-                <div className="flex items-center gap-3 whitespace-nowrap">
+                <div className="flex items-center gap-2 xl:gap-3 whitespace-nowrap">
                   <button 
                     onClick={handleAdminLogout}
                     className="text-sm font-medium text-gray-500 hover:text-red-500 transition-colors flex items-center gap-1.5 whitespace-nowrap"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span className="whitespace-nowrap">{t('common.logout')}</span>
+                    <span className="hidden xl:inline whitespace-nowrap">{t('common.logout')}</span>
                   </button>
                   <Link href="/admin/dashboard" className="relative group">
                     <div className="absolute -inset-1 bg-gradient-to-tr from-[#FF6F61] to-[#ffb347] rounded-full blur opacity-20 group-hover:opacity-40 transition-opacity" />
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                    <div className="relative w-8 h-8 xl:w-10 xl:h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
                       <Image
                         src={getAvatarPath({ username: user?.email || 'admin', role: 'admin' })}
                         alt="Admin"
@@ -262,9 +263,9 @@ export default function Navbar() {
                   </Link>
                 </div>
               ) : user ? (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 xl:gap-3">
                   {roleLoading && (
-                    <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">
+                    <span className="hidden lg:inline text-[10px] font-black text-gray-300 uppercase tracking-widest">
                       {t('common.syncing') || 'Syncing...'}
                     </span>
                   )}
@@ -272,10 +273,11 @@ export default function Navbar() {
                     onClick={handleUserLogout}
                     className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
                   >
-                    {t('common.logout')}
+                    <span className="hidden xl:inline">{t('common.logout')}</span>
+                    <LogOut className="w-4 h-4 xl:hidden" />
                   </button>
                   <Link href="/user/profile" className="relative group">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm group-hover:shadow-md transition-all">
+                    <div className="relative w-8 h-8 xl:w-10 xl:h-10 rounded-full overflow-hidden border-2 border-white shadow-sm group-hover:shadow-md transition-all">
                       <Image
                         src={getAvatarPath({ username: user.email || 'user' })}
                         alt="User"
@@ -287,14 +289,14 @@ export default function Navbar() {
                   </Link>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 xl:gap-2">
                   <Link href="/user/login">
-                    <Button variant="default" size="sm" className="bg-transparent border-none hover:bg-gray-100 shadow-none">
+                    <Button variant="default" size="sm" className="bg-transparent border-none hover:bg-gray-100 shadow-none px-2 lg:px-4">
                       {t('nav.login')}
                     </Button>
                   </Link>
                   <Link href="/user/register">
-                    <Button size="sm">
+                    <Button size="sm" className="px-2 lg:px-4">
                       {t('common.register')}
                     </Button>
                   </Link>

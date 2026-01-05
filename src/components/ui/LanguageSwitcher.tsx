@@ -8,12 +8,12 @@ const LanguageSwitcher: React.FC = () => {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="flex items-center space-x-2">
-      <Globe size={16} className="text-gray-600" />
+    <div className="flex items-center gap-1 xl:gap-2">
+      <Globe size={16} className="text-gray-600 flex-shrink-0 hidden lg:block" />
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value as Language)}
-        className="bg-transparent border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#FF6F61]"
+        className="bg-transparent border border-gray-300 rounded px-1 lg:px-2 py-1 text-xs lg:text-sm focus:outline-none focus:ring-1 focus:ring-[#FF6F61] cursor-pointer hover:border-[#FF6F61]/50 transition-colors"
       >
         <option value="en">English</option>
         <option value="zh">中文</option>
