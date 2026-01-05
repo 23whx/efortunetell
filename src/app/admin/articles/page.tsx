@@ -13,6 +13,7 @@ type ArticleRow = {
   slug: string;
   status: 'draft' | 'published';
   category: string | null;
+  tags: string[];
   created_at: string;
 };
 
@@ -32,7 +33,7 @@ export default function AdminArticlesPage() {
       const supabase = createSupabaseBrowserClient();
       const { data, error } = await supabase
         .from('articles')
-        .select('id,title,slug,status,category,created_at')
+        .select('id,title,slug,status,category,tags,created_at')
         .order('created_at', { ascending: false })
         .limit(300);
       if (error) throw error;
@@ -51,7 +52,12 @@ export default function AdminArticlesPage() {
   const filtered = useMemo(() => {
     const keyword = q.trim().toLowerCase();
     if (!keyword) return rows;
-    return rows.filter((r) => (r.title || '').toLowerCase().includes(keyword) || (r.slug || '').toLowerCase().includes(keyword));
+    return rows.filter((r) => {
+      const titleHit = (r.title || '').toLowerCase().includes(keyword);
+      const slugHit = (r.slug || '').toLowerCase().includes(keyword);
+      const tagsHit = (r.tags || []).some((tag) => (tag || '').toLowerCase().includes(keyword));
+      return titleHit || slugHit || tagsHit;
+    });
   }, [q, rows]);
 
   const remove = async (id: string) => {
@@ -139,6 +145,20 @@ export default function AdminArticlesPage() {
                             {t(`blog.category.${r.category.toLowerCase()}`) !== `blog.category.${r.category.toLowerCase()}` 
                               ? t(`blog.category.${r.category.toLowerCase()}`) 
                               : r.category}
+                          </span>
+                        )}
+                        {(r.tags || []).slice(0, 4).map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-3 py-1 rounded-full bg-white border border-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-widest"
+                            title={tag}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        {(r.tags || []).length > 4 && (
+                          <span className="px-3 py-1 rounded-full bg-white border border-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest">
+                            +{(r.tags || []).length - 4}
                           </span>
                         )}
                       </div>

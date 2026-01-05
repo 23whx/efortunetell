@@ -1,12 +1,19 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ExternalLink } from 'lucide-react';
 
 export default function Footer() {
   const { t } = useLanguage();
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  // 如果是管理员页面，不显示页脚
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 mt-auto">

@@ -154,6 +154,7 @@ export default function BlogPage() {
           .from('articles')
           .select('id,title,slug,summary,content_html,category,tags,cover_image_url,cover_image_pos,created_at,author_id')
           .eq('status', 'published')
+          .not('tags', 'cs', '{"八字理论"}') // 排除"八字理论"标签的文章
           .limit(100);
 
         if (selectedCategory) {
@@ -169,6 +170,7 @@ export default function BlogPage() {
             .from('articles')
             .select('id,title,slug,summary,content_html,category,tags,cover_image_url,created_at,author_id')
             .eq('status', 'published')
+            .not('tags', 'cs', '{"八字理论"}') // 排除"八字理论"标签的文章
             .limit(100);
             
           if (selectedCategory) {

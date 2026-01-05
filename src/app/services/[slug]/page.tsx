@@ -36,13 +36,31 @@ export default async function PillarPage({ params }: Props) {
 
   const { language, t } = await getServerT();
   const supabase = await createSupabaseServerClient();
-  const { data: articles } = await supabase
+  const baseArticlesQuery = supabase
     .from('articles')
     .select('id,title,summary,created_at,tags,cover_image_url')
     .eq('status', 'published')
     .eq('category', pillar.category)
     .order('created_at', { ascending: false })
     .limit(50);
+
+  // “八字理论”文章：主页不展示，但在 专题-八字 里单独展示
+  const { data: articles } =
+    pillar.category === '八字'
+      ? await baseArticlesQuery.not('tags', 'cs', '{"八字理论"}')
+      : await baseArticlesQuery;
+
+  const { data: baziTheoryArticles } =
+    pillar.category === '八字'
+      ? await supabase
+          .from('articles')
+          .select('id,title,summary,created_at,tags,cover_image_url')
+          .eq('status', 'published')
+          .eq('category', '八字')
+          .contains('tags', ['八字理论'])
+          .order('created_at', { ascending: false })
+          .limit(50)
+      : { data: null };
 
   const canonical = `https://efortunetell.blog/services/${pillar.slug}`;
   
@@ -146,6 +164,58 @@ export default async function PillarPage({ params }: Props) {
                 </div>
               </Link>
             ))}
+          </div>
+        )}
+
+        {pillar.category === '八字' && (
+          <div className="mt-14">
+            <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
+              <h2 className="text-xl font-black text-gray-900">八字理论</h2>
+              <span className="text-[10px] font-black uppercase tracking-[0.25em] text-gray-400">
+                仅在专题页展示
+              </span>
+            </div>
+
+            {(baziTheoryArticles || []).length === 0 ? (
+              <div className="bg-white rounded-[32px] border border-dashed border-gray-200 p-10 text-center">
+                <p className="text-gray-500 font-bold">暂无“八字理论”文章</p>
+                <p className="mt-2 text-sm text-gray-400 font-medium">
+                  在后台写文章时，把标签里加上“八字理论”即可出现在这里。
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(baziTheoryArticles || []).map((a) => (
+                  <Link
+                    key={a.id}
+                    href={`/blog/${a.id}`}
+                    className="group bg-white rounded-[32px] border border-gray-100 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-500"
+                  >
+                    <div className="relative aspect-[16/10] bg-gray-100">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={a.cover_image_url || '/images/default-image.svg'}
+                        alt={a.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    </div>
+                    <div className="p-6">
+                      <div className="text-[10px] font-black uppercase tracking-[0.25em] text-gray-400">
+                        {new Date(a.created_at).toLocaleDateString()}
+                      </div>
+                      <div className="mt-2 text-xl font-black text-gray-900 group-hover:text-[#FF6F61] transition-colors line-clamp-2">
+                        {a.title}
+                      </div>
+                      <p className="mt-3 text-sm text-gray-500 leading-relaxed line-clamp-3">
+                        {a.summary || ''}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

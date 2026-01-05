@@ -37,7 +37,7 @@ export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
       {/* 侧边栏本体 */}
       <aside
         className={`
-          fixed z-30 top-0 left-0 h-full w-64 bg-white border-r border-gray-100 flex flex-col pt-10 pb-6 px-4 gap-2
+          fixed z-30 top-16 md:top-20 left-0 h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] w-64 bg-white border-r border-gray-100 flex flex-col pt-8 pb-6 px-4 gap-2
           shadow-xl transition-transform duration-300
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0 md:shadow-none md:bg-[#faf9f6]/50 md:backdrop-blur-xl

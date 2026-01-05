@@ -140,83 +140,78 @@ export default function Navbar() {
                   className="rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow"
                 />
               </div>
-              <span className="text-xl md:text-2xl font-black text-gray-900 font-sans tracking-[0.15em] uppercase">
+              <span className="text-xl md:text-2xl font-black text-gray-900 font-sans tracking-[0.15em] uppercase whitespace-nowrap">
                 {t('common.siteTitle')}
               </span>
             </Link>
           </div>
           
           {/* 桌面端导航 */}
-          <div className="hidden md:flex items-center gap-6">
-            {!isAdmin && (
-              <>
-                <div className="flex items-center bg-gray-50/50 p-1 rounded-2xl border border-gray-100">
-                  <Link 
-                    href="/" 
-                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname === '/' || pathname === '/blog' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
-                  >
-                    {t('nav.blog')}
-                  </Link>
-                  <Link
-                    href="/services"
-                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname.startsWith('/services') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
-                  >
-                    {t('nav.services')}
-                  </Link>
-                  <Link
-                    href="/ai-chat"
-                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname === '/ai-chat' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
-                  >
-                    {t('nav.aiChat')}
-                  </Link>
-                  <Link 
-                    href="/fortune" 
-                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname === '/fortune' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
-                  >
-                    {t('nav.fortune')}
-                  </Link>
-                </div>
-
-                <form onSubmit={handleSearch} className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-4 w-4 text-gray-400 group-focus-within:text-[#FF6F61] transition-colors" />
-                  </div>
-                  <input 
-                    type="text" 
-                    placeholder={t('common.search')}
-                    className="bg-gray-50/80 text-gray-900 text-sm pl-10 pr-4 py-2.5 rounded-xl w-48 focus:w-64 border border-transparent focus:border-[#FF6F61]/20 focus:bg-white focus:shadow-lg focus:shadow-[#FF6F61]/5 outline-none transition-all duration-500 font-sans"
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                  />
-                </form>
-              </>
-            )}
-            
-            {isAdmin && (
-              <div className="flex items-center bg-gray-50/50 p-1 rounded-2xl border border-gray-100">
+          <div className="hidden md:flex items-center gap-3 lg:gap-6 flex-nowrap">
+            <>
+              <div className="flex items-center bg-gray-50/50 p-1 rounded-2xl border border-gray-100 flex-nowrap">
                 <Link 
-                  href="/admin/dashboard" 
-                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${pathname.startsWith('/admin') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                  href="/" 
+                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname === '/' || pathname === '/blog' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
                 >
-                  {t('common.dashboard')}
+                  {t('nav.blog')}
                 </Link>
+                <Link
+                  href="/services"
+                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname.startsWith('/services') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                >
+                  {t('nav.services')}
+                </Link>
+                <Link
+                  href="/ai-chat"
+                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname === '/ai-chat' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                >
+                  {t('nav.aiChat')}
+                </Link>
+                <Link 
+                  href="/fortune" 
+                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname === '/fortune' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                >
+                  {t('nav.fortune')}
+                </Link>
+                {isAdmin && (
+                  <Link 
+                    href="/admin/dashboard" 
+                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname.startsWith('/admin') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                  >
+                    {t('common.dashboard')}
+                  </Link>
+                )}
               </div>
-            )}
+
+              <form onSubmit={handleSearch} className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-gray-400 group-focus-within:text-[#FF6F61] transition-colors" />
+                </div>
+                <input 
+                  type="text" 
+                    placeholder={t('common.search')}
+                    className="bg-gray-50/80 text-gray-900 text-sm pl-10 pr-4 py-2.5 rounded-xl w-32 lg:w-48 focus:w-64 border border-transparent focus:border-[#FF6F61]/20 focus:bg-white focus:shadow-lg focus:shadow-[#FF6F61]/5 outline-none transition-all duration-500 font-sans"
+                    value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
+              </form>
+            </>
             
             <div className="h-6 w-[1px] bg-gray-200 mx-2" />
             
             <LanguageSwitcher />
             
             {/* 登录状态显示区域 */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-shrink-0">
               {isAdmin ? (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 whitespace-nowrap">
                   <button 
                     onClick={handleAdminLogout}
-                    className="text-sm font-medium text-gray-500 hover:text-red-500 transition-colors flex items-center gap-1.5"
+                    className="text-sm font-medium text-gray-500 hover:text-red-500 transition-colors flex items-center gap-1.5 whitespace-nowrap"
                   >
                     <LogOut className="w-4 h-4" />
-                    {t('common.logout')}
+                    <span className="whitespace-nowrap">{t('common.logout')}</span>
                   </button>
                   <Link href="/admin/dashboard" className="relative group">
                     <div className="absolute -inset-1 bg-gradient-to-tr from-[#FF6F61] to-[#ffb347] rounded-full blur opacity-20 group-hover:opacity-40 transition-opacity" />
@@ -305,32 +300,32 @@ export default function Navbar() {
             <div className="flex flex-col gap-2">
               <Link 
                 href="/" 
-                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname === '/' || pathname === '/blog' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname === '/' || pathname === '/blog' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('nav.blog')}
               </Link>
               <Link
                 href="/services"
-                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname.startsWith('/services') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname.startsWith('/services') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('nav.services')}
               </Link>
               <Link
                 href="/ai-chat"
-                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname === '/ai-chat' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname === '/ai-chat' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('nav.aiChat')}
               </Link>
               <Link 
                 href="/fortune" 
-                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname === '/fortune' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname === '/fortune' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('nav.fortune')}
               </Link>
               {isAdmin && (
                 <Link 
                   href="/admin/dashboard" 
-                  className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all ${pathname.startsWith('/admin') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                  className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname.startsWith('/admin') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
                 >
                   {t('common.dashboard')}
                 </Link>

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Send, Bot, User, Loader2, BookOpen, Sparkles } from 'lucide-react';
-import { Button } from '../ui/button';
+import Button from '../ui/button';
 
 interface Message {
   role: 'user' | 'assistant';

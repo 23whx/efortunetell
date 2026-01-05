@@ -52,6 +52,7 @@ export default function AdminWritePage() {
   const presets = [
     { name: t('blog.category.bazi'), url: '/cover/bazi.png' },
     { name: t('blog.category.qimen'), url: '/cover/qimen.png' },
+    { name: t('keyword.bagua'), url: '/cover/bagua.png' },
   ];
 
   // 加载现有文章
@@ -505,6 +506,28 @@ export default function AdminWritePage() {
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                     />
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const normalized = tags
+                        .split(/[，,]/)
+                        .map((t) => t.trim())
+                        .filter(Boolean);
+                      if (normalized.includes('八字理论')) return;
+                      const next = [...normalized, '八字理论'].join(', ');
+                      setTags(next);
+                      if (!category) setCategory('八字');
+                    }}
+                    className="px-3 py-1.5 rounded-full bg-white text-[#FF6F61] text-[10px] font-black uppercase tracking-widest border border-[#FF6F61]/20 hover:bg-[#FF6F61] hover:text-white transition-colors"
+                    title="添加“八字理论”标签；该标签文章不会在首页列表显示，只会在 专题-八字 页面展示"
+                  >
+                    + 八字理论
+                  </button>
+                  <span className="text-[10px] font-bold text-gray-400 tracking-wide">
+                    （该标签文章不在首页显示，仅在“专题-八字”中展示）
+                  </span>
+                </div>
                   </div>
 
               <div>
