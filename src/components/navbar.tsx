@@ -15,7 +15,7 @@ import { getProfileById } from '@/lib/supabase/profile';
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [user, setUser] = useState<{ email: string } | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [roleLoading, setRoleLoading] = useState(false);
