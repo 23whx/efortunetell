@@ -8,7 +8,7 @@ import Button from '@/components/ui/button';
 import KLineChart from '@/components/ai-consultation/KLineChart';
 import { 
   Calendar, Clock, Send, Loader2, Sparkles, 
-  ArrowRight, CheckCircle, AlertCircle, MessageSquare 
+  ArrowRight, CheckCircle, AlertCircle, MessageSquare, Heart
 } from 'lucide-react';
 
 type Step = 'birth-input' | 'chatting';
