@@ -445,7 +445,6 @@ export const translations = {
     'admin.comments.updateFailed': '更新状态失败',
     'admin.comments.repliesCount': '条回复',
     'admin.comments.nestedReply': '嵌套回复',
-    'admin.comments.noComments': '暂无评论数据',
 
     // RAG AI问答
     'rag.title': 'AI 智慧命理咨询',
