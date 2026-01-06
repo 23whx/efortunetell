@@ -90,7 +90,11 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden">
                     <Image
-                      src="/user_img.png"
+                      src={
+                        (authorName === 'Rollkey' || authorName === '旭通' || authorName === null)
+                          ? '/admin_img.jpg'
+                          : '/user_img.png'
+                      }
                       alt={t('blog.authorAvatar')}
                       width={40}
                       height={40}

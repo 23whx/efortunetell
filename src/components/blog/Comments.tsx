@@ -255,7 +255,10 @@ export default function Comments({ articleId }: CommentsProps) {
         
         {depth < 2 && (
           <button
-            onClick={() => setReplyingTo(comment.id)}
+            onClick={() => {
+              setContent('');
+              setReplyingTo(comment.id);
+            }}
             className="flex items-center gap-2 text-sm text-[#FF6F61] hover:text-[#FF5A4D] transition-colors font-medium"
           >
             <Reply size={14} />
@@ -282,7 +285,10 @@ export default function Comments({ articleId }: CommentsProps) {
                 {t('comment.replyPlaceholder').replace('{name}', comment.author_name)}
               </span>
               <button
-                onClick={() => setReplyingTo(null)}
+                onClick={() => {
+                  setReplyingTo(null);
+                  setContent('');
+                }}
                 className="text-sm text-gray-400 hover:text-gray-600"
               >
                 {t('comment.cancel')}
@@ -294,6 +300,7 @@ export default function Comments({ articleId }: CommentsProps) {
               className="w-full p-3 rounded-xl border border-gray-200 focus:border-[#FF6F61] focus:outline-none resize-none"
               rows={3}
               placeholder={t('comment.placeholder')}
+              autoFocus
             />
             <div className="flex justify-between items-center mt-3">
               <span className="text-xs text-gray-400">

@@ -68,6 +68,14 @@ export default function Footer() {
                   {t('nav.contact')}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/donation"
+                  className="text-pink-400 hover:text-pink-300 transition-colors text-sm font-semibold flex items-center gap-1"
+                >
+                  💖 {t('footer.donation')}
+                </Link>
+              </li>
             </ul>
           </div>
 

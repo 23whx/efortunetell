@@ -5,6 +5,22 @@
 
 const DEEPSEEK_API_BASE = 'https://api.deepseek.com';
 
+function getDeepSeekApiKey(): string {
+  // Prefer server-only env, but allow NEXT_PUBLIC_ fallback for local/dev convenience
+  const apiKey =
+    process.env.DEEPSEEK_API_KEY ||
+    process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY ||
+    '';
+
+  if (!apiKey) {
+    throw new Error(
+      'DEEPSEEK_API_KEY is not set (set DEEPSEEK_API_KEY or NEXT_PUBLIC_DEEPSEEK_API_KEY in your environment).'
+    );
+  }
+
+  return apiKey;
+}
+
 export interface DeepSeekEmbeddingResponse {
   object: 'list';
   data: Array<{
@@ -48,11 +64,7 @@ export interface DeepSeekChatResponse {
  * 生成文本的向量嵌入
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  
-  if (!apiKey) {
-    throw new Error('DEEPSEEK_API_KEY is not set');
-  }
+  const apiKey = getDeepSeekApiKey();
 
   const response = await fetch(`${DEEPSEEK_API_BASE}/embeddings`, {
     method: 'POST',
@@ -79,11 +91,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  * 批量生成向量嵌入
  */
 export async function generateEmbeddings(texts: string[]): Promise<number[][]> {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  
-  if (!apiKey) {
-    throw new Error('DEEPSEEK_API_KEY is not set');
-  }
+  const apiKey = getDeepSeekApiKey();
 
   const response = await fetch(`${DEEPSEEK_API_BASE}/embeddings`, {
     method: 'POST',
@@ -117,11 +125,7 @@ export async function chatCompletion(
     stream?: boolean;
   }
 ): Promise<DeepSeekChatResponse> {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  
-  if (!apiKey) {
-    throw new Error('DEEPSEEK_API_KEY is not set');
-  }
+  const apiKey = getDeepSeekApiKey();
 
   const response = await fetch(`${DEEPSEEK_API_BASE}/chat/completions`, {
     method: 'POST',
@@ -156,11 +160,7 @@ export async function* chatCompletionStream(
     max_tokens?: number;
   }
 ): AsyncGenerator<string, void, unknown> {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  
-  if (!apiKey) {
-    throw new Error('DEEPSEEK_API_KEY is not set');
-  }
+  const apiKey = getDeepSeekApiKey();
 
   const response = await fetch(`${DEEPSEEK_API_BASE}/chat/completions`, {
     method: 'POST',

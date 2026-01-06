@@ -177,7 +177,11 @@ function SearchResults() {
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-100">
                       <Image
-                        src="/user_img.png"
+                        src={
+                          (article.author_display_name === 'Rollkey' || article.author_display_name === '旭通' || !article.author_display_name)
+                            ? '/admin_img.jpg'
+                            : '/user_img.png'
+                        }
                         alt="Author"
                         width={24}
                         height={24}

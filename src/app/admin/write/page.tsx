@@ -222,6 +222,19 @@ export default function AdminWritePage() {
       }
 
       await attachDraftImagesToArticle(draftKey, resultId!);
+      
+      // 如果文章已发布，自动触发向量化
+      if (finalStatus === 'published') {
+        try {
+          const { triggerArticleEmbedding } = await import('@/lib/rag/auto-embed');
+          await triggerArticleEmbedding(resultId!);
+          console.log('Article embedding triggered successfully');
+        } catch (embedError) {
+          console.error('Failed to trigger article embedding:', embedError);
+          // 不影响文章保存流程
+        }
+      }
+      
       router.push('/admin/articles');
     } catch (e) {
       setError(e instanceof Error ? e.message : t('admin.write.message.saveFailed'));

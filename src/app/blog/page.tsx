@@ -486,7 +486,11 @@ export default function BlogPage() {
                     <div className="flex items-center gap-3 pt-2">
                       <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm flex-shrink-0 bg-gray-100">
                         <Image
-                          src={article.author_avatar_url || '/user_img.png'}
+                          src={
+                            (article.author_display_name === 'Rollkey' || article.author_display_name === '旭通' || !article.author_display_name)
+                              ? '/admin_img.jpg'
+                              : (article.author_avatar_url || '/user_img.png')
+                          }
                           alt={article.author_display_name || 'Author'}
                           width={32}
                           height={32}

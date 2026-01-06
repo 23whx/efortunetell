@@ -2,190 +2,218 @@
 
 import { useEffect, useState } from 'react';
 import AdminSidebar from '@/components/shared/AdminSidebar';
-import Button from '@/components/ui/button';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Calendar, User, Phone, Clock, Eye, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import Button from '@/components/ui/button';
 
-type BookingRow = {
+type Appointment = {
   id: string;
-  service_type: string;
-  email: string;
-  birth_datetime: string | null;
-  notes: string | null;
-  status: string;
+  user_name: string;
+  user_contact: string;
+  birth_info: {
+    birth_date: string;
+    birth_time: string;
+  };
+  bazi: any;
+  chat_summary: string;
+  requirements: string;
+  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  admin_notes: string;
   created_at: string;
 };
 
-export default function AdminAppointmentsPage() {
+export default function AppointmentsPage() {
   const { t } = useLanguage();
-  const [rows, setRows] = useState<BookingRow[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [busyId, setBusyId] = useState<string | null>(null);
-
-  const load = async () => {
-    setError(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [showDetail, setShowDetail] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  
+  useEffect(() => {
+    loadAppointments();
+  }, []);
+  
+  const loadAppointments = async () => {
     setLoading(true);
     try {
       const supabase = createSupabaseBrowserClient();
-      const { data, error } = await supabase
-        .from('bookings')
-        .select('id,service_type,email,birth_datetime,notes,status,created_at')
-        .order('created_at', { ascending: false })
-        .limit(200);
+      let query = supabase
+        .from('appointments')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (filterStatus !== 'all') {
+        query = query.eq('status', filterStatus);
+      }
+      
+      const { data, error } = await query;
+      
       if (error) throw error;
-      setRows((data || []) as BookingRow[]);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t('admin.appointments.loadFailed'));
+      setAppointments((data || []) as Appointment[]);
+    } catch (error) {
+      console.error('Failed to load appointments:', error);
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    load();
-  }, []);
-
+  
   const updateStatus = async (id: string, status: string) => {
-    setBusyId(id);
     try {
       const supabase = createSupabaseBrowserClient();
-      const { error } = await supabase.from('bookings').update({ status }).eq('id', id);
+      const { error } = await supabase
+        .from('appointments')
+        .update({ status })
+        .eq('id', id);
+      
       if (error) throw error;
-      setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t('admin.appointments.updateFailed'));
-    } finally {
-      setBusyId(null);
+      
+      await loadAppointments();
+      alert('状态更新成功');
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      alert('更新失败');
     }
   };
-
-  const remove = async (id: string) => {
-    if (!confirm(t('admin.appointments.confirmDelete'))) return;
-    setBusyId(id);
+  
+  const updateNotes = async (id: string, notes: string) => {
     try {
       const supabase = createSupabaseBrowserClient();
-      const { error } = await supabase.from('bookings').delete().eq('id', id);
+      const { error } = await supabase
+        .from('appointments')
+        .update({ admin_notes: notes })
+        .eq('id', id);
+      
       if (error) throw error;
-      setRows((prev) => prev.filter((r) => r.id !== id));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t('admin.appointments.deleteFailed'));
-    } finally {
-      setBusyId(null);
+      
+      alert('备注保存成功');
+    } catch (error) {
+      console.error('Failed to update notes:', error);
+      alert('保存失败');
     }
   };
-
+  
+  const getStatusBadge = (status: string) => {
+    const styles = {
+      pending: 'bg-yellow-100 text-yellow-700',
+      confirmed: 'bg-blue-100 text-blue-700',
+      completed: 'bg-green-100 text-green-700',
+      cancelled: 'bg-gray-100 text-gray-700',
+    };
+    
+    const labels = {
+      pending: '待处理',
+      confirmed: '已确认',
+      completed: '已完成',
+      cancelled: '已取消',
+    };
+    
+    return (
+      <span className={`px-3 py-1 rounded-full text-xs font-bold ${styles[status as keyof typeof styles]}`}>
+        {labels[status as keyof typeof labels]}
+      </span>
+    );
+  };
+  
   return (
     <div className="min-h-screen bg-[#faf9f6] flex">
       <AdminSidebar activeItem="appointments" />
+      
       <main className="flex-1 ml-64 p-8 md:p-12">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h1 className="text-4xl font-black text-gray-900 mb-2">{t('admin.appointments.title')}</h1>
-              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">{t('common.appointments')}</p>
+              <h1 className="text-4xl font-black text-gray-900 mb-2">预约管理</h1>
+              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">
+                Appointment Management
+              </p>
             </div>
-            <button 
-              className="px-8 py-3 rounded-2xl bg-[#FF6F61] text-white font-black shadow-xl shadow-[#FF6F61]/20 hover:scale-105 active:scale-95 transition-all"
-              onClick={load} 
-              disabled={loading}
-            >
-              {t('admin.appointments.refresh')}
-            </button>
+            <Button onClick={loadAppointments} disabled={loading}>
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : '刷新'}
+            </Button>
           </div>
-
-          <div className="bg-white rounded-[32px] border border-gray-100 shadow-xl shadow-gray-200/20 p-8">
-            {error && (
-              <div className="mb-8 p-5 bg-red-50 text-red-600 rounded-3xl border border-red-100 flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
-                <span className="font-bold">{error}</span>
-              </div>
-            )}
-
+          
+          {/* Filter */}
+          <div className="mb-6 flex gap-2">
+            {['all', 'pending', 'confirmed', 'completed', 'cancelled'].map(status => (
+              <button
+                key={status}
+                onClick={() => { setFilterStatus(status); loadAppointments(); }}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                  filterStatus === status
+                    ? 'bg-[#FF6F61] text-white shadow-lg'
+                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                {status === 'all' ? '全部' : status === 'pending' ? '待处理' : status === 'confirmed' ? '已确认' : status === 'completed' ? '已完成' : '已取消'}
+              </button>
+            ))}
+          </div>
+          
+          {/* List */}
+          <div className="bg-white rounded-3xl shadow-xl p-6">
             {loading ? (
               <div className="flex justify-center py-20">
-                <div className="w-12 h-12 border-4 border-[#FF6F61] border-t-transparent rounded-full animate-spin shadow-lg shadow-[#FF6F61]/20"></div>
+                <Loader2 className="w-12 h-12 border-4 border-[#FF6F61] border-t-transparent animate-spin" />
               </div>
-            ) : rows.length === 0 ? (
+            ) : appointments.length === 0 ? (
               <div className="text-center py-20">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-50 mb-4">
-                  <span className="text-2xl text-gray-300">∅</span>
-                </div>
-                <p className="text-gray-400 font-bold">{t('admin.appointments.empty')}</p>
+                <p className="text-gray-400 font-bold">暂无预约记录</p>
               </div>
             ) : (
-              <div className="grid gap-6">
-                {rows.map((r) => (
-                  <div key={r.id} className="group p-8 rounded-[32px] border border-gray-100 bg-gray-50/30 hover:bg-white hover:shadow-xl hover:shadow-gray-200/30 transition-all duration-500">
-                    <div className="flex flex-col lg:flex-row justify-between gap-8">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-3 mb-4">
-                          <span className="px-4 py-1.5 rounded-full bg-white border border-gray-100 text-[#FF6F61] text-xs font-black uppercase tracking-widest shadow-sm">
-                            {t(`service.${r.service_type}`) !== `service.${r.service_type}` 
-                              ? t(`service.${r.service_type}`) 
-                              : r.service_type}
-                          </span>
-                          <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest ${
-                            r.status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'
-                          }`}>
-                            {r.status === 'completed' ? t('admin.appointments.status.completed') : t('admin.appointments.status.pending')}
+              <div className="space-y-4">
+                {appointments.map(appointment => (
+                  <div
+                    key={appointment.id}
+                    className="group p-6 rounded-2xl border border-gray-100 hover:border-[#FF6F61]/20 hover:shadow-lg transition-all cursor-pointer"
+                    onClick={() => {
+                      setSelectedAppointment(appointment);
+                      setShowDetail(true);
+                    }}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-3">
+                          {getStatusBadge(appointment.status)}
+                          <span className="text-xs text-gray-400">
+                            {new Date(appointment.created_at).toLocaleString()}
                           </span>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                          <div className="space-y-1">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('admin.appointments.email')}</p>
-                            <p className="text-sm font-bold text-gray-700">{r.email}</p>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="flex items-center gap-2 text-sm">
+                            <User className="w-4 h-4 text-gray-400" />
+                            <span className="font-semibold">{appointment.user_name}</span>
                           </div>
-                          <div className="space-y-1">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('admin.appointments.date')}</p>
-                            <p className="text-sm font-bold text-gray-700">{new Date(r.created_at).toLocaleString(t('common.locale') || 'en-US')}</p>
+                          
+                          <div className="flex items-center gap-2 text-sm">
+                            <Phone className="w-4 h-4 text-gray-400" />
+                            <span>{appointment.user_contact}</span>
                           </div>
-                          {r.birth_datetime && (
-                            <div className="md:col-span-2 space-y-1">
-                              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('admin.appointments.birth')}</p>
-                              <p className="text-sm font-bold text-gray-700 italic">{r.birth_datetime}</p>
-                            </div>
-                          )}
-                          {r.notes && (
-                            <div className="md:col-span-2 space-y-1">
-                              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('admin.appointments.notes')}</p>
-                              <p className="text-sm font-bold text-gray-700 leading-relaxed bg-white/50 p-4 rounded-2xl border border-gray-100/50">{r.notes}</p>
-                            </div>
-                          )}
+                          
+                          <div className="flex items-center gap-2 text-sm">
+                            <Calendar className="w-4 h-4 text-gray-400" />
+                            <span>{appointment.birth_info?.birth_date}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 text-sm">
+                            <Clock className="w-4 h-4 text-gray-400" />
+                            <span>{appointment.birth_info?.birth_time}</span>
+                          </div>
                         </div>
+                        
+                        {appointment.requirements && (
+                          <p className="text-sm text-gray-600 mt-3 line-clamp-2">
+                            需求：{appointment.requirements}
+                          </p>
+                        )}
                       </div>
-
-                      <div className="flex flex-col gap-3 min-w-[180px] justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => updateStatus(r.id, 'completed')}
-                          disabled={busyId === r.id || r.status === 'completed'}
-                          className={`w-full py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
-                            r.status === 'completed' 
-                              ? 'bg-gray-100 text-gray-300 cursor-not-allowed' 
-                              : 'bg-green-500 text-white shadow-lg shadow-green-200 hover:scale-105 active:scale-95'
-                          }`}
-                        >
-                          {busyId === r.id ? '...' : t('admin.appointments.action.complete')}
-                        </button>
-                        <button
-                          onClick={() => updateStatus(r.id, 'pending')}
-                          disabled={busyId === r.id || r.status === 'pending'}
-                          className={`w-full py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
-                            r.status === 'pending'
-                              ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                              : 'bg-orange-500 text-white shadow-lg shadow-orange-200 hover:scale-105 active:scale-95'
-                          }`}
-                        >
-                          {t('admin.appointments.action.pending')}
-                        </button>
-                        <button
-                          onClick={() => remove(r.id)}
-                          disabled={busyId === r.id}
-                          className="w-full py-3 rounded-2xl bg-white border border-gray-100 text-gray-400 font-black text-xs uppercase tracking-widest hover:text-red-500 hover:bg-red-50 transition-all hover:scale-105 active:scale-95"
-                        >
-                          {busyId === r.id ? '...' : t('admin.appointments.action.delete')}
-                        </button>
-                      </div>
+                      
+                      <button className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-gray-50 rounded-xl">
+                        <Eye className="w-5 h-5 text-gray-600" />
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -194,8 +222,103 @@ export default function AdminAppointmentsPage() {
           </div>
         </div>
       </main>
+      
+      {/* Detail Modal */}
+      {showDetail && selectedAppointment && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex items-center justify-between">
+              <h2 className="text-2xl font-black">预约详情</h2>
+              <button
+                onClick={() => setShowDetail(false)}
+                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              >
+                <XCircle className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              {/* Basic Info */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-semibold text-gray-500 mb-1 block">姓名</label>
+                  <p className="font-bold">{selectedAppointment.user_name}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-gray-500 mb-1 block">联系方式</label>
+                  <p className="font-bold">{selectedAppointment.user_contact}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-gray-500 mb-1 block">出生日期</label>
+                  <p className="font-bold">{selectedAppointment.birth_info?.birth_date}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-gray-500 mb-1 block">出生时间</label>
+                  <p className="font-bold">{selectedAppointment.birth_info?.birth_time}</p>
+                </div>
+              </div>
+              
+              {/* Bazi */}
+              {selectedAppointment.bazi && (
+                <div>
+                  <label className="text-sm font-semibold text-gray-500 mb-2 block">八字信息</label>
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <pre className="text-sm">{JSON.stringify(selectedAppointment.bazi, null, 2)}</pre>
+                  </div>
+                </div>
+              )}
+              
+              {/* Chat Summary */}
+              <div>
+                <label className="text-sm font-semibold text-gray-500 mb-2 block">AI咨询记录摘要</label>
+                <div className="bg-blue-50 rounded-xl p-4">
+                  <pre className="text-sm whitespace-pre-wrap">{selectedAppointment.chat_summary}</pre>
+                </div>
+              </div>
+              
+              {/* Requirements */}
+              {selectedAppointment.requirements && (
+                <div>
+                  <label className="text-sm font-semibold text-gray-500 mb-2 block">用户需求</label>
+                  <p className="bg-gray-50 rounded-xl p-4 text-sm">{selectedAppointment.requirements}</p>
+                </div>
+              )}
+              
+              {/* Status */}
+              <div>
+                <label className="text-sm font-semibold text-gray-500 mb-2 block">状态</label>
+                <div className="flex gap-2">
+                  {['pending', 'confirmed', 'completed', 'cancelled'].map(status => (
+                    <button
+                      key={status}
+                      onClick={() => updateStatus(selectedAppointment.id, status)}
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                        selectedAppointment.status === status
+                          ? 'bg-[#FF6F61] text-white'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      {status === 'pending' ? '待处理' : status === 'confirmed' ? '已确认' : status === 'completed' ? '已完成' : '已取消'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Admin Notes */}
+              <div>
+                <label className="text-sm font-semibold text-gray-500 mb-2 block">管理员备注</label>
+                <textarea
+                  defaultValue={selectedAppointment.admin_notes || ''}
+                  onBlur={(e) => updateNotes(selectedAppointment.id, e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#FF6F61]/20 focus:border-[#FF6F61] outline-none transition-all"
+                  rows={4}
+                  placeholder="添加备注..."
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-

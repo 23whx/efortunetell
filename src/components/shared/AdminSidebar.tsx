@@ -6,7 +6,7 @@ import { Menu } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AdminSidebarProps {
-  activeItem: 'articles' | 'appointments';
+  activeItem: 'articles' | 'appointments' | 'comments';
 }
 
 export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
@@ -76,6 +76,18 @@ export default function AdminSidebar({ activeItem }: AdminSidebarProps) {
         >
             <div className={`w-1.5 h-1.5 rounded-full ${activeItem === 'appointments' ? 'bg-white' : 'bg-gray-300'}`} />
           {t('common.appointments')}
+          </button>
+
+          <button
+          onClick={() => { router.push('/admin/comments'); setSidebarOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-300 ${
+              activeItem === 'comments' 
+                ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' 
+                : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+        >
+            <div className={`w-1.5 h-1.5 rounded-full ${activeItem === 'comments' ? 'bg-white' : 'bg-gray-300'}`} />
+          {t('common.comments')}
           </button>
         </nav>
         
