@@ -35,10 +35,6 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
         keywords: article.tags || [],
         alternates: {
           canonical: canonicalUrl,
-          languages: {
-            'en-US': canonicalUrl,
-            'zh-CN': `${canonicalUrl}?lang=zh`,
-          },
         },
         openGraph: {
           title: article.title,
@@ -139,11 +135,11 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     image: article?.cover_image_url ? [article.cover_image_url] : undefined,
     author: {
       '@type': 'Person',
-      name: article?.author_display_name,
+      name: article?.author_display_name || 'Rollkey',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Rolley Divination Blog',
+      name: 'Rollkey Divination Blog',
       logo: {
         '@type': 'ImageObject',
         url: `${baseUrl}/icon.png`,
@@ -160,13 +156,17 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
   return (
     <>
-      {/* Structured data for SEO */}
-      <Script id="breadcrumb-ld-json" type="application/ld+json">
-        {JSON.stringify(breadcrumbLd)}
-      </Script>
-      <Script id="article-ld-json" type="application/ld+json">
-        {JSON.stringify(structuredData)}
-      </Script>
+      {/* Structured data for SEO (only when article exists) */}
+      {article && (
+        <>
+          <Script id="breadcrumb-ld-json" type="application/ld+json">
+            {JSON.stringify(breadcrumbLd)}
+          </Script>
+          <Script id="article-ld-json" type="application/ld+json">
+            {JSON.stringify(structuredData)}
+          </Script>
+        </>
+      )}
 
       <div className="min-h-screen">
         <div className="max-w-5xl mx-auto">

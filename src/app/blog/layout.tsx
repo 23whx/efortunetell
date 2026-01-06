@@ -7,11 +7,11 @@ export const metadata: Metadata = {
     canonical: 'https://efortunetell.blog/blog',
   },
   openGraph: {
-    title: 'Rolley Divination Blog',
+    title: 'Rollkey Divination Blog',
     description: 'Chinese metaphysics articles on BaZi, Qi Men Dun Jia, Da Liu Ren, Zi Wei Dou Shu and more.',
     url: 'https://efortunetell.blog/blog',
     type: 'website',
-    images: [{ url: '/icon.png', width: 512, height: 512, alt: 'Rolley Divination Blog' }],
+    images: [{ url: '/icon.png', width: 512, height: 512, alt: 'Rollkey Divination Blog' }],
   },
 };
 

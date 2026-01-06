@@ -52,7 +52,7 @@ export async function GET() {
     `<?xml version="1.0" encoding="UTF-8"?>` +
     `<rss version="2.0">` +
     `<channel>` +
-    `<title>Rolley Divination Blog</title>` +
+    `<title>Rollkey Divination Blog</title>` +
     `<link>${baseUrl}</link>` +
     `<description>Chinese metaphysics: BaZi, Qi Men Dun Jia, Da Liu Ren, Zi Wei Dou Shu and more.</description>` +
     `<language>en</language>` +

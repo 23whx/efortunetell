@@ -143,19 +143,30 @@ export default function Navbar() {
     <>
       <nav className="fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-xl border-b border-gray-100 z-50 py-3 md:py-4 px-4 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 md:gap-3 group flex-shrink">
-            <Link href="/" className="flex items-center gap-2 transition-transform active:scale-95 flex-shrink">
-              <div className="relative w-8 h-8 md:w-9 md:h-9 flex-shrink-0">
+          <div className={`flex items-center ${language === 'en' ? 'gap-1 md:gap-2' : 'gap-2 md:gap-3'} group flex-shrink`}>
+            <Link href="/" className="flex items-center gap-1.5 md:gap-2 transition-transform active:scale-95 flex-shrink">
+              <div className="relative w-7 h-7 md:w-9 md:h-9 flex-shrink-0">
                 <Image
                   src="/icon.png"
-                  alt="Rolley Divination Blog Icon"
+                  alt="Rollkey Divination Blog Icon"
                   fill
                   className="rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow"
                 />
               </div>
-              <span className="text-lg md:text-xl xl:text-2xl font-black text-gray-900 font-sans tracking-[0.05em] xl:tracking-[0.15em] uppercase whitespace-nowrap overflow-hidden text-ellipsis">
-                {t('common.siteTitle')}
-              </span>
+              {language === 'en' ? (
+                <div className="flex flex-col justify-center -space-y-0.5 md:-space-y-1">
+                  <span className="text-[10px] md:text-xs xl:text-sm font-black text-gray-900 font-sans tracking-tight uppercase whitespace-nowrap">
+                    Rollkey's
+                  </span>
+                  <span className="text-[6px] md:text-[7px] xl:text-[8px] font-bold text-gray-500 font-sans tracking-tighter uppercase whitespace-nowrap opacity-70">
+                    Metaphysical Destiny Station
+                  </span>
+                </div>
+              ) : (
+                <span className="text-lg md:text-xl xl:text-2xl font-black text-gray-900 font-sans tracking-[0.05em] xl:tracking-[0.15em] uppercase whitespace-nowrap overflow-hidden text-ellipsis">
+                  {t('common.siteTitle')}
+                </span>
+              )}
             </Link>
           </div>
           

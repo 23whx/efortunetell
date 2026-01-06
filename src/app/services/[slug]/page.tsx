@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: pillar.enDesc,
       url: canonical,
       type: 'website',
-      images: [{ url: '/icon.png', width: 512, height: 512, alt: 'Rolley Divination Blog' }],
+      images: [{ url: '/icon.png', width: 512, height: 512, alt: 'Rollkey Divination Blog' }],
     },
   };
 }
@@ -81,7 +81,7 @@ export default async function PillarPage({ params }: Props) {
     url: canonical,
     isPartOf: {
       '@type': 'WebSite',
-      name: 'Rolley Divination Blog',
+      name: 'Rollkey Divination Blog',
       url: 'https://efortunetell.blog',
     },
   };

@@ -118,7 +118,7 @@ export default function DonationPage() {
                 我们会更加努力，为您带来更好的服务体验！"
               </p>
               <p className="text-sm text-gray-500 mt-3 text-right">
-                —— Rolley 敬上
+                —— Rollkey 敬上
               </p>
             </div>
           </div>

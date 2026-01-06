@@ -373,7 +373,7 @@ export default function BaziConsultationBox() {
       }
     } catch (error) {
       console.error('Failed to send message:', error);
-      alert('发送消息失败，请重试');
+      alert(t('rag.consultation.sendError'));
     } finally {
       setLoading(false);
     }
@@ -624,8 +624,25 @@ export default function BaziConsultationBox() {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-              <Loader2 className="w-5 h-5 animate-spin text-[#FF6F61]" />
+            <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-xl shadow-pink-100/20 max-w-[85%] md:max-w-[80%] animate-pulse">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF6F61] to-[#FF8A7A] flex items-center justify-center flex-shrink-0">
+                  <Loader2 className="w-5 h-5 animate-spin text-white" />
+                </div>
+                <div className="space-y-3">
+                  <p className="text-[15px] font-bold text-gray-900 leading-relaxed">
+                    {t('rag.consultation.loadingMessage')}
+                  </p>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    {t('rag.consultation.loadingTip')}
+                  </p>
+                  <div className="mt-4 pt-4 border-t border-gray-50">
+                    <p className="text-xs text-[#FF6F61] font-medium leading-relaxed bg-[#FF6F61]/5 p-3 rounded-xl border border-[#FF6F61]/10">
+                      {t('rag.consultation.loadingDonation')}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -678,12 +695,12 @@ export default function BaziConsultationBox() {
                   <div className="w-48 h-48 mx-auto flex items-center justify-center">
                     <img 
                       src="/payQRcode/vxQRcode.png" 
-                      alt="微信支付" 
+                      alt={t('rag.donation.wechat')} 
                       className="max-w-full max-h-full object-contain rounded-2xl shadow-md"
                     />
                   </div>
                 </div>
-                <p className="font-bold text-gray-400 tracking-widest uppercase text-xs">微信支付</p>
+                <p className="font-bold text-gray-400 tracking-widest uppercase text-xs">{t('rag.donation.wechat')}</p>
               </div>
               
               <div className="text-center group">
@@ -691,12 +708,12 @@ export default function BaziConsultationBox() {
                   <div className="w-48 h-48 mx-auto flex items-center justify-center">
                     <img 
                       src="/payQRcode/zfbQRcode.png" 
-                      alt="支付宝" 
+                      alt={t('rag.donation.alipay')} 
                       className="max-w-full max-h-full object-contain rounded-2xl shadow-md"
                     />
                   </div>
                 </div>
-                <p className="font-bold text-gray-400 tracking-widest uppercase text-xs">支付宝</p>
+                <p className="font-bold text-gray-400 tracking-widest uppercase text-xs">{t('rag.donation.alipay')}</p>
               </div>
             </div>
             

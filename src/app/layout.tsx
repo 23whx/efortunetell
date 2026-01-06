@@ -27,8 +27,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Rolley Divination Blog | Chinese Metaphysics & Fortune",
-    template: "%s | Rolley Divination Blog",
+    default: "Rollkey Divination Blog | Chinese Metaphysics & Fortune",
+    template: "%s | Rollkey Divination Blog",
   },
   description:
     "Professional Chinese metaphysics prediction and destiny analysis platform offering Bazi (Four Pillars of Destiny), Da Liu Ren, Qimen Dunjia, Plum Blossom Numerology and more traditional divination services.",
@@ -46,30 +46,42 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://efortunetell.blog"),
   alternates: {
     canonical: "/",
-    languages: {
-      "en-US": "/",
-      "zh-CN": "/",
-      "ja-JP": "/",
-      "ko-KR": "/",
-      "ar": "/",
-    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icon.png" }],
+    shortcut: ["/favicon.ico"],
   },
   openGraph: {
-    title: "Rolley Divination Blog | Chinese Metaphysics & Fortune",
+    title: "Rollkey Divination Blog | Chinese Metaphysics & Fortune",
     description:
       "Professional Chinese metaphysics prediction and destiny analysis platform offering Bazi, Da Liu Ren, Qimen Dunjia, Plum Blossom Numerology and more traditional divination services.",
     url: "https://efortunetell.blog",
-    siteName: "Rolley Divination Blog",
+    siteName: "Rollkey Divination Blog",
     images: [
       {
         url: "/icon.png",
         width: 512,
         height: 512,
-        alt: "Rolley Divination Blog Logo",
+        alt: "Rollkey Divination Blog Logo",
       },
     ],
     locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rollkey Divination Blog | Chinese Metaphysics & Fortune",
+    description:
+      "Professional Chinese metaphysics prediction and destiny analysis platform offering Bazi, Da Liu Ren, Qimen Dunjia, Plum Blossom Numerology and more traditional divination services.",
+    images: ["/icon.png"],
   },
 };
 
@@ -90,7 +102,7 @@ export default async function RootLayout({
   const htmlDir = detected.language === 'ar' ? 'rtl' : 'ltr';
 
   const siteUrl = "https://efortunetell.blog";
-  const siteName = "Rolley Divination Blog";
+  const siteName = "Rollkey Divination Blog";
 
   const websiteLd = {
     "@context": "https://schema.org",
