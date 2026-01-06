@@ -1,11 +1,8 @@
 import { calculateBaZi } from '@/lib/bazi/calendar';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { chatCompletion, generateEmbedding } from '@/lib/deepseek/client';
 import fs from 'fs';
 import path from 'path';
-
-// DeepSeek API配置
-const DEEPSEEK_API_KEY = 'sk-c6c416fd532b4058b357072fa969a9ff';
-const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 
 // 语言映射
 const LANGUAGE_INSTRUCTIONS: Record<string, string> = {
@@ -39,24 +36,7 @@ async function searchBaziKnowledge(query: string, limit = 3): Promise<string> {
     const supabase = createSupabaseBrowserClient();
     
     // 1. 生成查询向量
-    const embeddingResponse = await fetch('https://api.deepseek.com/v1/embeddings', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        input: query,
-      }),
-    });
-    
-    if (!embeddingResponse.ok) {
-      throw new Error('Failed to generate embedding');
-    }
-    
-    const embeddingData = await embeddingResponse.json();
-    const queryEmbedding = embeddingData.data[0].embedding;
+    const queryEmbedding = await generateEmbedding(query);
     
     // 2. 向量搜索（只搜索八字相关文章）
     const { data: articles, error } = await supabase.rpc('match_article_sections', {
@@ -162,25 +142,7 @@ ${knowledgeContext}
     ];
     
     // 5. 调用DeepSeek API
-    const response = await fetch(DEEPSEEK_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages,
-        temperature: 0.7,
-        max_tokens: 1000,
-      }),
-    });
-    
-    if (!response.ok) {
-      throw new Error(`DeepSeek API error: ${response.statusText}`);
-    }
-    
-    const data = await response.json();
+    const data = await chatCompletion(messages as any, { temperature: 0.7, max_tokens: 1000 });
     const reply = data.choices[0].message.content;
     
     // 6. 检测是否需要建议升级服务

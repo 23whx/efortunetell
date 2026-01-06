@@ -4,7 +4,7 @@ import { generateChatSummary } from '@/lib/ai/bazi-consultant';
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     
     // 验证用户登录
     const { data: { user }, error: authError } = await supabase.auth.getUser();
