@@ -59,6 +59,23 @@ export async function POST(request: NextRequest) {
       );
     }
     
+    // 跳过"杂谈"类型的文章
+    if (article.category === '杂谈') {
+      // 先清除该文章可能已有的嵌入
+      await supabase
+        .from('article_embeddings')
+        .delete()
+        .eq('article_id', article_id);
+      
+      return NextResponse.json({
+        success: true,
+        article_id,
+        chunks_count: 0,
+        message: `Article "${article.title}" is of category "杂谈" and will not be embedded`,
+        skipped: true,
+      });
+    }
+    
     // 生成嵌入
     const embeddings = await embedArticle({
       id: article.id,

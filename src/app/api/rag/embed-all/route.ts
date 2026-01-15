@@ -35,11 +35,12 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // 获取所有已发布文章
+    // 获取所有已发布文章，排除"杂谈"类型
     const { data: articles, error: fetchError } = await supabase
       .from('articles')
       .select('id, title, content_html, category, tags')
-      .eq('status', 'published');
+      .eq('status', 'published')
+      .neq('category', '杂谈');
     
     if (fetchError) {
       throw fetchError;
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
     if (!articles || articles.length === 0) {
       return NextResponse.json({
         success: true,
-        message: 'No published articles to embed',
+        message: 'No published articles to embed (excluding "杂谈" category)',
         embedded_count: 0,
       });
     }
@@ -107,7 +108,7 @@ export async function POST(request: NextRequest) {
       embedded_count: successCount,
       total_chunks: totalChunks,
       errors: errors.length > 0 ? errors : undefined,
-      message: `Successfully embedded ${successCount}/${articles.length} articles into ${totalChunks} chunks`,
+      message: `Successfully embedded ${successCount}/${articles.length} articles into ${totalChunks} chunks (excluding "杂谈" category)`,
     });
     
   } catch (error) {
