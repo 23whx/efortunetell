@@ -1,0 +1,297 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "Rollkey Divination Blog Icon 旭通命理小站" [ref=e126] [cursor=pointer]:
+          - /url: /zh
+          - img "Rollkey Divination Blog Icon" [ref=e8]
+          - generic [ref=e127]: 旭通命理小站
+        - generic [ref=e12]:
+          - generic [ref=e13]:
+            - link "博客" [ref=e128] [cursor=pointer]:
+              - /url: /zh
+            - link "工具" [ref=e129] [cursor=pointer]:
+              - /url: /zh/tools
+            - button "探索" [ref=e130]:
+              - text: 探索
+              - img [ref=e18]
+          - generic [ref=e20]:
+            - generic:
+              - img
+            - textbox "搜索" [ref=e131]
+          - generic [ref=e23]:
+            - img [ref=e24]
+            - combobox "Language" [ref=e27] [cursor=pointer]:
+              - option "English"
+              - option "中文" [selected]
+              - option "日本語"
+              - option "한국어"
+              - option "العربية"
+          - generic [ref=e29]:
+            - link "登录" [ref=e132] [cursor=pointer]:
+              - /url: /zh/user/login
+              - button "登录" [ref=e133]
+            - link "注册" [ref=e134] [cursor=pointer]:
+              - /url: /zh/user/register
+              - button "注册" [ref=e135]
+    - main [ref=e34]:
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - link "命理工具" [ref=e136] [cursor=pointer]:
+            - /url: /zh/tools
+            - img [ref=e38]
+            - text: 命理工具
+          - heading "八字排盘" [level=1] [ref=e137]
+          - paragraph [ref=e41]: 四柱、藏干、十神、纳音、空亡、司令、大运起运交运与出生节气。前端本地计算，对齐易世家规格。
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - generic [ref=e44]:
+              - text: 出生时间（公历）
+              - textbox "出生时间（公历）" [ref=e138]: 1990-01-15T10:30
+            - generic [ref=e46]:
+              - text: 性别
+              - generic [ref=e47]:
+                - button "bazi.gender.male" [ref=e48]
+                - button "bazi.gender.female" [ref=e49]
+            - generic [ref=e50]:
+              - text: 早晚子时
+              - generic [ref=e51]:
+                - button "bazi.zi.late" [ref=e52]
+                - button "bazi.zi.early" [ref=e53]
+            - generic [ref=e54]:
+              - checkbox "真太阳时" [ref=e139]
+              - text: 真太阳时
+            - generic [ref=e56]:
+              - checkbox "起运比例法（问真 pdy）" [ref=e140]
+              - text: 起运比例法（问真 pdy）
+            - button "排盘" [ref=e141]:
+              - img [ref=e59]
+              - text: 排盘
+            - generic [ref=e61]:
+              - generic [ref=e62]: 我的存盘
+              - link "登录后可保存排盘参数" [ref=e142] [cursor=pointer]:
+                - /url: /zh/user/login
+          - generic [ref=e64]:
+            - generic [ref=e143]:
+              - generic [ref=e144]: 1990-01-15 10:30
+              - generic [ref=e145]: 己巳 丁丑 庚辰 辛巳
+              - generic [ref=e146]:
+                - generic [ref=e147]: "生肖: 蛇"
+                - generic [ref=e148]: "空亡: 申酉"
+                - generic [ref=e149]: "旬首: 甲戌"
+                - generic [ref=e150]: "大运: 逆行"
+            - generic [ref=e151]:
+              - generic [ref=e152]:
+                - generic [ref=e153]: 年柱
+                - generic [ref=e154]: 己
+                - generic [ref=e155]: 正印
+                - generic [ref=e156]: 巳
+                - generic [ref=e157]:
+                  - generic [ref=e158]:
+                    - text: 丙
+                    - generic [ref=e159]: (七杀)
+                  - generic [ref=e160]:
+                    - text: 戊
+                    - generic [ref=e161]: (偏印)
+                  - generic [ref=e162]:
+                    - text: 庚
+                    - generic [ref=e163]: (日主)
+                - generic [ref=e164]: 大林木
+                - generic [ref=e165]: 土/火
+              - generic [ref=e166]:
+                - generic [ref=e167]: 月柱
+                - generic [ref=e168]: 丁
+                - generic [ref=e169]: 正官
+                - generic [ref=e170]: 丑
+                - generic [ref=e171]:
+                  - generic [ref=e172]:
+                    - text: 己
+                    - generic [ref=e173]: (正印)
+                  - generic [ref=e174]:
+                    - text: 癸
+                    - generic [ref=e175]: (伤官)
+                  - generic [ref=e176]:
+                    - text: 辛
+                    - generic [ref=e177]: (劫财)
+                - generic [ref=e178]: 涧下水
+                - generic [ref=e179]: 火/土
+              - generic [ref=e180]:
+                - generic [ref=e181]: 日柱
+                - generic [ref=e182]: 庚
+                - generic [ref=e183]: 日主
+                - generic [ref=e184]: 辰
+                - generic [ref=e185]:
+                  - generic [ref=e186]:
+                    - text: 戊
+                    - generic [ref=e187]: (偏印)
+                  - generic [ref=e188]:
+                    - text: 乙
+                    - generic [ref=e189]: (正财)
+                  - generic [ref=e190]:
+                    - text: 癸
+                    - generic [ref=e191]: (伤官)
+                - generic [ref=e192]: 白蜡金
+                - generic [ref=e193]: 金/土
+              - generic [ref=e194]:
+                - generic [ref=e195]: 时柱
+                - generic [ref=e196]: 辛
+                - generic [ref=e197]: 劫财
+                - generic [ref=e198]: 巳
+                - generic [ref=e199]:
+                  - generic [ref=e200]:
+                    - text: 丙
+                    - generic [ref=e201]: (七杀)
+                  - generic [ref=e202]:
+                    - text: 戊
+                    - generic [ref=e203]: (偏印)
+                  - generic [ref=e204]:
+                    - text: 庚
+                    - generic [ref=e205]: (日主)
+                - generic [ref=e206]: 白蜡金
+                - generic [ref=e207]: 金/火
+            - generic [ref=e208]:
+              - generic [ref=e209]:
+                - heading "出生节气" [level=3] [ref=e210]
+                - generic [ref=e211]:
+                  - generic [ref=e212]:
+                    - term [ref=e213]: 上一节
+                    - definition [ref=e214]: 小寒 1990-01-05 22:33
+                  - generic [ref=e215]:
+                    - term [ref=e216]: 下一节
+                    - definition [ref=e217]: 立春 1990-02-04 10:14
+                  - generic [ref=e218]:
+                    - term [ref=e219]: 当年立春
+                    - definition [ref=e220]: 1990-02-04 10:14
+              - generic [ref=e221]:
+                - heading "月令司令" [level=3] [ref=e222]
+                - paragraph [ref=e223]: 辛 劫财
+                - paragraph [ref=e224]: 辛当令（本段3日）
+                - paragraph [ref=e225]: "节后第几天: 10"
+            - generic [ref=e226]:
+              - heading "大运" [level=3] [ref=e227]
+              - paragraph [ref=e228]: "出生后约 3 年 1 个月 30 天起运（三天折一年） · 起运日期: 1993-03-17"
+              - table [ref=e230]:
+                - rowgroup [ref=e231]:
+                  - row "# 干支 十神 纳音 虚岁区间 交运" [ref=e232]:
+                    - columnheader "#" [ref=e233]
+                    - columnheader "干支" [ref=e234]
+                    - columnheader "十神" [ref=e235]
+                    - columnheader "纳音" [ref=e236]
+                    - columnheader "虚岁区间" [ref=e237]
+                    - columnheader "交运" [ref=e238]
+                - rowgroup [ref=e239]:
+                  - row "1 丙子 七杀 涧下水 3.17–13.17 1993-03-17" [ref=e240]:
+                    - cell "1" [ref=e241]
+                    - cell "丙子" [ref=e242]
+                    - cell "七杀" [ref=e243]
+                    - cell "涧下水" [ref=e244]
+                    - cell "3.17–13.17" [ref=e245]
+                    - cell "1993-03-17" [ref=e246]
+                  - row "2 乙亥 正财 山头火 13.17–23.17 2003-03-17" [ref=e247]:
+                    - cell "2" [ref=e248]
+                    - cell "乙亥" [ref=e249]
+                    - cell "正财" [ref=e250]
+                    - cell "山头火" [ref=e251]
+                    - cell "13.17–23.17" [ref=e252]
+                    - cell "2003-03-17" [ref=e253]
+                  - row "3 甲戌 偏财 山头火 23.17–33.17 2013-03-17" [ref=e254]:
+                    - cell "3" [ref=e255]
+                    - cell "甲戌" [ref=e256]
+                    - cell "偏财" [ref=e257]
+                    - cell "山头火" [ref=e258]
+                    - cell "23.17–33.17" [ref=e259]
+                    - cell "2013-03-17" [ref=e260]
+                  - row "4 癸酉 伤官 剑锋金 33.17–43.17 2023-03-17" [ref=e261]:
+                    - cell "4" [ref=e262]
+                    - cell "癸酉" [ref=e263]
+                    - cell "伤官" [ref=e264]
+                    - cell "剑锋金" [ref=e265]
+                    - cell "33.17–43.17" [ref=e266]
+                    - cell "2023-03-17" [ref=e267]
+                  - row "5 壬申 食神 剑锋金 43.17–53.17 2033-03-17" [ref=e268]:
+                    - cell "5" [ref=e269]
+                    - cell "壬申" [ref=e270]
+                    - cell "食神" [ref=e271]
+                    - cell "剑锋金" [ref=e272]
+                    - cell "43.17–53.17" [ref=e273]
+                    - cell "2033-03-17" [ref=e274]
+                  - row "6 辛未 劫财 路旁土 53.17–63.17 2043-03-17" [ref=e275]:
+                    - cell "6" [ref=e276]
+                    - cell "辛未" [ref=e277]
+                    - cell "劫财" [ref=e278]
+                    - cell "路旁土" [ref=e279]
+                    - cell "53.17–63.17" [ref=e280]
+                    - cell "2043-03-17" [ref=e281]
+                  - row "7 庚午 日主 路旁土 63.17–73.17 2053-03-17" [ref=e282]:
+                    - cell "7" [ref=e283]
+                    - cell "庚午" [ref=e284]
+                    - cell "日主" [ref=e285]
+                    - cell "路旁土" [ref=e286]
+                    - cell "63.17–73.17" [ref=e287]
+                    - cell "2053-03-17" [ref=e288]
+                  - row "8 己巳 正印 大林木 73.17–83.17 2063-03-17" [ref=e289]:
+                    - cell "8" [ref=e290]
+                    - cell "己巳" [ref=e291]
+                    - cell "正印" [ref=e292]
+                    - cell "大林木" [ref=e293]
+                    - cell "73.17–83.17" [ref=e294]
+                    - cell "2063-03-17" [ref=e295]
+            - paragraph [ref=e296]: 四柱历法：lunar-javascript（寿星）。藏干/十神/大运表按易世家规格。司令为人元分野通行表。
+    - contentinfo [ref=e65]:
+      - generic [ref=e66]:
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - heading "关于我们" [level=3] [ref=e297]
+            - paragraph [ref=e70]: 专业的中国玄学在线平台，提供八字算命、奇门遁甲、大六壬等传统占卜服务。
+          - generic [ref=e71]:
+            - heading "快速链接" [level=3] [ref=e298]
+            - list [ref=e73]:
+              - listitem [ref=e74]:
+                - link "首页" [ref=e299] [cursor=pointer]:
+                  - /url: /zh
+              - listitem [ref=e76]:
+                - link "博客" [ref=e300] [cursor=pointer]:
+                  - /url: /zh/blog
+              - listitem [ref=e78]:
+                - link "工具" [ref=e301] [cursor=pointer]:
+                  - /url: /zh/tools
+              - listitem [ref=e80]:
+                - link "万年历" [ref=e302] [cursor=pointer]:
+                  - /url: /zh/tools/almanac
+              - listitem [ref=e82]:
+                - link "专题" [ref=e303] [cursor=pointer]:
+                  - /url: /zh/services
+              - listitem [ref=e84]:
+                - link "联系我们" [ref=e304] [cursor=pointer]:
+                  - /url: /zh/contact
+              - listitem [ref=e86]:
+                - link "💖 捐赠支持" [ref=e305] [cursor=pointer]:
+                  - /url: /zh/donation
+          - generic [ref=e88]:
+            - heading "联系方式" [level=3] [ref=e306]
+            - list [ref=e90]:
+              - listitem [ref=e91]:
+                - generic [ref=e92]: "邮箱:"
+                - link "wanghongxiang23@gmail.com" [ref=e93] [cursor=pointer]:
+                  - /url: mailto:wanghongxiang23@gmail.com
+              - listitem [ref=e94]:
+                - text: "X:"
+                - link "@Rollkey4" [ref=e95] [cursor=pointer]:
+                  - /url: https://x.com/Rollkey4
+                  - text: "@Rollkey4"
+                  - img [ref=e96]
+        - generic [ref=e100]:
+          - heading "友情链接" [level=3] [ref=e307]
+          - generic [ref=e102]:
+            - link "工具导航站" [ref=e308] [cursor=pointer]:
+              - /url: https://oumashu.top/
+              - generic [ref=e104]: 工具导航站
+              - img [ref=e105]
+            - link "ACGN人格数据库" [ref=e309] [cursor=pointer]:
+              - /url: https://acgn-personality-database.top/
+              - generic [ref=e110]: ACGN人格数据库
+              - img [ref=e111]
+        - paragraph [ref=e116]: © 2026 版权所有
+  - button "Open Next.js Dev Tools" [ref=e122] [cursor=pointer]:
+    - img [ref=e123]
+  - alert [ref=e310]

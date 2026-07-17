@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ExternalLink } from 'lucide-react';
+import { useLocalePath } from '@/hooks/useLocalePath';
 
 export default function Footer() {
   const { t } = useLanguage();
   const pathname = usePathname();
+  const lp = useLocalePath();
   const currentYear = new Date().getFullYear();
 
   // 如果是管理员页面，不显示页脚
@@ -38,7 +40,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/"
+                  href={lp('/')}
                   className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
                 >
                   {t('nav.home')}
@@ -46,7 +48,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/blog"
+                  href={lp('/blog')}
                   className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
                 >
                   {t('nav.blog')}
@@ -54,7 +56,23 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/services"
+                  href={lp('/tools')}
+                  className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
+                >
+                  {t('nav.tools')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={lp('/tools/almanac')}
+                  className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
+                >
+                  {t('tools.almanac')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={lp('/services')}
                   className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
                 >
                   {t('nav.services')}
@@ -62,7 +80,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/contact"
+                  href={lp('/contact')}
                   className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
                 >
                   {t('nav.contact')}
@@ -70,7 +88,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/donation"
+                  href={lp('/donation')}
                   className="text-pink-400 hover:text-pink-300 transition-colors text-sm font-semibold flex items-center gap-1"
                 >
                   💖 {t('footer.donation')}

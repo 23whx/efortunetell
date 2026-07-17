@@ -1,0 +1,226 @@
+import Link from 'next/link';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { CalendarDays, Sparkles, Compass, ScrollText, PenLine } from 'lucide-react';
+import { isLocale, withLocale, type Locale } from '@/lib/i18n/config';
+import { buildPageMetadata } from '@/lib/i18n/seo';
+
+const COPY: Record<
+  Locale,
+  {
+    title: string;
+    desc: string;
+    items: Array<{ href: string; title: string; desc: string; badge?: string; ready: boolean }>;
+  }
+> = {
+  en: {
+    title: 'Metaphysics Tools',
+    desc: 'Traditional Chinese calendar and charting tools — free to use, built for accuracy.',
+    items: [
+      {
+        href: '/tools/almanac',
+        title: 'Chinese Almanac (Tong Shu)',
+        desc: 'Lunar date, pillars, yi/ji, chong-sha, mansions, hours and more.',
+        badge: 'Live',
+        ready: true,
+      },
+      {
+        href: '/tools/bazi',
+        title: 'BaZi Chart',
+        desc: 'Four pillars, hidden stems, ten gods, na yin, void, luck cycles.',
+        badge: 'Live',
+        ready: true,
+      },
+      {
+        href: '/tools/qimen',
+        title: 'Yin Pan Qi Men',
+        desc: 'Hour-based Yin Pan Qimen Dunjia charting.',
+        badge: 'Live',
+        ready: true,
+      },
+      {
+        href: '/tools/daliuren',
+        title: 'Da Liu Ren',
+        desc: 'Classic four-position charting workflow.',
+        badge: 'Live',
+        ready: true,
+      },
+      {
+        href: '/tools/naming',
+        title: 'Naming',
+        desc: 'Character lookup and smart name suggestions from BaZi.',
+        badge: 'Live',
+        ready: true,
+      },
+    ],
+  },
+  zh: {
+    title: '命理工具',
+    desc: '万年历与专业排盘工具，前端本地计算，可随时对照校验。',
+    items: [
+      {
+        href: '/tools/almanac',
+        title: '万年历 / 老黄历',
+        desc: '农历、四柱、宜忌、冲煞、建除、星宿、时辰吉凶等。',
+        badge: '已上线',
+        ready: true,
+      },
+      {
+        href: '/tools/bazi',
+        title: '八字排盘',
+        desc: '四柱、藏干、十神、纳音、空亡、大运起运交运、司令、节气。',
+        badge: '已上线',
+        ready: true,
+      },
+      {
+        href: '/tools/qimen',
+        title: '阴盘奇门',
+        desc: '时家阴盘奇门遁甲起盘。',
+        badge: '已上线',
+        ready: true,
+      },
+      {
+        href: '/tools/daliuren',
+        title: '大六壬',
+        desc: '四位课式排盘。',
+        badge: '已上线',
+        ready: true,
+      },
+      {
+        href: '/tools/naming',
+        title: '起名改名',
+        desc: '汉字属性查询与八字喜用智能取名。',
+        badge: '已上线',
+        ready: true,
+      },
+    ],
+  },
+  ja: {
+    title: '命理ツール',
+    desc: '万年暦と排盤ツール。',
+    items: [
+      {
+        href: '/tools/almanac',
+        title: '万年暦',
+        desc: '旧暦・干支・吉凶など。',
+        badge: '公開中',
+        ready: true,
+      },
+      { href: '/tools/bazi', title: '四柱推命', desc: '八字排盤', badge: '公開中', ready: true },
+      { href: '/tools/qimen', title: '陰盤奇門', desc: '奇門遁甲', badge: '公開中', ready: true },
+      { href: '/tools/daliuren', title: '大六壬', desc: '課式排盤', badge: '公開中', ready: true },
+      { href: '/tools/naming', title: '命名', desc: '姓名提案', badge: '公開中', ready: true },
+    ],
+  },
+  ko: {
+    title: '명리 도구',
+    desc: '만년력과 명반 도구.',
+    items: [
+      {
+        href: '/tools/almanac',
+        title: '만년력',
+        desc: '음력, 간지, 길흉 등.',
+        badge: '오픈',
+        ready: true,
+      },
+      { href: '/tools/bazi', title: '사주', desc: '팔자 명반', badge: '오픈', ready: true },
+      { href: '/tools/qimen', title: '음반 기문', desc: '기문둔갑', badge: '오픈', ready: true },
+      { href: '/tools/daliuren', title: '대육임', desc: '과식 명반', badge: '오픈', ready: true },
+      { href: '/tools/naming', title: '작명', desc: '이름 추천', badge: '오픈', ready: true },
+    ],
+  },
+  ar: {
+    title: 'أدوات الميتافيزيقا',
+    desc: 'التقويم الصيني وأدوات التخطيط.',
+    items: [
+      {
+        href: '/tools/almanac',
+        title: 'التقويم الصيني',
+        desc: 'التقويم القمري والطالع اليومي.',
+        badge: 'متاح',
+        ready: true,
+      },
+      { href: '/tools/bazi', title: 'بازي', desc: 'الأعمدة الأربعة', badge: 'متاح', ready: true },
+      { href: '/tools/qimen', title: 'تشي من', desc: 'تشي من دونجيا', badge: 'متاح', ready: true },
+      { href: '/tools/daliuren', title: 'دا ليو رن', desc: 'مخطط كلاسيكي', badge: 'متاح', ready: true },
+      { href: '/tools/naming', title: 'التسمية', desc: 'اقتراح الأسماء', badge: 'متاح', ready: true },
+    ],
+  },
+};
+
+const ICONS = [CalendarDays, Sparkles, Compass, ScrollText, PenLine];
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) return {};
+  const c = COPY[raw];
+  return buildPageMetadata({
+    locale: raw,
+    path: '/tools',
+    title: c.title,
+    description: c.desc,
+    keywords: ['Chinese almanac', 'BaZi', 'Qimen', 'Da Liu Ren', 'naming', '万年历', '八字'],
+  });
+}
+
+export default async function ToolsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) notFound();
+  const locale = raw as Locale;
+  const c = COPY[locale];
+
+  return (
+    <div className="max-w-5xl mx-auto px-4 py-10 md:py-14">
+      <h1 className="text-3xl md:text-4xl font-black text-gray-900">{c.title}</h1>
+      <p className="mt-2 text-gray-600 max-w-2xl">{c.desc}</p>
+      <div className="mt-8 grid sm:grid-cols-2 gap-4">
+        {c.items.map((item, i) => {
+          const Icon = ICONS[i % ICONS.length];
+          const inner = (
+            <div
+              className={`rounded-3xl border p-5 h-full transition-all ${
+                item.ready
+                  ? 'bg-white border-amber-100 shadow-sm hover:shadow-md hover:border-[#FF6F61]/30'
+                  : 'bg-white/60 border-gray-100 opacity-80'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-amber-50 text-[#FF6F61] flex items-center justify-center">
+                  <Icon className="w-5 h-5" />
+                </div>
+                {item.badge && (
+                  <span
+                    className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                      item.ready
+                        ? 'bg-emerald-50 text-emerald-700'
+                        : 'bg-gray-100 text-gray-500'
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </div>
+              <h2 className="mt-4 text-lg font-bold text-gray-900">{item.title}</h2>
+              <p className="mt-1 text-sm text-gray-600 leading-relaxed">{item.desc}</p>
+            </div>
+          );
+          return item.ready ? (
+            <Link key={item.href} href={withLocale(locale, item.href)}>
+              {inner}
+            </Link>
+          ) : (
+            <div key={item.href}>{inner}</div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

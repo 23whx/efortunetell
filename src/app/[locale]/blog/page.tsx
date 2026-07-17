@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatDate } from '@/utils/date';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { useLocalePath } from '@/hooks/useLocalePath';
 
 // 文章接口定义
 interface Article {
@@ -26,6 +27,7 @@ interface Article {
 
 export default function BlogPage() {
   const { t } = useLanguage();
+  const lp = useLocalePath();
   const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
@@ -443,7 +445,7 @@ export default function BlogPage() {
               })
               .map((article, index) => (
                 <Link
-                  href={`/blog/${article.id}`}
+                  href={lp(`/blog/${article.id}`)}
                   key={article.id}
                   className="group block"
                 >

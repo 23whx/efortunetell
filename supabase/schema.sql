@@ -334,3 +334,16 @@ to public
 using (bucket_id = 'blog-images');
 
 
+
+-- Chart parameter saves (recalculate on open)
+create table if not exists public.chart_saves (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  chart_type text not null check (chart_type in ('bazi', 'qimen', 'daliuren', 'naming', 'almanac')),
+  title text,
+  params jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists chart_saves_user_type_idx on public.chart_saves (user_id, chart_type, created_at desc);
+alter table public.chart_saves enable row level security;

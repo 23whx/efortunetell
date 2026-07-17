@@ -1,0 +1,1560 @@
+{
+  "summary": {
+    "rounds": 14,
+    "totalChecks": 94,
+    "p0": {
+      "total": 24,
+      "pass": 22,
+      "fail": 2
+    },
+    "p1": {
+      "total": 56,
+      "pass": 51,
+      "fail": 5
+    },
+    "info": {
+      "total": 14,
+      "match": 0,
+      "diverge": 14
+    },
+    "pythonError": null
+  },
+  "rounds": [
+    {
+      "id": 1,
+      "name": "BAZI-01 黄金",
+      "dt": "1990-01-15T10:30",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "notes": "问真/易世家 BAZI-01",
+      "bazi": {
+        "pillars": "己巳 丁丑 甲戌 己巳",
+        "year": "己巳",
+        "month": "丁丑",
+        "day": "甲戌",
+        "hour": "己巳",
+        "xunKong": "申酉",
+        "dayunDir": "逆行",
+        "qiyun": "1993-03-17",
+        "siLing": "辛正官",
+        "prevJie": "小寒"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 5,
+        "yuan": "下元",
+        "jie": "小寒",
+        "xun": "甲子戊",
+        "zhiFu": "天芮",
+        "zhiShi": "死",
+        "siZhu": "己巳 丁丑 甲戌 己巳"
+      },
+      "daliuren": {
+        "siZhu": "己巳 丁丑 庚辰 辛巳",
+        "yueJiang": "大吉",
+        "yueJiangZhi": "丑",
+        "renYuan": "丙",
+        "guiShen": "丁亥·天后",
+        "jiangShen": "甲申·传送",
+        "riKong": "申酉",
+        "siDa": "",
+        "diFen": "子"
+      },
+      "checks": [
+        {
+          "field": "八字四柱",
+          "expect": "己巳 丁丑 甲戌 己巳",
+          "got": "己巳 丁丑 甲戌 己巳",
+          "pass": true,
+          "ref": "易世家/问真 BAZI-01",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "甲戌 己巳",
+          "got": "甲戌 己巳",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 甲戌（易世家锚点）",
+          "got": "六壬 庚辰（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "己巳 丁丑 甲戌 己巳",
+          "got": "己巳 丁丑 甲戌 己巳",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "己巳 丁丑 甲戌 己巳",
+          "got": "己巳 丁丑 甲戌 己巳",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yang5 符天芮 使死 旬甲子",
+          "got": "阳遁5 符天芮 使死",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元丙 贵丁亥·天后 将甲申·传送 月将丑",
+          "got": "元丙 贵丁亥·天后 将甲申·传送 月将丑",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 1,
+        "dt": "1990-01-15T10:30",
+        "yishijia_bazi": "己巳 丁丑 甲戌 己巳",
+        "wenzhen_bazi": "己巳 丁丑 甲戌 己巳",
+        "yishijia_qimen": "yang5 符天芮 使死 旬甲子",
+        "rebu_qimen": "yang5 符天柱 使惊门",
+        "rebu_qimen_sizhu": "己巳 丁丑 庚辰 辛巳",
+        "rebu_daliuren": "元丙 贵丁亥·天后 将甲申·传送 月将丑",
+        "rebu_daliuren_sizhu": "己巳 丁丑 庚辰 辛巳"
+      }
+    },
+    {
+      "id": 2,
+      "name": "晚子 23:30",
+      "dt": "1990-01-15T23:30",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "丑",
+      "notes": "晚子换日",
+      "bazi": {
+        "pillars": "己巳 丁丑 乙亥 丙子",
+        "year": "己巳",
+        "month": "丁丑",
+        "day": "乙亥",
+        "hour": "丙子",
+        "xunKong": "申酉",
+        "dayunDir": "逆行",
+        "qiyun": "1993-05-20",
+        "siLing": "辛七杀",
+        "prevJie": "小寒"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 5,
+        "yuan": "下元",
+        "jie": "小寒",
+        "xun": "甲戌己",
+        "zhiFu": "天柱",
+        "zhiShi": "惊",
+        "siZhu": "己巳 丁丑 乙亥 丙子"
+      },
+      "daliuren": {
+        "siZhu": "己巳 丁丑 庚辰 戊子",
+        "yueJiang": "大吉",
+        "yueJiangZhi": "丑",
+        "renYuan": "丁",
+        "guiShen": "丙戌·天空",
+        "jiangShen": "戊寅·功曹",
+        "riKong": "申酉",
+        "siDa": "",
+        "diFen": "丑"
+      },
+      "checks": [
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "乙亥 丙子",
+          "got": "乙亥 丙子",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 乙亥（易世家锚点）",
+          "got": "六壬 庚辰（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "晚子 vs 早子 日柱不同",
+          "expect": "late day ≠ early day",
+          "got": "late 乙亥 / early 甲戌",
+          "pass": true,
+          "ref": "易世家 ziMode",
+          "severity": "P0"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "己巳 丁丑 乙亥 丙子",
+          "got": "己巳 丁丑 乙亥 丙子",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "己巳 丁丑 乙亥 丙子",
+          "got": "己巳 丁丑 乙亥 丙子",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yang5 符天柱 使惊 旬甲戌",
+          "got": "阳遁5 符天柱 使惊",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元丁 贵丙戌·天空 将戊寅·功曹 月将丑",
+          "got": "元丁 贵丙戌·天空 将戊寅·功曹 月将丑",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 2,
+        "dt": "1990-01-15T23:30",
+        "yishijia_bazi": "己巳 丁丑 乙亥 丙子",
+        "wenzhen_bazi": "己巳 丁丑 乙亥 丙子",
+        "yishijia_qimen": "yang5 符天柱 使惊 旬甲戌",
+        "rebu_qimen": "yang5 符天心 使开门",
+        "rebu_qimen_sizhu": "己巳 丁丑 庚辰 戊子",
+        "rebu_daliuren": "元丁 贵丙戌·天空 将戊寅·功曹 月将丑",
+        "rebu_daliuren_sizhu": "己巳 丁丑 庚辰 戊子"
+      }
+    },
+    {
+      "id": 3,
+      "name": "早子 23:30",
+      "dt": "1990-01-15T23:30",
+      "gender": "male",
+      "ziMode": "early",
+      "diFen": "丑",
+      "notes": "早子不换日",
+      "bazi": {
+        "pillars": "己巳 丁丑 甲戌 甲子",
+        "year": "己巳",
+        "month": "丁丑",
+        "day": "甲戌",
+        "hour": "甲子",
+        "xunKong": "申酉",
+        "dayunDir": "逆行",
+        "qiyun": "1993-05-20",
+        "siLing": "辛正官",
+        "prevJie": "小寒"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 5,
+        "yuan": "下元",
+        "jie": "小寒",
+        "xun": "甲子戊",
+        "zhiFu": "天芮",
+        "zhiShi": "死",
+        "siZhu": "己巳 丁丑 甲戌 甲子"
+      },
+      "daliuren": {
+        "siZhu": "己巳 丁丑 庚辰 戊子",
+        "yueJiang": "大吉",
+        "yueJiangZhi": "丑",
+        "renYuan": "丁",
+        "guiShen": "丙戌·天空",
+        "jiangShen": "戊寅·功曹",
+        "riKong": "申酉",
+        "siDa": "",
+        "diFen": "丑"
+      },
+      "checks": [
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "甲戌 甲子",
+          "got": "甲戌 甲子",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 甲戌（易世家锚点）",
+          "got": "六壬 庚辰（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "己巳 丁丑 甲戌 甲子",
+          "got": "己巳 丁丑 甲戌 甲子",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "己巳 丁丑 甲戌 甲子",
+          "got": "己巳 丁丑 甲戌 甲子",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yang5 符天芮 使死 旬甲子",
+          "got": "阳遁5 符天芮 使死",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元丁 贵丙戌·天空 将戊寅·功曹 月将丑",
+          "got": "元丁 贵丙戌·天空 将戊寅·功曹 月将丑",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 3,
+        "dt": "1990-01-15T23:30",
+        "yishijia_bazi": "己巳 丁丑 甲戌 甲子",
+        "wenzhen_bazi": "己巳 丁丑 甲戌 甲子",
+        "yishijia_qimen": "yang5 符天芮 使死 旬甲子",
+        "rebu_qimen": "yang5 符天心 使开门",
+        "rebu_qimen_sizhu": "己巳 丁丑 庚辰 戊子",
+        "rebu_daliuren": "元丁 贵丙戌·天空 将戊寅·功曹 月将丑",
+        "rebu_daliuren_sizhu": "己巳 丁丑 庚辰 戊子"
+      }
+    },
+    {
+      "id": 4,
+      "name": "立春前",
+      "dt": "1990-02-04T09:00",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "寅",
+      "notes": "年柱上一年",
+      "bazi": {
+        "pillars": "己巳 丁丑 甲午 己巳",
+        "year": "己巳",
+        "month": "丁丑",
+        "day": "甲午",
+        "hour": "己巳",
+        "xunKong": "辰巳",
+        "dayunDir": "逆行",
+        "qiyun": "1999-11-26",
+        "siLing": "己正财",
+        "prevJie": "小寒"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 6,
+        "yuan": "下元",
+        "jie": "大寒",
+        "xun": "甲子戊",
+        "zhiFu": "天芮",
+        "zhiShi": "死",
+        "siZhu": "己巳 丁丑 甲午 己巳"
+      },
+      "daliuren": {
+        "siZhu": "己巳 丁丑 庚子 辛巳",
+        "yueJiang": "神后",
+        "yueJiangZhi": "子",
+        "renYuan": "戊",
+        "guiShen": "辛巳·腾蛇",
+        "jiangShen": "乙酉·从魁",
+        "riKong": "辰巳",
+        "siDa": "亥子壬癸",
+        "diFen": "寅"
+      },
+      "checks": [
+        {
+          "field": "立春前年柱",
+          "expect": "己巳 (1989 立春体系)",
+          "got": "己巳",
+          "pass": true,
+          "ref": "易世家/问真 立春换年",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "甲午 己巳",
+          "got": "甲午 己巳",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 甲午（易世家锚点）",
+          "got": "六壬 庚子（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "己巳 丁丑 甲午 己巳",
+          "got": "己巳 丁丑 甲午 己巳",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "己巳 丁丑 甲午 己巳",
+          "got": "己巳 丁丑 甲午 己巳",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yang6 符天芮 使死 旬甲子",
+          "got": "阳遁6 符天芮 使死",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元戊 贵辛巳·腾蛇 将乙酉·从魁 月将子",
+          "got": "元戊 贵辛巳·腾蛇 将乙酉·从魁 月将子",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 4,
+        "dt": "1990-02-04T09:00",
+        "yishijia_bazi": "己巳 丁丑 甲午 己巳",
+        "wenzhen_bazi": "己巳 丁丑 甲午 己巳",
+        "yishijia_qimen": "yang6 符天芮 使死 旬甲子",
+        "rebu_qimen": "yang8 符天冲 使伤门",
+        "rebu_qimen_sizhu": "己巳 丁丑 庚子 辛巳",
+        "rebu_daliuren": "元戊 贵辛巳·腾蛇 将乙酉·从魁 月将子",
+        "rebu_daliuren_sizhu": "己巳 丁丑 庚子 辛巳"
+      }
+    },
+    {
+      "id": 5,
+      "name": "立春后",
+      "dt": "1990-02-04T11:00",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "寅",
+      "notes": "年柱新年",
+      "bazi": {
+        "pillars": "庚午 戊寅 甲午 庚午",
+        "year": "庚午",
+        "month": "戊寅",
+        "day": "甲午",
+        "hour": "庚午",
+        "xunKong": "辰巳",
+        "dayunDir": "顺行",
+        "qiyun": "1999-12-31",
+        "siLing": "戊偏财",
+        "prevJie": "立春"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 8,
+        "yuan": "上元",
+        "jie": "立春",
+        "xun": "甲子戊",
+        "zhiFu": "天芮",
+        "zhiShi": "死",
+        "siZhu": "庚午 戊寅 甲午 庚午"
+      },
+      "daliuren": {
+        "siZhu": "庚午 戊寅 庚子 壬午",
+        "yueJiang": "神后",
+        "yueJiangZhi": "子",
+        "renYuan": "戊",
+        "guiShen": "辛巳·腾蛇",
+        "jiangShen": "甲申·传送",
+        "riKong": "辰巳",
+        "siDa": "亥子壬癸",
+        "diFen": "寅"
+      },
+      "checks": [
+        {
+          "field": "立春后年柱",
+          "expect": "庚午",
+          "got": "庚午",
+          "pass": true,
+          "ref": "易世家/问真 立春换年",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "甲午 庚午",
+          "got": "甲午 庚午",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 甲午（易世家锚点）",
+          "got": "六壬 庚子（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "庚午 戊寅 甲午 庚午",
+          "got": "庚午 戊寅 甲午 庚午",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "庚午 戊寅 甲午 庚午",
+          "got": "庚午 戊寅 甲午 庚午",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yang8 符天芮 使死 旬甲子",
+          "got": "阳遁8 符天芮 使死",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元戊 贵辛巳·腾蛇 将甲申·传送 月将子",
+          "got": "元戊 贵辛巳·腾蛇 将甲申·传送 月将子",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 5,
+        "dt": "1990-02-04T11:00",
+        "yishijia_bazi": "庚午 戊寅 甲午 庚午",
+        "wenzhen_bazi": "庚午 戊寅 甲午 庚午",
+        "yishijia_qimen": "yang8 符天芮 使死 旬甲子",
+        "rebu_qimen": "yang8 符天冲 使伤门",
+        "rebu_qimen_sizhu": "庚午 戊寅 庚子 壬午",
+        "rebu_daliuren": "元戊 贵辛巳·腾蛇 将甲申·传送 月将子",
+        "rebu_daliuren_sizhu": "庚午 戊寅 庚子 壬午"
+      }
+    },
+    {
+      "id": 6,
+      "name": "夏至段",
+      "dt": "2000-06-21T12:00",
+      "gender": "female",
+      "ziMode": "late",
+      "diFen": "午",
+      "notes": "奇门遁边界",
+      "bazi": {
+        "pillars": "庚辰 壬午 甲辰 庚午",
+        "year": "庚辰",
+        "month": "壬午",
+        "day": "甲辰",
+        "hour": "庚午",
+        "xunKong": "寅卯",
+        "dayunDir": "逆行",
+        "qiyun": "2005-09-26",
+        "siLing": "己正财",
+        "prevJie": "芒种"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 6,
+        "yuan": "上元",
+        "jie": "夏至",
+        "xun": "甲子戊",
+        "zhiFu": "天芮",
+        "zhiShi": "死",
+        "siZhu": "庚辰 壬午 甲辰 庚午"
+      },
+      "daliuren": {
+        "siZhu": "庚辰 壬午 庚戌 壬午",
+        "yueJiang": "小吉",
+        "yueJiangZhi": "未",
+        "renYuan": "壬",
+        "guiShen": "戊寅·青龙",
+        "jiangShen": "癸未·小吉",
+        "riKong": "寅卯",
+        "siDa": "",
+        "diFen": "午"
+      },
+      "checks": [
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "甲辰 庚午",
+          "got": "甲辰 庚午",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 甲辰（易世家锚点）",
+          "got": "六壬 庚戌（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "庚辰 壬午 甲辰 庚午",
+          "got": "庚辰 壬午 甲辰 庚午",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "庚辰 壬午 甲辰 庚午",
+          "got": "庚辰 壬午 甲辰 庚午",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yin9 符天芮 使死 旬甲子",
+          "got": "阳遁6 符天芮 使死",
+          "pass": false,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元壬 贵戊寅·青龙 将癸未·小吉 月将未",
+          "got": "元壬 贵戊寅·青龙 将癸未·小吉 月将未",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 6,
+        "dt": "2000-06-21T12:00",
+        "yishijia_bazi": "庚辰 壬午 甲辰 庚午",
+        "wenzhen_bazi": "庚辰 壬午 甲辰 庚午",
+        "yishijia_qimen": "yin9 符天芮 使死 旬甲子",
+        "rebu_qimen": "yin9 符天芮 使死门",
+        "rebu_qimen_sizhu": "庚辰 壬午 庚戌 壬午",
+        "rebu_daliuren": "元壬 贵戊寅·青龙 将癸未·小吉 月将未",
+        "rebu_daliuren_sizhu": "庚辰 壬午 庚戌 壬午"
+      }
+    },
+    {
+      "id": 7,
+      "name": "冬至段",
+      "dt": "2010-12-22T08:00",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "notes": "阳遁段",
+      "bazi": {
+        "pillars": "庚寅 戊子 庚子 庚辰",
+        "year": "庚寅",
+        "month": "戊子",
+        "day": "庚子",
+        "hour": "庚辰",
+        "xunKong": "辰巳",
+        "dayunDir": "顺行",
+        "qiyun": "2015-11-16",
+        "siLing": "壬食神",
+        "prevJie": "大雪"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 1,
+        "yuan": "上元",
+        "jie": "冬至",
+        "xun": "甲戌己",
+        "zhiFu": "天任",
+        "zhiShi": "生",
+        "siZhu": "庚寅 戊子 庚子 庚辰"
+      },
+      "daliuren": {
+        "siZhu": "庚寅 戊子 丙午 壬辰",
+        "yueJiang": "大吉",
+        "yueJiangZhi": "丑",
+        "renYuan": "戊",
+        "guiShen": "癸巳·腾蛇",
+        "jiangShen": "丁酉·从魁",
+        "riKong": "寅卯",
+        "siDa": "",
+        "diFen": "子"
+      },
+      "checks": [
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "庚子 庚辰",
+          "got": "庚子 庚辰",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 庚子（易世家锚点）",
+          "got": "六壬 丙午（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "庚寅 戊子 庚子 庚辰",
+          "got": "庚寅 戊子 庚子 庚辰",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "庚寅 戊子 庚子 庚辰",
+          "got": "庚寅 戊子 庚子 庚辰",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yang1 符天任 使生 旬甲戌",
+          "got": "阳遁1 符天任 使生",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元戊 贵癸巳·腾蛇 将丁酉·从魁 月将丑",
+          "got": "元戊 贵癸巳·腾蛇 将丁酉·从魁 月将丑",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 7,
+        "dt": "2010-12-22T08:00",
+        "yishijia_bazi": "庚寅 戊子 庚子 庚辰",
+        "wenzhen_bazi": "庚寅 戊子 庚子 庚辰",
+        "yishijia_qimen": "yang1 符天任 使生 旬甲戌",
+        "rebu_qimen": "yang1 符天冲 使伤门",
+        "rebu_qimen_sizhu": "庚寅 戊子 丙午 壬辰",
+        "rebu_daliuren": "元戊 贵癸巳·腾蛇 将丁酉·从魁 月将丑",
+        "rebu_daliuren_sizhu": "庚寅 戊子 丙午 壬辰"
+      }
+    },
+    {
+      "id": 8,
+      "name": "奇门六壬 demo",
+      "dt": "2024-06-01T09:00",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "notes": "参考实现主样例",
+      "bazi": {
+        "pillars": "甲辰 己巳 庚寅 辛巳",
+        "year": "甲辰",
+        "month": "己巳",
+        "day": "庚寅",
+        "hour": "辛巳",
+        "xunKong": "午未",
+        "dayunDir": "顺行",
+        "qiyun": "2025-10-17",
+        "siLing": "丙七杀",
+        "prevJie": "立夏"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 8,
+        "yuan": "下元",
+        "jie": "小满",
+        "xun": "甲戌己",
+        "zhiFu": "天冲",
+        "zhiShi": "伤",
+        "siZhu": "甲辰 己巳 庚寅 辛巳"
+      },
+      "daliuren": {
+        "siZhu": "甲辰 己巳 丙申 癸巳",
+        "yueJiang": "传送",
+        "yueJiangZhi": "申",
+        "renYuan": "戊",
+        "guiShen": "癸巳·腾蛇",
+        "jiangShen": "辛卯·太冲",
+        "riKong": "辰巳",
+        "siDa": "亥子壬癸",
+        "diFen": "子"
+      },
+      "checks": [
+        {
+          "field": "奇门 阳遁8局符使",
+          "expect": "阳遁8 天冲 伤",
+          "got": "阳遁8 天冲 伤",
+          "pass": true,
+          "ref": "易世家 reference_impl chart_yinpan_qimen",
+          "severity": "P0"
+        },
+        {
+          "field": "六壬 元/贵/将/月将",
+          "expect": "戊 / 癸巳腾蛇 / 辛卯太冲 / 申",
+          "got": "戊 / 癸巳·腾蛇 / 辛卯·太冲 / 申",
+          "pass": true,
+          "ref": "热卜 reference_impl chart_daliuren",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "庚寅 辛巳",
+          "got": "庚寅 辛巳",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 庚寅（易世家锚点）",
+          "got": "六壬 丙申（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "甲辰 己巳 庚寅 辛巳",
+          "got": "甲辰 己巳 庚寅 辛巳",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "甲辰 己巳 庚寅 辛巳",
+          "got": "甲辰 己巳 庚寅 辛巳",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yang8 符天冲 使伤 旬甲戌",
+          "got": "阳遁8 符天冲 使伤",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元戊 贵癸巳·腾蛇 将辛卯·太冲 月将申",
+          "got": "元戊 贵癸巳·腾蛇 将辛卯·太冲 月将申",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 8,
+        "dt": "2024-06-01T09:00",
+        "yishijia_bazi": "甲辰 己巳 庚寅 辛巳",
+        "wenzhen_bazi": "甲辰 己巳 庚寅 辛巳",
+        "yishijia_qimen": "yang8 符天冲 使伤 旬甲戌",
+        "rebu_qimen": "yang8 符天辅 使杜门",
+        "rebu_qimen_sizhu": "甲辰 己巳 丙申 癸巳",
+        "rebu_daliuren": "元戊 贵癸巳·腾蛇 将辛卯·太冲 月将申",
+        "rebu_daliuren_sizhu": "甲辰 己巳 丙申 癸巳"
+      }
+    },
+    {
+      "id": 9,
+      "name": "热卜奇门抓包",
+      "dt": "2026-07-14T09:24",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "notes": "App 阴遁2局",
+      "bazi": {
+        "pillars": "丙午 乙未 癸未 丁巳",
+        "year": "丙午",
+        "month": "乙未",
+        "day": "癸未",
+        "hour": "丁巳",
+        "xunKong": "申酉",
+        "dayunDir": "顺行",
+        "qiyun": "2034-09-05",
+        "siLing": "丁偏财",
+        "prevJie": "小暑"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 3,
+        "yuan": "中元",
+        "jie": "小暑",
+        "xun": "甲寅癸",
+        "zhiFu": "天心",
+        "zhiShi": "开",
+        "siZhu": "丙午 乙未 癸未 丁巳"
+      },
+      "daliuren": {
+        "siZhu": "丙午 乙未 己丑 己巳",
+        "yueJiang": "小吉",
+        "yueJiangZhi": "未",
+        "renYuan": "甲",
+        "guiShen": "乙丑·天乙",
+        "jiangShen": "丙寅·功曹",
+        "riKong": "午未",
+        "siDa": "申酉庚辛",
+        "diFen": "子"
+      },
+      "checks": [
+        {
+          "field": "奇门四柱 vs 热卜App",
+          "expect": "丙午 乙未 己丑 己巳",
+          "got": "丙午 乙未 癸未 丁巳",
+          "pass": false,
+          "ref": "热卜 UI 抓包 sample",
+          "severity": "P0"
+        },
+        {
+          "field": "奇门局/符/使 vs 热卜App",
+          "expect": "阴遁2 天芮 死",
+          "got": "阳遁3 天心 开",
+          "pass": false,
+          "ref": "热卜 UI 抓包 sample",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "癸未 丁巳",
+          "got": "癸未 丁巳",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 癸未（易世家锚点）",
+          "got": "六壬 己丑（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "丙午 乙未 癸未 丁巳",
+          "got": "丙午 乙未 癸未 丁巳",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "丙午 乙未 癸未 丁巳",
+          "got": "丙午 乙未 癸未 丁巳",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yin2 符天冲 使伤 旬甲寅",
+          "got": "阳遁3 符天心 使开",
+          "pass": false,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元甲 贵乙丑·天乙 将丙寅·功曹 月将未",
+          "got": "元甲 贵乙丑·天乙 将丙寅·功曹 月将未",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 9,
+        "dt": "2026-07-14T09:24",
+        "yishijia_bazi": "丙午 乙未 癸未 丁巳",
+        "wenzhen_bazi": "丙午 乙未 癸未 丁巳",
+        "yishijia_qimen": "yin2 符天冲 使伤 旬甲寅",
+        "rebu_qimen": "yin2 符天芮 使死门",
+        "rebu_qimen_sizhu": "丙午 乙未 己丑 己巳",
+        "rebu_daliuren": "元甲 贵乙丑·天乙 将丙寅·功曹 月将未",
+        "rebu_daliuren_sizhu": "丙午 乙未 己丑 己巳"
+      }
+    },
+    {
+      "id": 10,
+      "name": "热卜六壬抓包",
+      "dt": "2026-07-14T09:27",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "notes": "金口诀四位",
+      "bazi": {
+        "pillars": "丙午 乙未 癸未 丁巳",
+        "year": "丙午",
+        "month": "乙未",
+        "day": "癸未",
+        "hour": "丁巳",
+        "xunKong": "申酉",
+        "dayunDir": "顺行",
+        "qiyun": "2034-09-04",
+        "siLing": "丁偏财",
+        "prevJie": "小暑"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 3,
+        "yuan": "中元",
+        "jie": "小暑",
+        "xun": "甲寅癸",
+        "zhiFu": "天心",
+        "zhiShi": "开",
+        "siZhu": "丙午 乙未 癸未 丁巳"
+      },
+      "daliuren": {
+        "siZhu": "丙午 乙未 己丑 己巳",
+        "yueJiang": "小吉",
+        "yueJiangZhi": "未",
+        "renYuan": "甲",
+        "guiShen": "乙丑·天乙",
+        "jiangShen": "丙寅·功曹",
+        "riKong": "午未",
+        "siDa": "申酉庚辛",
+        "diFen": "子"
+      },
+      "checks": [
+        {
+          "field": "六壬四柱 vs 热卜App",
+          "expect": "丙午 乙未 己丑 己巳",
+          "got": "丙午 乙未 己丑 己巳",
+          "pass": true,
+          "ref": "热卜金口诀抓包",
+          "severity": "P0"
+        },
+        {
+          "field": "六壬四位 vs 热卜App",
+          "expect": "甲 / 乙丑天乙 / 丙寅功曹 / 月将未",
+          "got": "甲 / 乙丑·天乙 / 丙寅·功曹 / 未",
+          "pass": true,
+          "ref": "热卜金口诀抓包",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "癸未 丁巳",
+          "got": "癸未 丁巳",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 癸未（易世家锚点）",
+          "got": "六壬 己丑（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "丙午 乙未 癸未 丁巳",
+          "got": "丙午 乙未 癸未 丁巳",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "丙午 乙未 癸未 丁巳",
+          "got": "丙午 乙未 癸未 丁巳",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yin2 符天冲 使伤 旬甲寅",
+          "got": "阳遁3 符天心 使开",
+          "pass": false,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元甲 贵乙丑·天乙 将丙寅·功曹 月将未",
+          "got": "元甲 贵乙丑·天乙 将丙寅·功曹 月将未",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 10,
+        "dt": "2026-07-14T09:27",
+        "yishijia_bazi": "丙午 乙未 癸未 丁巳",
+        "wenzhen_bazi": "丙午 乙未 癸未 丁巳",
+        "yishijia_qimen": "yin2 符天冲 使伤 旬甲寅",
+        "rebu_qimen": "yin2 符天芮 使死门",
+        "rebu_qimen_sizhu": "丙午 乙未 己丑 己巳",
+        "rebu_daliuren": "元甲 贵乙丑·天乙 将丙寅·功曹 月将未",
+        "rebu_daliuren_sizhu": "丙午 乙未 己丑 己巳"
+      }
+    },
+    {
+      "id": 11,
+      "name": "甲子年后",
+      "dt": "1984-02-05T10:00",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "辰",
+      "notes": "1984立春后",
+      "bazi": {
+        "pillars": "甲子 丙寅 癸亥 丁巳",
+        "year": "甲子",
+        "month": "丙寅",
+        "day": "癸亥",
+        "hour": "丁巳",
+        "xunKong": "子丑",
+        "dayunDir": "顺行",
+        "qiyun": "1993-11-12",
+        "siLing": "戊正官",
+        "prevJie": "立春"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 8,
+        "yuan": "上元",
+        "jie": "立春",
+        "xun": "甲寅癸",
+        "zhiFu": "天柱",
+        "zhiShi": "惊",
+        "siZhu": "甲子 丙寅 癸亥 丁巳"
+      },
+      "daliuren": {
+        "siZhu": "甲子 丙寅 己巳 己巳",
+        "yueJiang": "神后",
+        "yueJiangZhi": "子",
+        "renYuan": "戊",
+        "guiShen": "戊辰·勾陈",
+        "jiangShen": "乙亥·登明",
+        "riKong": "戌亥",
+        "siDa": "亥子壬癸",
+        "diFen": "辰"
+      },
+      "checks": [
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "癸亥 丁巳",
+          "got": "癸亥 丁巳",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 癸亥（易世家锚点）",
+          "got": "六壬 己巳（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "甲子 丙寅 癸亥 丁巳",
+          "got": "甲子 丙寅 癸亥 丁巳",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "甲子 丙寅 癸亥 丁巳",
+          "got": "甲子 丙寅 癸亥 丁巳",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yang8 符天柱 使惊 旬甲寅",
+          "got": "阳遁8 符天柱 使惊",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元戊 贵戊辰·勾陈 将乙亥·登明 月将子",
+          "got": "元戊 贵戊辰·勾陈 将乙亥·登明 月将子",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 11,
+        "dt": "1984-02-05T10:00",
+        "yishijia_bazi": "甲子 丙寅 癸亥 丁巳",
+        "wenzhen_bazi": "甲子 丙寅 癸亥 丁巳",
+        "yishijia_qimen": "yang8 符天柱 使惊 旬甲寅",
+        "rebu_qimen": "yang8 符天芮 使死门",
+        "rebu_qimen_sizhu": "甲子 丙寅 己巳 己巳",
+        "rebu_daliuren": "元戊 贵戊辰·勾陈 将乙亥·登明 月将子",
+        "rebu_daliuren_sizhu": "甲子 丙寅 己巳 己巳"
+      }
+    },
+    {
+      "id": 12,
+      "name": "奥运晚",
+      "dt": "2008-08-08T20:08",
+      "gender": "female",
+      "ziMode": "late",
+      "diFen": "申",
+      "notes": "戌时附近",
+      "bazi": {
+        "pillars": "戊子 庚申 甲戌 甲戌",
+        "year": "戊子",
+        "month": "庚申",
+        "day": "甲戌",
+        "hour": "甲戌",
+        "xunKong": "申酉",
+        "dayunDir": "逆行",
+        "qiyun": "2009-01-22",
+        "siLing": "戊偏财",
+        "prevJie": "立秋"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 6,
+        "yuan": "上元",
+        "jie": "立秋",
+        "xun": "甲戌己",
+        "zhiFu": "天蓬",
+        "zhiShi": "休",
+        "siZhu": "戊子 庚申 甲戌 甲戌"
+      },
+      "daliuren": {
+        "siZhu": "戊子 庚申 庚辰 丙戌",
+        "yueJiang": "胜光",
+        "yueJiangZhi": "午",
+        "renYuan": "甲",
+        "guiShen": "丁亥·天后",
+        "jiangShen": "庚辰·天罡",
+        "riKong": "申酉",
+        "siDa": "",
+        "diFen": "申"
+      },
+      "checks": [
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "甲戌 甲戌",
+          "got": "甲戌 甲戌",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 甲戌（易世家锚点）",
+          "got": "六壬 庚辰（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "戊子 庚申 甲戌 甲戌",
+          "got": "戊子 庚申 甲戌 甲戌",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "戊子 庚申 甲戌 甲戌",
+          "got": "戊子 庚申 甲戌 甲戌",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yin2 符天柱 使惊 旬甲戌",
+          "got": "阳遁6 符天蓬 使休",
+          "pass": false,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元甲 贵丁亥·天后 将庚辰·天罡 月将午",
+          "got": "元甲 贵丁亥·天后 将庚辰·天罡 月将午",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 12,
+        "dt": "2008-08-08T20:08",
+        "yishijia_bazi": "戊子 庚申 甲戌 甲戌",
+        "wenzhen_bazi": "戊子 庚申 甲戌 甲戌",
+        "yishijia_qimen": "yin2 符天柱 使惊 旬甲戌",
+        "rebu_qimen": "yin2 符天心 使开门",
+        "rebu_qimen_sizhu": "戊子 庚申 庚辰 丙戌",
+        "rebu_daliuren": "元甲 贵丁亥·天后 将庚辰·天罡 月将午",
+        "rebu_daliuren_sizhu": "戊子 庚申 庚辰 丙戌"
+      }
+    },
+    {
+      "id": 13,
+      "name": "春分附近",
+      "dt": "2015-03-21T11:00",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "卯",
+      "notes": "中气边界",
+      "bazi": {
+        "pillars": "乙未 己卯 庚寅 壬午",
+        "year": "乙未",
+        "month": "己卯",
+        "day": "庚寅",
+        "hour": "壬午",
+        "xunKong": "午未",
+        "dayunDir": "逆行",
+        "qiyun": "2020-04-15",
+        "siLing": "乙正财",
+        "prevJie": "惊蛰"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 3,
+        "yuan": "上元",
+        "jie": "春分",
+        "xun": "甲戌己",
+        "zhiFu": "天辅",
+        "zhiShi": "杜",
+        "siZhu": "乙未 己卯 庚寅 壬午"
+      },
+      "daliuren": {
+        "siZhu": "乙未 己卯 丙申 甲午",
+        "yueJiang": "河魁",
+        "yueJiangZhi": "戌",
+        "renYuan": "辛",
+        "guiShen": "壬辰·勾陈",
+        "jiangShen": "乙未·小吉",
+        "riKong": "辰巳",
+        "siDa": "亥子壬癸",
+        "diFen": "卯"
+      },
+      "checks": [
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "庚寅 壬午",
+          "got": "庚寅 壬午",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 庚寅（易世家锚点）",
+          "got": "六壬 丙申（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "乙未 己卯 庚寅 壬午",
+          "got": "乙未 己卯 庚寅 壬午",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "乙未 己卯 庚寅 壬午",
+          "got": "乙未 己卯 庚寅 壬午",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yang3 符天辅 使杜 旬甲戌",
+          "got": "阳遁3 符天辅 使杜",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元辛 贵壬辰·勾陈 将乙未·小吉 月将戌",
+          "got": "元辛 贵壬辰·勾陈 将乙未·小吉 月将戌",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 13,
+        "dt": "2015-03-21T11:00",
+        "yishijia_bazi": "乙未 己卯 庚寅 壬午",
+        "wenzhen_bazi": "乙未 己卯 庚寅 壬午",
+        "yishijia_qimen": "yang3 符天辅 使杜 旬甲戌",
+        "rebu_qimen": "yang3 符天芮 使死门",
+        "rebu_qimen_sizhu": "乙未 己卯 丙申 甲午",
+        "rebu_daliuren": "元辛 贵壬辰·勾陈 将乙未·小吉 月将戌",
+        "rebu_daliuren_sizhu": "乙未 己卯 丙申 甲午"
+      }
+    },
+    {
+      "id": 14,
+      "name": "深夜晚子女",
+      "dt": "1992-11-11T23:45",
+      "gender": "female",
+      "ziMode": "late",
+      "diFen": "亥",
+      "notes": "晚子+女命",
+      "bazi": {
+        "pillars": "壬申 辛亥 丙戌 戊子",
+        "year": "壬申",
+        "month": "辛亥",
+        "day": "丙戌",
+        "hour": "戊子",
+        "xunKong": "午未",
+        "dayunDir": "逆行",
+        "qiyun": "1994-05-10",
+        "siLing": "戊食神",
+        "prevJie": "立冬"
+      },
+      "qimen": {
+        "dun": "yang",
+        "dunLabel": "阳遁",
+        "ju": 6,
+        "yuan": "上元",
+        "jie": "立冬",
+        "xun": "甲申庚",
+        "zhiFu": "天任",
+        "zhiShi": "生",
+        "siZhu": "壬申 辛亥 丙戌 戊子"
+      },
+      "daliuren": {
+        "siZhu": "壬申 辛亥 辛卯 庚子",
+        "yueJiang": "太冲",
+        "yueJiangZhi": "卯",
+        "renYuan": "己",
+        "guiShen": "戊子·玄武",
+        "jiangShen": "庚寅·功曹",
+        "riKong": "午未",
+        "siDa": "申酉庚辛",
+        "diFen": "亥"
+      },
+      "checks": [
+        {
+          "field": "八字日时 = 奇门日时",
+          "expect": "丙戌 戊子",
+          "got": "丙戌 戊子",
+          "pass": true,
+          "ref": "本站内聚（同子时规则）",
+          "severity": "P0"
+        },
+        {
+          "field": "八字日柱 vs 六壬日柱(历法源)",
+          "expect": "八字 丙戌（易世家锚点）",
+          "got": "六壬 辛卯（lunar-js/热卜历）",
+          "pass": false,
+          "ref": "说明：六壬对齐热卜历法，八字对齐易世家日柱锚点，允许不同",
+          "severity": "info"
+        },
+        {
+          "field": "八字 vs 易世家Python",
+          "expect": "壬申 辛亥 丙戌 戊子",
+          "got": "壬申 辛亥 丙戌 戊子",
+          "pass": true,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "八字 vs 问真Python",
+          "expect": "壬申 辛亥 丙戌 戊子",
+          "got": "壬申 辛亥 丙戌 戊子",
+          "pass": true,
+          "ref": "pcbz_iwzwh_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "奇门 vs 易世家Python局",
+          "expect": "yin6 符天任 使生 旬甲申",
+          "got": "阳遁6 符天任 使生",
+          "pass": false,
+          "ref": "apk_re/reference_impl",
+          "severity": "P1"
+        },
+        {
+          "field": "六壬 vs 热卜Python",
+          "expect": "元己 贵戊子·玄武 将庚寅·功曹 月将卯",
+          "got": "元己 贵戊子·玄武 将庚寅·功曹 月将卯",
+          "pass": true,
+          "ref": "rebu_re/reference_impl",
+          "severity": "P1"
+        }
+      ],
+      "pythonRef": {
+        "id": 14,
+        "dt": "1992-11-11T23:45",
+        "yishijia_bazi": "壬申 辛亥 丙戌 戊子",
+        "wenzhen_bazi": "壬申 辛亥 丙戌 戊子",
+        "yishijia_qimen": "yin6 符天任 使生 旬甲申",
+        "rebu_qimen": "yin6 符天冲 使伤门",
+        "rebu_qimen_sizhu": "壬申 辛亥 辛卯 庚子",
+        "rebu_daliuren": "元己 贵戊子·玄武 将庚寅·功曹 月将卯",
+        "rebu_daliuren_sizhu": "壬申 辛亥 辛卯 庚子"
+      }
+    }
+  ]
+}

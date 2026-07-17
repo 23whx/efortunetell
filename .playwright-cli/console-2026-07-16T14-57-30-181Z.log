@@ -1,0 +1,2 @@
+[     153ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://www.iamwawa.cn/yiji.html:0
+[     161ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://cdn.wwads.cn/js/makemoney.js:0

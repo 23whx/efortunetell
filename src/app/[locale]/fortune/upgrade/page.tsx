@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import Button from '@/components/ui/button';
 import { ArrowLeft, Sparkles, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-export default function UpgradeServicePage() {
+function UpgradeServiceInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const consultationId = searchParams.get('consultationId');
@@ -221,6 +221,20 @@ export default function UpgradeServicePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function UpgradeServicePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[40vh] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#FF6F61]" />
+        </div>
+      }
+    >
+      <UpgradeServiceInner />
+    </Suspense>
   );
 }
 

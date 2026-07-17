@@ -1,0 +1,3431 @@
+{
+  "summary": {
+    "rounds": 18,
+    "span": "1880 → 2024",
+    "totalChecks": 333,
+    "overall": {
+      "total": 333,
+      "pass": 333,
+      "fail": 0,
+      "p0fail": 0
+    },
+    "modules": {
+      "万年历": {
+        "total": 72,
+        "pass": 72,
+        "fail": 0,
+        "p0fail": 0
+      },
+      "八字": {
+        "total": 62,
+        "pass": 62,
+        "fail": 0,
+        "p0fail": 0
+      },
+      "奇门": {
+        "total": 60,
+        "pass": 60,
+        "fail": 0,
+        "p0fail": 0
+      },
+      "六壬": {
+        "total": 59,
+        "pass": 59,
+        "fail": 0,
+        "p0fail": 0
+      },
+      "起名": {
+        "total": 74,
+        "pass": 74,
+        "fail": 0,
+        "p0fail": 0
+      },
+      "真太阳": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "p0fail": 0
+      }
+    },
+    "pythonSpotError": null,
+    "hardUserCase": {
+      "id": 7,
+      "name": "用户指出日",
+      "dt": "1994-10-26T12:00",
+      "note": "必须乙酉日",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "surname": "欧阳",
+      "refLunar": "甲戌 甲戌 乙酉 壬午",
+      "almanac": {
+        "lunar": "一九九四年九月廿二",
+        "day": "乙酉",
+        "yiN": 12,
+        "jiN": 6
+      },
+      "bazi": "甲戌 甲戌 乙酉 壬午",
+      "qimen": "阴遁5局 符天柱 使惊",
+      "daliuren": "元丙 贵丁丑·天乙 将乙酉·从魁 月将卯",
+      "names": [
+        "欧阳文博",
+        "欧阳鹏飞",
+        "欧阳梓涵"
+      ],
+      "xi": "水木",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1994-10-26 一九九四年九月廿二",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "乙酉",
+          "got": "乙酉",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜12 忌6",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九九四年九月廿二",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "甲戌 甲戌 乙酉 壬午",
+          "got": "甲戌 甲戌 乙酉 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏辛 神日主 纳泉中水 空午未",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1998-12-24",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "用户硬验收日柱",
+          "expect": "乙酉",
+          "got": "乙酉",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阴遁5 符天柱 使惊 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "甲戌 甲戌 乙酉 壬午",
+          "got": "甲戌 甲戌 乙酉 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:辛/乙 2:乙/癸 3:癸/庚",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元丙 贵丁丑·天乙 将乙酉·从魁 地子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "甲戌 甲戌 乙酉 壬午",
+          "got": "甲戌 甲戌 乙酉 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "太冲(卯)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "欧阳文博、欧阳鹏飞、欧阳梓涵",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜水木 忌金土 日主乙",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "文水4 博水12 鹏水13 飞水3 梓木11 涵水11",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "复姓识别",
+          "expect": "欧阳",
+          "got": "欧阳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "文",
+          "got": "文 水 4画 单一结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    }
+  },
+  "rounds": [
+    {
+      "id": 1,
+      "name": "清末",
+      "dt": "1880-03-15T08:00",
+      "note": "19世纪末",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "寅",
+      "surname": "张",
+      "refLunar": "庚辰 己卯 癸卯 丙辰",
+      "almanac": {
+        "lunar": "一八八〇年二月初五",
+        "day": "癸卯",
+        "yiN": 7,
+        "jiN": 6
+      },
+      "bazi": "庚辰 己卯 癸卯 丙辰",
+      "qimen": "阳遁4局 符天蓬 使休",
+      "daliuren": "元甲 贵乙卯·六合 将辛酉·从魁 月将亥",
+      "names": [
+        "张星河",
+        "张诗涵",
+        "张浩然"
+      ],
+      "xi": "金水",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1880-03-15 一八八〇年二月初五",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "癸卯",
+          "got": "癸卯",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜7 忌6",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一八八〇年二月初五",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "庚辰 己卯 癸卯 丙辰",
+          "got": "庚辰 己卯 癸卯 丙辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏乙 神日主 纳金箔金 空辰巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1887-01-02",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁4 符天蓬 使休 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "庚辰 己卯 癸卯 丙辰",
+          "got": "庚辰 己卯 癸卯 丙辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:癸/辛 2:庚/乙 3:丙/癸",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元甲 贵乙卯·六合 将辛酉·从魁 地寅",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "庚辰 己卯 癸卯 丙辰",
+          "got": "庚辰 己卯 癸卯 丙辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "登明(亥)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "张星河、张诗涵、张浩然",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜金水 忌土火 日主癸",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "星金9 河水8 诗金8 涵水11 浩水10 然金12",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "星",
+          "got": "星 金 9画 上下结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "民国初",
+      "dt": "1912-01-01T00:00",
+      "note": "子时边界",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "surname": "李",
+      "refLunar": "辛亥 庚子 丙子 戊子",
+      "almanac": {
+        "lunar": "一九一一年冬月十三",
+        "day": "丙子",
+        "yiN": 2,
+        "jiN": 11
+      },
+      "bazi": "辛亥 庚子 丙子 戊子",
+      "qimen": "阳遁7局 符天蓬 使休",
+      "daliuren": "元戊 贵戊子·玄武 将己丑·大吉 月将丑",
+      "names": [
+        "李志强",
+        "李俊杰",
+        "李熠彤"
+      ],
+      "xi": "木火",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1912-01-01 一九一一年冬月十三",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "丙子",
+          "got": "丙子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜2 忌11",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九一一年冬月十三",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "辛亥 庚子 丙子 戊子",
+          "got": "辛亥 庚子 丙子 戊子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏壬 神日主 纳涧下水 空申酉",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1919-10-25",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁7 符天蓬 使休 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "辛亥 庚子 丙子 戊子",
+          "got": "辛亥 庚子 丙子 戊子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:庚/庚 2:丙/丙 3:壬/壬",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元戊 贵戊子·玄武 将己丑·大吉 地子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "辛亥 庚子 丙子 戊子",
+          "got": "辛亥 庚子 丙子 戊子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "大吉(丑)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "李志强、李俊杰、李熠彤",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜木火 忌水金 日主丙",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "志火7 强木12 俊火9 杰木8 熠火15 彤火7",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "志",
+          "got": "志 火 7画 上下结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "抗战前",
+      "dt": "1937-07-07T10:30",
+      "note": "夏日",
+      "gender": "female",
+      "ziMode": "late",
+      "diFen": "午",
+      "surname": "王",
+      "refLunar": "丁丑 丙午 乙未 辛巳",
+      "almanac": {
+        "lunar": "一九三七年五月廿九",
+        "day": "乙未",
+        "yiN": 11,
+        "jiN": 10
+      },
+      "bazi": "丁丑 丙午 乙未 辛巳",
+      "qimen": "阴遁6局 符天蓬 使休",
+      "daliuren": "元壬 贵丙戌·天空 将甲申·传送 月将未",
+      "names": [
+        "王清妍",
+        "王语汐",
+        "王梓豪"
+      ],
+      "xi": "水木",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1937-07-07 一九三七年五月廿九",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "乙未",
+          "got": "乙未",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜11 忌10",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九三七年五月廿九",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "丁丑 丙午 乙未 辛巳",
+          "got": "丁丑 丙午 乙未 辛巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏己丁乙 神日主 纳砂中金 空辰巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1937-09-02",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阴遁6 符天蓬 使休 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "丁丑 丙午 乙未 辛巳",
+          "got": "丁丑 丙午 乙未 辛巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:己/丙 2:丁/壬 3:辛/己",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元壬 贵丙戌·天空 将甲申·传送 地午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "丁丑 丙午 乙未 辛巳",
+          "got": "丁丑 丙午 乙未 辛巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "小吉(未)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "王清妍、王语汐、王梓豪",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜水木 忌金土 日主乙",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "清水11 妍木7 语木9 汐水6 梓木11 豪水14",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "清",
+          "got": "清 水 11画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "建国日",
+      "dt": "1949-10-01T15:00",
+      "note": "秋季申时",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "申",
+      "surname": "刘",
+      "refLunar": "己丑 癸酉 甲子 壬申",
+      "almanac": {
+        "lunar": "一九四九年八月初十",
+        "day": "甲子",
+        "yiN": 6,
+        "jiN": 4
+      },
+      "bazi": "己丑 癸酉 甲子 壬申",
+      "qimen": "阴遁1局 符天芮 使死",
+      "daliuren": "元壬 贵壬申·白虎 将戊辰·天罡 月将辰",
+      "names": [
+        "刘熠彤",
+        "刘立夏",
+        "刘智渊"
+      ],
+      "xi": "火水木",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1949-10-01 一九四九年八月初十",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "甲子",
+          "got": "甲子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜6 忌4",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九四九年八月初十",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "己丑 癸酉 甲子 壬申",
+          "got": "己丑 癸酉 甲子 壬申",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏壬 神日主 纳海中金 空戌亥",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1957-07-06",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阴遁1 符天芮 使死 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "己丑 癸酉 甲子 壬申",
+          "got": "己丑 癸酉 甲子 壬申",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:乙/己 2:癸/丁 3:庚/辛",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元壬 贵壬申·白虎 将戊辰·天罡 地申",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "己丑 癸酉 甲子 壬申",
+          "got": "己丑 癸酉 甲子 壬申",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "天罡(辰)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "刘熠彤、刘立夏、刘智渊",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜火水木 忌金土 日主甲",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "熠火15 彤火7 立火5 夏火10 智火12 渊水12",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "熠",
+          "got": "熠 火 15画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "文革末",
+      "dt": "1976-09-09T16:00",
+      "note": "秋分前",
+      "gender": "female",
+      "ziMode": "late",
+      "diFen": "酉",
+      "surname": "陈",
+      "refLunar": "丙辰 丁酉 甲子 壬申",
+      "almanac": {
+        "lunar": "一九七六年八月十六",
+        "day": "甲子",
+        "yiN": 6,
+        "jiN": 4
+      },
+      "bazi": "丙辰 丁酉 甲子 壬申",
+      "qimen": "阴遁9局 符天芮 使死",
+      "daliuren": "元癸 贵辛未·太常 将庚午·胜光 月将巳",
+      "names": [
+        "陈梓豪",
+        "陈清妍",
+        "陈梓涵"
+      ],
+      "xi": "水木",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1976-09-09 一九七六年八月十六",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "甲子",
+          "got": "甲子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜6 忌4",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九七六年八月十六",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "丙辰 丁酉 甲子 壬申",
+          "got": "丙辰 丁酉 甲子 壬申",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏壬 神日主 纳海中金 空戌亥",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1977-04-17",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阴遁9 符天芮 使死 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "丙辰 丁酉 甲子 壬申",
+          "got": "丙辰 丁酉 甲子 壬申",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:壬/己 2:己/丁 3:丁/辛",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元癸 贵辛未·太常 将庚午·胜光 地酉",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "丙辰 丁酉 甲子 壬申",
+          "got": "丙辰 丁酉 甲子 壬申",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "太乙(巳)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "陈梓豪、陈清妍、陈梓涵",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜水木 忌金土 日主甲",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "梓木11 豪水14 清水11 妍木7 梓木11 涵水11",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "梓",
+          "got": "梓 木 11画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "改革开放",
+      "dt": "1978-12-18T09:00",
+      "note": "冬月",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "辰",
+      "surname": "赵",
+      "refLunar": "戊午 甲子 甲寅 己巳",
+      "almanac": {
+        "lunar": "一九七八年冬月十九",
+        "day": "甲寅",
+        "yiN": 12,
+        "jiN": 10
+      },
+      "bazi": "戊午 甲子 甲寅 己巳",
+      "qimen": "阴遁1局 符天芮 使死",
+      "daliuren": "元戊 贵丁卯·六合 将乙丑·大吉 月将寅",
+      "names": [
+        "赵浩然",
+        "赵诗涵",
+        "赵星河"
+      ],
+      "xi": "金水木",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1978-12-18 一九七八年冬月十九",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "甲寅",
+          "got": "甲寅",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜12 忌10",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九七八年冬月十九",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "戊午 甲子 甲寅 己巳",
+          "got": "戊午 甲子 甲寅 己巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏甲丙戊 神日主 纳大溪水 空子丑",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1985-04-05",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阴遁1 符天芮 使死 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "戊午 甲子 甲寅 己巳",
+          "got": "戊午 甲子 甲寅 己巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:乙/壬 2:癸/己 3:庚/丁",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元戊 贵丁卯·六合 将乙丑·大吉 地辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "戊午 甲子 甲寅 己巳",
+          "got": "戊午 甲子 甲寅 己巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "功曹(寅)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "赵浩然、赵诗涵、赵星河",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜金水木 忌土 日主甲",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "浩水10 然金12 诗金8 涵水11 星金9 河水8",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "浩",
+          "got": "浩 水 10画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "用户指出日",
+      "dt": "1994-10-26T12:00",
+      "note": "必须乙酉日",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "surname": "欧阳",
+      "refLunar": "甲戌 甲戌 乙酉 壬午",
+      "almanac": {
+        "lunar": "一九九四年九月廿二",
+        "day": "乙酉",
+        "yiN": 12,
+        "jiN": 6
+      },
+      "bazi": "甲戌 甲戌 乙酉 壬午",
+      "qimen": "阴遁5局 符天柱 使惊",
+      "daliuren": "元丙 贵丁丑·天乙 将乙酉·从魁 月将卯",
+      "names": [
+        "欧阳文博",
+        "欧阳鹏飞",
+        "欧阳梓涵"
+      ],
+      "xi": "水木",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1994-10-26 一九九四年九月廿二",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "乙酉",
+          "got": "乙酉",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜12 忌6",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九九四年九月廿二",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "甲戌 甲戌 乙酉 壬午",
+          "got": "甲戌 甲戌 乙酉 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏辛 神日主 纳泉中水 空午未",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1998-12-24",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "用户硬验收日柱",
+          "expect": "乙酉",
+          "got": "乙酉",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阴遁5 符天柱 使惊 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "甲戌 甲戌 乙酉 壬午",
+          "got": "甲戌 甲戌 乙酉 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:辛/乙 2:乙/癸 3:癸/庚",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元丙 贵丁丑·天乙 将乙酉·从魁 地子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "甲戌 甲戌 乙酉 壬午",
+          "got": "甲戌 甲戌 乙酉 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "太冲(卯)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "欧阳文博、欧阳鹏飞、欧阳梓涵",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜水木 忌金土 日主乙",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "文水4 博水12 鹏水13 飞水3 梓木11 涵水11",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "复姓识别",
+          "expect": "欧阳",
+          "got": "欧阳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "文",
+          "got": "文 水 4画 单一结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "千禧",
+      "dt": "2000-01-01T00:00",
+      "note": "跨年子时",
+      "gender": "female",
+      "ziMode": "late",
+      "diFen": "丑",
+      "surname": "周",
+      "refLunar": "己卯 丙子 戊午 壬子",
+      "almanac": {
+        "lunar": "一九九九年冬月廿五",
+        "day": "戊午",
+        "yiN": 5,
+        "jiN": 1
+      },
+      "bazi": "己卯 丙子 戊午 壬子",
+      "qimen": "阳遁4局 符天心 使开",
+      "daliuren": "元癸 贵壬戌·天空 将甲寅·功曹 月将丑",
+      "names": [
+        "周星河",
+        "周浩然",
+        "周诗涵"
+      ],
+      "xi": "水金",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "2000-01-01 一九九九年冬月廿五",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "戊午",
+          "got": "戊午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜5 忌1",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九九九年冬月廿五",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "己卯 丙子 戊午 壬子",
+          "got": "己卯 丙子 戊午 壬子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏丁己 神日主 纳天上火 空子丑",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起2001-10-16",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁4 符天心 使开 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "己卯 丙子 戊午 壬子",
+          "got": "己卯 丙子 戊午 壬子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:癸/癸 2:庚/庚 3:丙/丙",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元癸 贵壬戌·天空 将甲寅·功曹 地丑",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "己卯 丙子 戊午 壬子",
+          "got": "己卯 丙子 戊午 壬子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "大吉(丑)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "周星河、周浩然、周诗涵",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜水金 忌火土 日主戊",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "星金9 河水8 浩水10 然金12 诗金8 涵水11",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "星",
+          "got": "星 金 9画 上下结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "奥运开幕",
+      "dt": "2008-08-08T20:08",
+      "note": "晚间",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "戌",
+      "surname": "吴",
+      "refLunar": "戊子 庚申 庚辰 丙戌",
+      "almanac": {
+        "lunar": "二〇〇八年七月初八",
+        "day": "庚辰",
+        "yiN": 20,
+        "jiN": 6
+      },
+      "bazi": "戊子 庚申 庚辰 丙戌",
+      "qimen": "阴遁2局 符天心 使开",
+      "daliuren": "元丙 贵丙子·玄武 将壬午·胜光 月将午",
+      "names": [
+        "吴梓豪",
+        "吴梓涵",
+        "吴清妍"
+      ],
+      "xi": "木水",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "2008-08-08 二〇〇八年七月初八",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "庚辰",
+          "got": "庚辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜20 忌6",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "二〇〇八年七月初八",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "戊子 庚申 庚辰 丙戌",
+          "got": "戊子 庚申 庚辰 丙戌",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏戊乙癸 神日主 纳白蜡金 空申酉",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起2018-07-09",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阴遁2 符天心 使开 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "戊子 庚申 庚辰 丙戌",
+          "got": "戊子 庚申 庚辰 丙戌",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:辛/丁 2:乙/辛 3:癸/乙",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元丙 贵丙子·玄武 将壬午·胜光 地戌",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "戊子 庚申 庚辰 丙戌",
+          "got": "戊子 庚申 庚辰 丙戌",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "胜光(午)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "吴梓豪、吴梓涵、吴清妍",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜木水 忌土金 日主庚",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "梓木11 豪水14 梓木11 涵水11 清水11 妍木7",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "梓",
+          "got": "梓 木 11画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "春分附近",
+      "dt": "2015-03-21T11:00",
+      "note": "中气",
+      "gender": "female",
+      "ziMode": "late",
+      "diFen": "卯",
+      "surname": "郑",
+      "refLunar": "乙未 己卯 丙申 甲午",
+      "almanac": {
+        "lunar": "二〇一五年二月初二",
+        "day": "丙申",
+        "yiN": 15,
+        "jiN": 8
+      },
+      "bazi": "乙未 己卯 丙申 甲午",
+      "qimen": "阳遁3局 符天芮 使死",
+      "daliuren": "元辛 贵壬辰·勾陈 将乙未·小吉 月将戌",
+      "names": [
+        "郑诗涵",
+        "郑星河",
+        "郑思涵"
+      ],
+      "xi": "水金土",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "2015-03-21 二〇一五年二月初二",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "丙申",
+          "got": "丙申",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜15 忌8",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "二〇一五年二月初二",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "乙未 己卯 丙申 甲午",
+          "got": "乙未 己卯 丙申 甲午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏庚壬戊 神日主 纳山下火 空辰巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起2020-03-20",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁3 符天芮 使死 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "乙未 己卯 丙申 甲午",
+          "got": "乙未 己卯 丙申 甲午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:丁/丁 2:辛/辛 3:乙/乙",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元辛 贵壬辰·勾陈 将乙未·小吉 地卯",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "乙未 己卯 丙申 甲午",
+          "got": "乙未 己卯 丙申 甲午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "河魁(戌)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "郑诗涵、郑星河、郑思涵",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜水金土 忌木火 日主丙",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "诗金8 涵水11 星金9 河水8 思金9 涵水11",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "诗",
+          "got": "诗 金 8画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "冬至附近",
+      "dt": "2010-12-22T08:00",
+      "note": "阴阳遁界",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "surname": "孙",
+      "refLunar": "庚寅 戊子 丙午 壬辰",
+      "almanac": {
+        "lunar": "二〇一〇年冬月十七",
+        "day": "丙午",
+        "yiN": 4,
+        "jiN": 1
+      },
+      "bazi": "庚寅 戊子 丙午 壬辰",
+      "qimen": "阳遁1局 符天冲 使伤",
+      "daliuren": "元戊 贵癸巳·腾蛇 将丁酉·从魁 月将丑",
+      "names": [
+        "孙志强",
+        "孙俊杰",
+        "孙熠彤"
+      ],
+      "xi": "木火",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "2010-12-22 二〇一〇年冬月十七",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "丙午",
+          "got": "丙午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜4 忌1",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "二〇一〇年冬月十七",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "庚寅 戊子 丙午 壬辰",
+          "got": "庚寅 戊子 丙午 壬辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏丁己 神日主 纳天河水 空寅卯",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起2015-11-16",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁1 符天冲 使伤 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "庚寅 戊子 丙午 壬辰",
+          "got": "庚寅 戊子 丙午 壬辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:乙/丁 2:癸/辛 3:庚/乙",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "奇门",
+          "field": "冬至后阳遁",
+          "expect": "阳遁",
+          "got": "阳遁",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元戊 贵癸巳·腾蛇 将丁酉·从魁 地子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "庚寅 戊子 丙午 壬辰",
+          "got": "庚寅 戊子 丙午 壬辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "大吉(丑)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "孙志强、孙俊杰、孙熠彤",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜木火 忌水金 日主丙",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "志火7 强木12 俊火9 杰木8 熠火15 彤火7",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "志",
+          "got": "志 火 7画 上下结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "夏至附近",
+      "dt": "2000-06-21T12:00",
+      "note": "阴阳遁界",
+      "gender": "female",
+      "ziMode": "late",
+      "diFen": "午",
+      "surname": "马",
+      "refLunar": "庚辰 壬午 庚戌 壬午",
+      "almanac": {
+        "lunar": "二〇〇〇年五月二十",
+        "day": "庚戌",
+        "yiN": 23,
+        "jiN": 1
+      },
+      "bazi": "庚辰 壬午 庚戌 壬午",
+      "qimen": "阴遁9局 符天芮 使死",
+      "daliuren": "元壬 贵戊寅·青龙 将癸未·小吉 月将未",
+      "names": [
+        "马雅芙",
+        "马语桐",
+        "马可欣"
+      ],
+      "xi": "木水",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "2000-06-21 二〇〇〇年五月二十",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "庚戌",
+          "got": "庚戌",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜23 忌1",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "二〇〇〇年五月二十",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "庚辰 壬午 庚戌 壬午",
+          "got": "庚辰 壬午 庚戌 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏戊辛丁 神日主 纳钗钏金 空寅卯",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起2005-09-26",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阴遁9 符天芮 使死 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "庚辰 壬午 庚戌 壬午",
+          "got": "庚辰 壬午 庚戌 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:壬/己 2:己/丁 3:丁/辛",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "奇门",
+          "field": "夏至后阴遁",
+          "expect": "阴遁",
+          "got": "阴遁",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元壬 贵戊寅·青龙 将癸未·小吉 地午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "庚辰 壬午 庚戌 壬午",
+          "got": "庚辰 壬午 庚戌 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "小吉(未)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "马雅芙、马语桐、马可欣",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜木水 忌土金 日主庚",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "雅木12 芙木7 语木9 桐木10 可木5 欣木8",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "雅",
+          "got": "雅 木 12画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "晚子对照",
+      "dt": "1990-01-15T23:30",
+      "note": "晚子换日",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "亥",
+      "surname": "朱",
+      "refLunar": "己巳 丁丑 辛巳 戊子",
+      "almanac": {
+        "lunar": "一九八九年腊月十九",
+        "day": "庚辰",
+        "yiN": 5,
+        "jiN": 1
+      },
+      "bazi": "己巳 丁丑 辛巳 戊子",
+      "qimen": "阳遁5局 符天心 使开",
+      "daliuren": "元己 贵戊子·玄武 将戊子·神后 月将丑",
+      "names": [
+        "朱清妍",
+        "朱梓涵",
+        "朱梓豪"
+      ],
+      "xi": "木水",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1990-01-15 一九八九年腊月十九",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "庚辰",
+          "got": "庚辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜5 忌1",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九八九年腊月十九",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "己巳 丁丑 辛巳 戊子",
+          "got": "己巳 丁丑 辛巳 戊子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏丙戊庚 神日主 纳白蜡金 空申酉",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1993-05-20",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁5 符天心 使开 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "己巳 丁丑 辛巳 戊子",
+          "got": "己巳 丁丑 辛巳 戊子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:辛/辛 2:乙/乙 3:癸/癸",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元己 贵戊子·玄武 将戊子·神后 地亥",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "己巳 丁丑 辛巳 戊子",
+          "got": "己巳 丁丑 辛巳 戊子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "大吉(丑)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "朱清妍、朱梓涵、朱梓豪",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜木水 忌土金 日主辛",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "清水11 妍木7 梓木11 涵水11 梓木11 豪水14",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "清",
+          "got": "清 水 11画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "晚子≠早子日柱",
+          "expect": "late day ≠ early day",
+          "got": "late 辛巳 / early 庚辰",
+          "pass": true,
+          "severity": "P0"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "热卜抓包日",
+      "dt": "2026-07-14T09:27",
+      "note": "六壬抓包",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "子",
+      "surname": "司马",
+      "refLunar": "丙午 乙未 己丑 己巳",
+      "almanac": {
+        "lunar": "二〇二六年六月初一",
+        "day": "己丑",
+        "yiN": 3,
+        "jiN": 1
+      },
+      "bazi": "丙午 乙未 己丑 己巳",
+      "qimen": "阴遁2局 符天芮 使死",
+      "daliuren": "元甲 贵乙丑·天乙 将丙寅·功曹 月将未",
+      "names": [
+        "司马鹏飞",
+        "司马文博",
+        "司马诗涵"
+      ],
+      "xi": "水金",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "2026-07-14 二〇二六年六月初一",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "己丑",
+          "got": "己丑",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜3 忌1",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "二〇二六年六月初一",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "丙午 乙未 己丑 己巳",
+          "got": "丙午 乙未 己丑 己巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏己癸辛 神日主 纳霹雳火 空午未",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起2034-09-04",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阴遁2 符天芮 使死 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "丙午 乙未 己丑 己巳",
+          "got": "丙午 乙未 己丑 己巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:辛/庚 2:乙/丙 3:癸/壬",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "奇门",
+          "field": "夏至季阴遁",
+          "expect": "阴遁",
+          "got": "阴遁 2026-07-14T09:27",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元甲 贵乙丑·天乙 将丙寅·功曹 地子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "丙午 乙未 己丑 己巳",
+          "got": "丙午 乙未 己丑 己巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "小吉(未)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "热卜抓包四位",
+          "expect": "甲 / 乙丑天乙 / 丙寅功曹 / 未",
+          "got": "甲 / 乙丑天乙 / 丙寅功曹 / 未",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "司马鹏飞、司马文博、司马诗涵",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜水金 忌火土 日主己",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "鹏水13 飞水3 文水4 博水12 诗金8 涵水11",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "复姓识别",
+          "expect": "司马",
+          "got": "司马",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "鹏",
+          "got": "鹏 水 13画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "立春前",
+      "dt": "1990-02-04T09:00",
+      "note": "换年边界",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "寅",
+      "surname": "何",
+      "refLunar": "己巳 丁丑 庚子 辛巳",
+      "almanac": {
+        "lunar": "一九九〇年正月初九",
+        "day": "庚子",
+        "yiN": 17,
+        "jiN": 4
+      },
+      "bazi": "己巳 丁丑 庚子 辛巳",
+      "qimen": "阳遁6局 符天蓬 使休",
+      "daliuren": "元戊 贵辛巳·腾蛇 将乙酉·从魁 月将子",
+      "names": [
+        "何梓豪",
+        "何梓涵",
+        "何清妍"
+      ],
+      "xi": "木水",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1990-02-04 一九九〇年正月初九",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "庚子",
+          "got": "庚子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜17 忌4",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九九〇年正月初九",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "己巳 丁丑 庚子 辛巳",
+          "got": "己巳 丁丑 庚子 辛巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏壬 神日主 纳壁上土 空辰巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1999-11-26",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "立春前年柱",
+          "expect": "己巳",
+          "got": "己巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁6 符天蓬 使休 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "己巳 丁丑 庚子 辛巳",
+          "got": "己巳 丁丑 庚子 辛巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:己/丙 2:丁/壬 3:辛/己",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元戊 贵辛巳·腾蛇 将乙酉·从魁 地寅",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "己巳 丁丑 庚子 辛巳",
+          "got": "己巳 丁丑 庚子 辛巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "神后(子)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "何梓豪、何梓涵、何清妍",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜木水 忌土金 日主庚",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "梓木11 豪水14 梓木11 涵水11 清水11 妍木7",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "梓",
+          "got": "梓 木 11画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "立春后",
+      "dt": "1990-02-04T11:00",
+      "note": "换年边界",
+      "gender": "male",
+      "ziMode": "late",
+      "diFen": "寅",
+      "surname": "何",
+      "refLunar": "庚午 戊寅 庚子 壬午",
+      "almanac": {
+        "lunar": "一九九〇年正月初九",
+        "day": "庚子",
+        "yiN": 17,
+        "jiN": 4
+      },
+      "bazi": "庚午 戊寅 庚子 壬午",
+      "qimen": "阳遁8局 符天冲 使伤",
+      "daliuren": "元戊 贵辛巳·腾蛇 将甲申·传送 月将子",
+      "names": [
+        "何思远",
+        "何宇轩",
+        "何安然"
+      ],
+      "xi": "土金",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1990-02-04 一九九〇年正月初九",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "庚子",
+          "got": "庚子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜17 忌4",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九九〇年正月初九",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "庚午 戊寅 庚子 壬午",
+          "got": "庚午 戊寅 庚子 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏壬 神日主 纳壁上土 空辰巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1999-12-31",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "立春后年柱",
+          "expect": "庚午",
+          "got": "庚午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁8 符天冲 使伤 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "庚午 戊寅 庚子 壬午",
+          "got": "庚午 戊寅 庚子 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:丙/壬 2:壬/己 3:己/丁",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元戊 贵辛巳·腾蛇 将甲申·传送 地寅",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "庚午 戊寅 庚子 壬午",
+          "got": "庚午 戊寅 庚子 壬午",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "神后(子)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "何思远、何宇轩、何安然",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜土金 忌火木 日主庚",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "思金9 远土7 宇土6 轩金7 安土6 然金12",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "思",
+          "got": "思 金 9画 上下结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "早子对照",
+      "dt": "1990-01-15T23:30",
+      "note": "早子不换日",
+      "gender": "male",
+      "ziMode": "early",
+      "diFen": "亥",
+      "surname": "朱",
+      "refLunar": "己巳 丁丑 庚辰 戊子",
+      "almanac": {
+        "lunar": "一九八九年腊月十九",
+        "day": "庚辰",
+        "yiN": 5,
+        "jiN": 1
+      },
+      "bazi": "己巳 丁丑 庚辰 戊子",
+      "qimen": "阳遁5局 符天心 使开",
+      "daliuren": "元丁 贵癸未·太常 将丙子·神后 月将丑",
+      "names": [
+        "朱梓涵",
+        "朱梓豪",
+        "朱清妍"
+      ],
+      "xi": "木水",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "1990-01-15 一九八九年腊月十九",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "庚辰",
+          "got": "庚辰",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜5 忌1",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "一九八九年腊月十九",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "己巳 丁丑 庚辰 戊子",
+          "got": "己巳 丁丑 庚辰 戊子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏戊乙癸 神日主 纳白蜡金 空申酉",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起1993-05-20",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁5 符天心 使开 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "己巳 丁丑 庚辰 戊子",
+          "got": "己巳 丁丑 庚辰 戊子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:辛/辛 2:乙/乙 3:癸/癸",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元丁 贵癸未·太常 将丙子·神后 地亥",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "己巳 丁丑 庚辰 戊子",
+          "got": "己巳 丁丑 庚辰 戊子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "大吉(丑)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "朱梓涵、朱梓豪、朱清妍",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜木水 忌土金 日主庚",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "梓木11 涵水11 梓木11 豪水14 清水11 妍木7",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "梓",
+          "got": "梓 木 11画 左右结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "近现代",
+      "dt": "2024-06-01T09:00",
+      "note": "奇门/六壬 demo",
+      "gender": "female",
+      "ziMode": "late",
+      "diFen": "子",
+      "surname": "林",
+      "refLunar": "甲辰 己巳 丙申 癸巳",
+      "almanac": {
+        "lunar": "二〇二四年四月廿五",
+        "day": "丙申",
+        "yiN": 16,
+        "jiN": 5
+      },
+      "bazi": "甲辰 己巳 丙申 癸巳",
+      "qimen": "阳遁8局 符天辅 使杜",
+      "daliuren": "元戊 贵癸巳·腾蛇 将辛卯·太冲 月将申",
+      "names": [
+        "林可欣",
+        "林雅芙",
+        "林语桐"
+      ],
+      "xi": "木火",
+      "checks": [
+        {
+          "module": "万年历",
+          "field": "能否出盘",
+          "expect": "非空日盘",
+          "got": "2024-06-01 二〇二四年四月廿五",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "日柱=公历日柱(正午)",
+          "expect": "丙申",
+          "got": "丙申",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "万年历",
+          "field": "宜忌非空",
+          "expect": "yi/ji 数组",
+          "got": "宜16 忌5",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "万年历",
+          "field": "农历串",
+          "expect": "含年/月/日中文",
+          "got": "二〇二四年四月廿五",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "八字",
+          "field": "四柱=lunar-js",
+          "expect": "甲辰 己巳 丙申 癸巳",
+          "got": "甲辰 己巳 丙申 癸巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "藏干/十神/纳音/空亡",
+          "expect": "结构完整",
+          "got": "藏庚壬戊 神日主 纳山下火 空辰巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "八字",
+          "field": "大运起运",
+          "expect": "8运+起运日",
+          "got": "8运 起2033-06-05",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "出盘完整",
+          "expect": "局+符+使+9宫",
+          "got": "阳遁8 符天辅 使杜 宫9",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "四柱=八字",
+          "expect": "甲辰 己巳 丙申 癸巳",
+          "got": "甲辰 己巳 丙申 癸巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "奇门",
+          "field": "九宫天地盘干",
+          "expect": "每宫有地/天干或寄",
+          "got": "1:丙/壬 2:壬/己 3:己/丁",
+          "pass": true,
+          "severity": "P1"
+        },
+        {
+          "module": "奇门",
+          "field": "夏至前阳遁",
+          "expect": "阳遁",
+          "got": "阳遁 2024-06-01T09:00",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四位完整",
+          "expect": "人元/贵神/将神/地分",
+          "got": "元戊 贵癸巳·腾蛇 将辛卯·太冲 地子",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "四柱=lunar(与八字同历)",
+          "expect": "甲辰 己巳 丙申 癸巳",
+          "got": "甲辰 己巳 丙申 癸巳",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "六壬",
+          "field": "月将非空",
+          "expect": "月将名+支",
+          "got": "传送(申)",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "产出3个双字名",
+          "expect": "3 names, given length 2",
+          "got": "林可欣、林雅芙、林语桐",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "喜用非空",
+          "expect": "xi[]",
+          "got": "喜木火 忌水金 日主丙",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名",
+          "field": "用字可查属性",
+          "expect": "每字有五行笔画",
+          "got": "可木5 欣木8 雅木12 芙木7 语木9 桐木10",
+          "pass": true,
+          "severity": "P0"
+        },
+        {
+          "module": "起名/查字",
+          "field": "字库可查",
+          "expect": "可",
+          "got": "可 木 5画 半包围结构",
+          "pass": true,
+          "severity": "P1"
+        }
+      ]
+    }
+  ],
+  "trueSolarChecks": [
+    {
+      "module": "真太阳",
+      "field": "E120 正午日柱不变",
+      "expect": "乙酉",
+      "got": "乙酉",
+      "pass": true,
+      "severity": "P0"
+    },
+    {
+      "module": "真太阳",
+      "field": "E120 usedDatetime 有均时差偏移",
+      "expect": "used 可与 civil 差数分钟（EOT）",
+      "got": "civil=1994-10-26 12:00 used=1994-10-26 12:16",
+      "pass": true,
+      "severity": "P1"
+    },
+    {
+      "module": "真太阳",
+      "field": "E87 偏移约 -2h",
+      "expect": "delta ∈ [-150, -100] 分钟",
+      "got": "deltaMin=-116 used=1994-10-26 10:04",
+      "pass": true,
+      "severity": "P0"
+    },
+    {
+      "module": "真太阳",
+      "field": "E87 时柱可能变化",
+      "expect": "used hour 与 civil 不同或时柱不同（均时差）",
+      "got": "off时=壬午 west时=辛巳",
+      "pass": true,
+      "severity": "P0"
+    },
+    {
+      "module": "真太阳",
+      "field": "奇门 E87 used 偏移",
+      "expect": "1994-10-26 10:04",
+      "got": "off=1994-10-26 12:00 on=1994-10-26 10:04",
+      "pass": true,
+      "severity": "P0"
+    },
+    {
+      "module": "真太阳",
+      "field": "六壬 E87 used 偏移",
+      "expect": "1994-10-26 10:04",
+      "got": "off=1994-10-26 12:00 on=1994-10-26 10:04",
+      "pass": true,
+      "severity": "P0"
+    },
+    {
+      "module": "奇门",
+      "field": "夏至前1分阳遁",
+      "expect": "阳遁",
+      "got": "阳遁 @2000-06-21 09:47",
+      "pass": true,
+      "severity": "P0"
+    },
+    {
+      "module": "奇门",
+      "field": "夏至后1分阴遁",
+      "expect": "阴遁",
+      "got": "阴遁 @2000-06-21 09:48",
+      "pass": true,
+      "severity": "P0"
+    }
+  ],
+  "pyChecks": [
+    {
+      "module": "八字",
+      "field": "vs热卜历 1994-10-26T12:00",
+      "expect": "甲戌 甲戌 乙酉 壬午",
+      "got": "甲戌 甲戌 乙酉 壬午",
+      "pass": true,
+      "severity": "P1"
+    },
+    {
+      "module": "六壬",
+      "field": "vs热卜Python 1994-10-26T12:00",
+      "expect": "元丙 贵丁丑 将乙酉 月卯",
+      "got": "元丙 贵丁丑·天乙 将乙酉·从魁 月将卯",
+      "pass": true,
+      "severity": "P1"
+    },
+    {
+      "module": "八字",
+      "field": "vs热卜历 2026-07-14T09:27",
+      "expect": "丙午 乙未 己丑 己巳",
+      "got": "丙午 乙未 己丑 己巳",
+      "pass": true,
+      "severity": "P1"
+    },
+    {
+      "module": "六壬",
+      "field": "vs热卜Python 2026-07-14T09:27",
+      "expect": "元甲 贵乙丑 将丙寅 月未",
+      "got": "元甲 贵乙丑·天乙 将丙寅·功曹 月将未",
+      "pass": true,
+      "severity": "P1"
+    },
+    {
+      "module": "八字",
+      "field": "vs热卜历 2024-06-01T09:00",
+      "expect": "甲辰 己巳 丙申 癸巳",
+      "got": "甲辰 己巳 丙申 癸巳",
+      "pass": true,
+      "severity": "P1"
+    },
+    {
+      "module": "六壬",
+      "field": "vs热卜Python 2024-06-01T09:00",
+      "expect": "元戊 贵癸巳 将辛卯 月申",
+      "got": "元戊 贵癸巳·腾蛇 将辛卯·太冲 月将申",
+      "pass": true,
+      "severity": "P1"
+    },
+    {
+      "module": "八字",
+      "field": "vs热卜历 2008-08-08T20:08",
+      "expect": "戊子 庚申 庚辰 丙戌",
+      "got": "戊子 庚申 庚辰 丙戌",
+      "pass": true,
+      "severity": "P1"
+    },
+    {
+      "module": "六壬",
+      "field": "vs热卜Python 2008-08-08T20:08",
+      "expect": "元丙 贵丙子 将壬午 月午",
+      "got": "元丙 贵丙子·玄武 将壬午·胜光 月将午",
+      "pass": true,
+      "severity": "P1"
+    }
+  ],
+  "pythonSpot": {
+    "error": null,
+    "rows": [
+      {
+        "dt": "1994-10-26T12:00",
+        "rebu_bazi": "甲戌 甲戌 乙酉 壬午",
+        "rebu_dlr": "元丙 贵丁丑 将乙酉 月卯"
+      },
+      {
+        "dt": "2026-07-14T09:27",
+        "rebu_bazi": "丙午 乙未 己丑 己巳",
+        "rebu_dlr": "元甲 贵乙丑 将丙寅 月未"
+      },
+      {
+        "dt": "2024-06-01T09:00",
+        "rebu_bazi": "甲辰 己巳 丙申 癸巳",
+        "rebu_dlr": "元戊 贵癸巳 将辛卯 月申"
+      },
+      {
+        "dt": "2008-08-08T20:08",
+        "rebu_bazi": "戊子 庚申 庚辰 丙戌",
+        "rebu_dlr": "元丙 贵丙子 将壬午 月午"
+      }
+    ]
+  }
+}

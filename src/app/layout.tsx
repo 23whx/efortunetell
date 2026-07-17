@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/shared/Footer";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-import { headers } from "next/headers";
-import { detectLanguageFromHeaders } from "@/lib/i18n/detect";
+import { defaultLocale } from "@/lib/i18n/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -89,16 +89,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const h = await headers();
-  const country =
-    h.get("x-vercel-ip-country") ||
-    h.get("cf-ipcountry") ||
-    h.get("x-country") ||
-    null;
-  const acceptLanguage = h.get("accept-language");
-  const detected = detectLanguageFromHeaders({ country, acceptLanguage });
-  const htmlLang = detected.language === 'zh' ? 'zh-CN' : detected.language;
-  const htmlDir = detected.language === 'ar' ? 'rtl' : 'ltr';
+  // SEO default language is English; [locale] pages sync UI language from the URL.
+  const htmlLang = 'en';
+  const htmlDir = 'ltr';
 
   const siteUrl = "https://efortunetell.blog";
   const siteName = "Rollkey Divination Blog";
@@ -110,7 +103,7 @@ export default async function RootLayout({
     url: siteUrl,
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteUrl}/search?q={search_term_string}`,
+      target: `${siteUrl}/${defaultLocale}/search?q={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };
@@ -147,7 +140,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }}
         />
         
-        <LanguageProvider initialLanguage={detected.language}>
+        <LanguageProvider initialLanguage={defaultLocale}>
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="pt-16 md:pt-20 flex-1">

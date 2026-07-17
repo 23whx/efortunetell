@@ -11,11 +11,13 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { getAvatarPath } from '@/utils/avatar';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { getProfileById } from '@/lib/supabase/profile';
+import { useLocalePath } from '@/hooks/useLocalePath';
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { t, language } = useLanguage();
+  const lp = useLocalePath();
   const [user, setUser] = useState<{ email: string } | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [roleLoading, setRoleLoading] = useState(false);
@@ -115,7 +117,7 @@ export default function Navbar() {
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     if (searchValue.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchValue.trim())}`);
+      router.push(`${lp('/search')}?q=${encodeURIComponent(searchValue.trim())}`);
       setIsMobileMenuOpen(false);
     }
   };
@@ -126,11 +128,11 @@ export default function Navbar() {
       const supabase = createSupabaseBrowserClient();
       await supabase.auth.signOut();
     } catch (error) {
-      console.error('退出登录失败', error);
+      console.error('Logout failed', error);
     } finally {
       setIsMobileMenuOpen(false);
-      if (pathname.startsWith('/user/')) {
-        window.location.href = '/blog';
+      if (pathname.includes('/user/')) {
+        window.location.href = lp('/blog');
       } else {
         window.location.reload();
       }
@@ -144,7 +146,7 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-xl border-b border-gray-100 z-50 py-3 md:py-4 px-4 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className={`flex items-center ${language === 'en' ? 'gap-1 md:gap-2' : 'gap-2 md:gap-3'} group flex-shrink`}>
-            <Link href="/" className="flex items-center gap-1.5 md:gap-2 transition-transform active:scale-95 flex-shrink">
+            <Link href={lp('/')} className="flex items-center gap-1.5 md:gap-2 transition-transform active:scale-95 flex-shrink">
               <div className="relative w-7 h-7 md:w-9 md:h-9 flex-shrink-0">
                 <Image
                   src="/icon.png"
@@ -175,44 +177,58 @@ export default function Navbar() {
             <>
               <div className="flex items-center bg-gray-50/50 p-1 rounded-2xl border border-gray-100 flex-nowrap">
                 <Link 
-                  href="/" 
-                  className={`px-3 lg:px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname === '/' || pathname === '/blog' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                  href={lp('/')} 
+                  className={`px-3 lg:px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname.endsWith('/blog') || /\/(en|zh|ja|ko|ar)$/.test(pathname) ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
                 >
                   {t('nav.blog')}
+                </Link>
+
+                <Link
+                  href={lp('/tools')}
+                  className={`px-3 lg:px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${pathname.includes('/tools') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                >
+                  {t('nav.tools')}
                 </Link>
 
                 <div className="relative" ref={exploreDropdownRef}>
                   <button
                     onClick={() => setIsExploreOpen(!isExploreOpen)}
-                    className={`px-3 lg:px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap flex items-center gap-1 ${pathname.startsWith('/services') || pathname === '/ai-chat' || pathname === '/fortune' ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
+                    className={`px-3 lg:px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap flex items-center gap-1 ${pathname.includes('/services') || pathname.includes('/ai-chat') || pathname.includes('/fortune') ? 'bg-white shadow-sm text-[#FF6F61]' : 'text-gray-500 hover:text-gray-900'}`}
                   >
                     {t('nav.explore')}
                     <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExploreOpen ? 'rotate-180' : ''}`} />
                   </button>
-                  {/* ... dropdown content remains same ... */}
 
                   {isExploreOpen && (
                     <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-[60]">
                       <Link
-                        href="/services"
+                        href={lp('/tools/almanac')}
                         onClick={() => setIsExploreOpen(false)}
-                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname.startsWith('/services') ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname.includes('/tools/almanac') ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        {t('tools.almanac')}
+                      </Link>
+                      <Link
+                        href={lp('/services')}
+                        onClick={() => setIsExploreOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname.includes('/services') ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
                       >
                         <LayoutGrid className="w-4 h-4" />
                         {t('nav.services')}
                       </Link>
                       <Link
-                        href="/ai-chat"
+                        href={lp('/ai-chat')}
                         onClick={() => setIsExploreOpen(false)}
-                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname === '/ai-chat' ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname.includes('/ai-chat') ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
                       >
                         <MessageSquare className="w-4 h-4" />
                         {t('nav.aiChat')}
                       </Link>
                       <Link
-                        href="/fortune"
+                        href={lp('/fortune')}
                         onClick={() => setIsExploreOpen(false)}
-                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname === '/fortune' ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${pathname.includes('/fortune') ? 'text-[#FF6F61] bg-[#FF6F61]/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
                       >
                         <Sparkles className="w-4 h-4" />
                         {t('nav.fortune')}
@@ -287,7 +303,7 @@ export default function Navbar() {
                     <span className="hidden xl:inline">{t('common.logout')}</span>
                     <LogOut className="w-4 h-4 xl:hidden" />
                   </button>
-                  <Link href="/user/profile" className="relative group">
+                  <Link href={lp('/user/profile')} className="relative group">
                     <div className="relative w-8 h-8 xl:w-10 xl:h-10 rounded-full overflow-hidden border-2 border-white shadow-sm group-hover:shadow-md transition-all">
                       <Image
                         src={getAvatarPath({ username: user.email || 'user' })}
@@ -301,12 +317,12 @@ export default function Navbar() {
                 </div>
               ) : (
                 <div className="flex items-center gap-1 xl:gap-2">
-                  <Link href="/user/login">
+                  <Link href={lp('/user/login')}>
                     <Button variant="default" size="sm" className="bg-transparent border-none hover:bg-gray-100 shadow-none px-2 lg:px-4">
                       {t('nav.login')}
                     </Button>
                   </Link>
-                  <Link href="/user/register">
+                  <Link href={lp('/user/register')}>
                     <Button size="sm" className="px-2 lg:px-4">
                       {t('common.register')}
                     </Button>
@@ -347,26 +363,32 @@ export default function Navbar() {
 
             <div className="flex flex-col gap-2">
               <Link 
-                href="/" 
-                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname === '/' || pathname === '/blog' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                href={lp('/')} 
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname.endsWith('/blog') || /\/(en|zh|ja|ko|ar)$/.test(pathname) ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('nav.blog')}
               </Link>
               <Link
-                href="/services"
-                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname.startsWith('/services') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                href={lp('/tools')}
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname.includes('/tools') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+              >
+                {t('nav.tools')}
+              </Link>
+              <Link
+                href={lp('/services')}
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname.includes('/services') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('nav.services')}
               </Link>
               <Link
-                href="/ai-chat"
-                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname === '/ai-chat' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                href={lp('/ai-chat')}
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname.includes('/ai-chat') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('nav.aiChat')}
               </Link>
               <Link 
-                href="/fortune" 
-                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname === '/fortune' ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
+                href={lp('/fortune')} 
+                className={`px-6 py-4 rounded-2xl text-xl font-bold transition-all whitespace-nowrap ${pathname.includes('/fortune') ? 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20' : 'text-gray-900 hover:bg-gray-100'}`}
               >
                 {t('nav.fortune')}
               </Link>
@@ -404,7 +426,7 @@ export default function Navbar() {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <Link href={isAdmin ? "/admin/dashboard" : "/user/profile"} className="w-full">
+                    <Link href={isAdmin ? '/admin/dashboard' : lp('/user/profile')} className="w-full">
                       <Button variant="default" className="w-full py-4 rounded-2xl">
                         {isAdmin ? t('common.dashboard') : t('nav.profile')}
                       </Button>
@@ -420,12 +442,12 @@ export default function Navbar() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
-                  <Link href="/user/login" className="w-full">
+                  <Link href={lp('/user/login')} className="w-full">
                     <Button variant="default" className="w-full py-4 rounded-2xl text-lg">
                       {t('nav.login')}
                     </Button>
                   </Link>
-                  <Link href="/user/register" className="w-full">
+                  <Link href={lp('/user/register')} className="w-full">
                     <Button className="w-full py-4 rounded-2xl text-lg">
                       {t('common.register')}
                     </Button>

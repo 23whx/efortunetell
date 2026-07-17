@@ -1,0 +1,57 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { isLocale, type Locale } from '@/lib/i18n/config';
+import { buildPageMetadata } from '@/lib/i18n/seo';
+import BaziClient from '@/components/tools/BaziClient';
+
+const META: Record<Locale, { title: string; description: string }> = {
+  en: {
+    title: 'BaZi Chart (Four Pillars of Destiny)',
+    description:
+      'Free BaZi calculator: four pillars, hidden stems, ten gods, na yin, void, si ling, luck cycles (qi yun / jiao yun) and solar terms. Aligned with classic Chinese metaphysics rules.',
+  },
+  zh: {
+    title: '八字排盘（四柱）',
+    description:
+      '免费在线八字排盘：四柱、藏干、十神、纳音、空亡、司令、大运起运交运、出生节气。前端本地计算，对齐易世家规格。',
+  },
+  ja: {
+    title: '四柱推命・八字排盤',
+    description: '四柱・蔵干・十神・納音・空亡・大運をブラウザで計算。',
+  },
+  ko: {
+    title: '사주팔자 명반',
+    description: '사주, 장간, 십신, 납음, 공망, 대운을 브라우저에서 계산합니다.',
+  },
+  ar: {
+    title: 'مخطط بازي (الأعمدة الأربعة)',
+    description: 'حاسبة بازي مجانية: الأعمدة الأربعة والدورة الكبرى.',
+  },
+};
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) return {};
+  const m = META[raw];
+  return buildPageMetadata({
+    locale: raw,
+    path: '/tools/bazi',
+    title: m.title,
+    description: m.description,
+    keywords: ['BaZi', 'Four Pillars', '八字排盘', '四柱', '大运', '藏干', '十神'],
+  });
+}
+
+export default async function BaziToolPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) notFound();
+  return <BaziClient locale={raw} />;
+}

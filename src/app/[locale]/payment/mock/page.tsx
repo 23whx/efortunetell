@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import Button from '@/components/ui/button';
 import { CheckCircle, Loader2 } from 'lucide-react';
 
-export default function MockPaymentPage() {
+function MockPaymentInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
@@ -148,6 +148,20 @@ export default function MockPaymentPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function MockPaymentPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#FF6F61]" />
+        </div>
+      }
+    >
+      <MockPaymentInner />
+    </Suspense>
   );
 }
 

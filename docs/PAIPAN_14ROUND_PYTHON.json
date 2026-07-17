@@ -1,0 +1,156 @@
+﻿[
+  {
+    "id": 1,
+    "dt": "1990-01-15T10:30",
+    "yishijia_bazi": "宸卞烦 涓佷笐 鐢叉垖 宸卞烦",
+    "wenzhen_bazi": "宸卞烦 涓佷笐 鐢叉垖 宸卞烦",
+    "yishijia_qimen": "yang5 绗﹀ぉ鑺?浣挎 鏃敳瀛?,
+    "rebu_qimen": "yang5 绗﹀ぉ鏌?浣挎儕闂?,
+    "rebu_qimen_sizhu": "宸卞烦 涓佷笐 搴氳景 杈涘烦",
+    "rebu_daliuren": "鍏冧笝 璐典竵浜ヂ峰ぉ鍚?灏嗙敳鐢陈蜂紶閫?鏈堝皢涓?,
+    "rebu_daliuren_sizhu": "宸卞烦 涓佷笐 搴氳景 杈涘烦"
+  },
+  {
+    "id": 2,
+    "dt": "1990-01-15T23:30",
+    "yishijia_bazi": "宸卞烦 涓佷笐 涔欎亥 涓欏瓙",
+    "wenzhen_bazi": "宸卞烦 涓佷笐 涔欎亥 涓欏瓙",
+    "yishijia_qimen": "yang5 绗﹀ぉ鏌?浣挎儕 鏃敳鎴?,
+    "rebu_qimen": "yang5 绗﹀ぉ蹇?浣垮紑闂?,
+    "rebu_qimen_sizhu": "宸卞烦 涓佷笐 搴氳景 鎴婂瓙",
+    "rebu_daliuren": "鍏冧竵 璐典笝鎴屄峰ぉ绌?灏嗘垔瀵吢峰姛鏇?鏈堝皢涓?,
+    "rebu_daliuren_sizhu": "宸卞烦 涓佷笐 搴氳景 鎴婂瓙"
+  },
+  {
+    "id": 3,
+    "dt": "1990-01-15T23:30",
+    "yishijia_bazi": "宸卞烦 涓佷笐 鐢叉垖 鐢插瓙",
+    "wenzhen_bazi": "宸卞烦 涓佷笐 鐢叉垖 鐢插瓙",
+    "yishijia_qimen": "yang5 绗﹀ぉ鑺?浣挎 鏃敳瀛?,
+    "rebu_qimen": "yang5 绗﹀ぉ蹇?浣垮紑闂?,
+    "rebu_qimen_sizhu": "宸卞烦 涓佷笐 搴氳景 鎴婂瓙",
+    "rebu_daliuren": "鍏冧竵 璐典笝鎴屄峰ぉ绌?灏嗘垔瀵吢峰姛鏇?鏈堝皢涓?,
+    "rebu_daliuren_sizhu": "宸卞烦 涓佷笐 搴氳景 鎴婂瓙"
+  },
+  {
+    "id": 4,
+    "dt": "1990-02-04T09:00",
+    "yishijia_bazi": "宸卞烦 涓佷笐 鐢插崍 宸卞烦",
+    "wenzhen_bazi": "宸卞烦 涓佷笐 鐢插崍 宸卞烦",
+    "yishijia_qimen": "yang6 绗﹀ぉ鑺?浣挎 鏃敳瀛?,
+    "rebu_qimen": "yang8 绗﹀ぉ鍐?浣夸激闂?,
+    "rebu_qimen_sizhu": "宸卞烦 涓佷笐 搴氬瓙 杈涘烦",
+    "rebu_daliuren": "鍏冩垔 璐佃緵宸陈疯吘铔?灏嗕箼閰壜蜂粠榄?鏈堝皢瀛?,
+    "rebu_daliuren_sizhu": "宸卞烦 涓佷笐 搴氬瓙 杈涘烦"
+  },
+  {
+    "id": 5,
+    "dt": "1990-02-04T11:00",
+    "yishijia_bazi": "搴氬崍 鎴婂瘏 鐢插崍 搴氬崍",
+    "wenzhen_bazi": "搴氬崍 鎴婂瘏 鐢插崍 搴氬崍",
+    "yishijia_qimen": "yang8 绗﹀ぉ鑺?浣挎 鏃敳瀛?,
+    "rebu_qimen": "yang8 绗﹀ぉ鍐?浣夸激闂?,
+    "rebu_qimen_sizhu": "搴氬崍 鎴婂瘏 搴氬瓙 澹崍",
+    "rebu_daliuren": "鍏冩垔 璐佃緵宸陈疯吘铔?灏嗙敳鐢陈蜂紶閫?鏈堝皢瀛?,
+    "rebu_daliuren_sizhu": "搴氬崍 鎴婂瘏 搴氬瓙 澹崍"
+  },
+  {
+    "id": 6,
+    "dt": "2000-06-21T12:00",
+    "yishijia_bazi": "搴氳景 澹崍 鐢茶景 搴氬崍",
+    "wenzhen_bazi": "搴氳景 澹崍 鐢茶景 搴氬崍",
+    "yishijia_qimen": "yin9 绗﹀ぉ鑺?浣挎 鏃敳瀛?,
+    "rebu_qimen": "yin9 绗﹀ぉ鑺?浣挎闂?,
+    "rebu_qimen_sizhu": "搴氳景 澹崍 搴氭垖 澹崍",
+    "rebu_daliuren": "鍏冨， 璐垫垔瀵吢烽潚榫?灏嗙櫢鏈峰皬鍚?鏈堝皢鏈?,
+    "rebu_daliuren_sizhu": "搴氳景 澹崍 搴氭垖 澹崍"
+  },
+  {
+    "id": 7,
+    "dt": "2010-12-22T08:00",
+    "yishijia_bazi": "搴氬瘏 鎴婂瓙 搴氬瓙 搴氳景",
+    "wenzhen_bazi": "搴氬瘏 鎴婂瓙 搴氬瓙 搴氳景",
+    "yishijia_qimen": "yang1 绗﹀ぉ浠?浣跨敓 鏃敳鎴?,
+    "rebu_qimen": "yang1 绗﹀ぉ鍐?浣夸激闂?,
+    "rebu_qimen_sizhu": "搴氬瘏 鎴婂瓙 涓欏崍 澹景",
+    "rebu_daliuren": "鍏冩垔 璐电櫢宸陈疯吘铔?灏嗕竵閰壜蜂粠榄?鏈堝皢涓?,
+    "rebu_daliuren_sizhu": "搴氬瘏 鎴婂瓙 涓欏崍 澹景"
+  },
+  {
+    "id": 8,
+    "dt": "2024-06-01T09:00",
+    "yishijia_bazi": "鐢茶景 宸卞烦 搴氬瘏 杈涘烦",
+    "wenzhen_bazi": "鐢茶景 宸卞烦 搴氬瘏 杈涘烦",
+    "yishijia_qimen": "yang8 绗﹀ぉ鍐?浣夸激 鏃敳鎴?,
+    "rebu_qimen": "yang8 绗﹀ぉ杈?浣挎潨闂?,
+    "rebu_qimen_sizhu": "鐢茶景 宸卞烦 涓欑敵 鐧稿烦",
+    "rebu_daliuren": "鍏冩垔 璐电櫢宸陈疯吘铔?灏嗚緵鍗峰お鍐?鏈堝皢鐢?,
+    "rebu_daliuren_sizhu": "鐢茶景 宸卞烦 涓欑敵 鐧稿烦"
+  },
+  {
+    "id": 9,
+    "dt": "2026-07-14T09:24",
+    "yishijia_bazi": "涓欏崍 涔欐湭 鐧告湭 涓佸烦",
+    "wenzhen_bazi": "涓欏崍 涔欐湭 鐧告湭 涓佸烦",
+    "yishijia_qimen": "yin2 绗﹀ぉ鍐?浣夸激 鏃敳瀵?,
+    "rebu_qimen": "yin2 绗﹀ぉ鑺?浣挎闂?,
+    "rebu_qimen_sizhu": "涓欏崍 涔欐湭 宸变笐 宸卞烦",
+    "rebu_daliuren": "鍏冪敳 璐典箼涓懧峰ぉ涔?灏嗕笝瀵吢峰姛鏇?鏈堝皢鏈?,
+    "rebu_daliuren_sizhu": "涓欏崍 涔欐湭 宸变笐 宸卞烦"
+  },
+  {
+    "id": 10,
+    "dt": "2026-07-14T09:27",
+    "yishijia_bazi": "涓欏崍 涔欐湭 鐧告湭 涓佸烦",
+    "wenzhen_bazi": "涓欏崍 涔欐湭 鐧告湭 涓佸烦",
+    "yishijia_qimen": "yin2 绗﹀ぉ鍐?浣夸激 鏃敳瀵?,
+    "rebu_qimen": "yin2 绗﹀ぉ鑺?浣挎闂?,
+    "rebu_qimen_sizhu": "涓欏崍 涔欐湭 宸变笐 宸卞烦",
+    "rebu_daliuren": "鍏冪敳 璐典箼涓懧峰ぉ涔?灏嗕笝瀵吢峰姛鏇?鏈堝皢鏈?,
+    "rebu_daliuren_sizhu": "涓欏崍 涔欐湭 宸变笐 宸卞烦"
+  },
+  {
+    "id": 11,
+    "dt": "1984-02-05T10:00",
+    "yishijia_bazi": "鐢插瓙 涓欏瘏 鐧镐亥 涓佸烦",
+    "wenzhen_bazi": "鐢插瓙 涓欏瘏 鐧镐亥 涓佸烦",
+    "yishijia_qimen": "yang8 绗﹀ぉ鏌?浣挎儕 鏃敳瀵?,
+    "rebu_qimen": "yang8 绗﹀ぉ鑺?浣挎闂?,
+    "rebu_qimen_sizhu": "鐢插瓙 涓欏瘏 宸卞烦 宸卞烦",
+    "rebu_daliuren": "鍏冩垔 璐垫垔杈奥峰嬀闄?灏嗕箼浜ヂ风櫥鏄?鏈堝皢瀛?,
+    "rebu_daliuren_sizhu": "鐢插瓙 涓欏瘏 宸卞烦 宸卞烦"
+  },
+  {
+    "id": 12,
+    "dt": "2008-08-08T20:08",
+    "yishijia_bazi": "鎴婂瓙 搴氱敵 鐢叉垖 鐢叉垖",
+    "wenzhen_bazi": "鎴婂瓙 搴氱敵 鐢叉垖 鐢叉垖",
+    "yishijia_qimen": "yin2 绗﹀ぉ鏌?浣挎儕 鏃敳鎴?,
+    "rebu_qimen": "yin2 绗﹀ぉ蹇?浣垮紑闂?,
+    "rebu_qimen_sizhu": "鎴婂瓙 搴氱敵 搴氳景 涓欐垖",
+    "rebu_daliuren": "鍏冪敳 璐典竵浜ヂ峰ぉ鍚?灏嗗簹杈奥峰ぉ缃?鏈堝皢鍗?,
+    "rebu_daliuren_sizhu": "鎴婂瓙 搴氱敵 搴氳景 涓欐垖"
+  },
+  {
+    "id": 13,
+    "dt": "2015-03-21T11:00",
+    "yishijia_bazi": "涔欐湭 宸卞嵂 搴氬瘏 澹崍",
+    "wenzhen_bazi": "涔欐湭 宸卞嵂 搴氬瘏 澹崍",
+    "yishijia_qimen": "yang3 绗﹀ぉ杈?浣挎潨 鏃敳鎴?,
+    "rebu_qimen": "yang3 绗﹀ぉ鑺?浣挎闂?,
+    "rebu_qimen_sizhu": "涔欐湭 宸卞嵂 涓欑敵 鐢插崍",
+    "rebu_daliuren": "鍏冭緵 璐靛，杈奥峰嬀闄?灏嗕箼鏈峰皬鍚?鏈堝皢鎴?,
+    "rebu_daliuren_sizhu": "涔欐湭 宸卞嵂 涓欑敵 鐢插崍"
+  },
+  {
+    "id": 14,
+    "dt": "1992-11-11T23:45",
+    "yishijia_bazi": "澹敵 杈涗亥 涓欐垖 鎴婂瓙",
+    "wenzhen_bazi": "澹敵 杈涗亥 涓欐垖 鎴婂瓙",
+    "yishijia_qimen": "yin6 绗﹀ぉ浠?浣跨敓 鏃敳鐢?,
+    "rebu_qimen": "yin6 绗﹀ぉ鍐?浣夸激闂?,
+    "rebu_qimen_sizhu": "澹敵 杈涗亥 杈涘嵂 搴氬瓙",
+    "rebu_daliuren": "鍏冨繁 璐垫垔瀛惵风巹姝?灏嗗簹瀵吢峰姛鏇?鏈堝皢鍗?,
+    "rebu_daliuren_sizhu": "澹敵 杈涗亥 杈涘嵂 搴氬瓙"
+  }
+]
