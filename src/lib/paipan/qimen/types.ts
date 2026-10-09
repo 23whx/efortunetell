@@ -37,6 +37,12 @@ export interface GongWei {
   anGan: string | null;
   maXing: boolean;
   kongWang: boolean;
+  /** 四害：天盘干入墓（值符神不入墓，除非该干为日干） */
+  ruMu: boolean;
+  /** 四害：六仪击刑（天盘干） */
+  jiXing: boolean;
+  /** 四害：门迫（门克宫） */
+  menPo: boolean;
 }
 
 export interface QimenChart {
@@ -64,6 +70,8 @@ export interface QimenChart {
     };
     kongWang: [string, string];
     maZhi: string;
+    /** 时干自坐墓（戊戌/丙戌/癸未/丁丑/己丑时） */
+    shiGanZuoMu: boolean;
     method: QimenMethod;
     calendarSource: QimenCalendarSource;
     panType: 'yin';

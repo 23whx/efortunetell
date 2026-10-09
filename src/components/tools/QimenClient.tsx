@@ -56,7 +56,7 @@ function PalaceCell({
           ? 'border-amber-400 bg-amber-50/80'
           : cell.kongWang
             ? 'border-gray-300 bg-gray-50/80'
-            : 'border-amber-100 bg-white',
+            : 'border-[#f0ece3] bg-white',
         palace === 5 ? 'ring-1 ring-amber-200' : '',
       ].join(' ')}
     >
@@ -67,16 +67,18 @@ function PalaceCell({
         </span>
         <span className="text-[9px]">{cell.position}</span>
       </div>
-      <div className="text-[11px] text-[#FF6F61] font-semibold truncate">
+      <div className="text-sm font-bold text-gray-900 truncate">
         {cell.shen || '—'}
       </div>
       <div className="text-sm font-bold text-gray-900 mt-0.5">
         {cell.star || '—'}
-        {cell.men ? (
-          <span className="text-gray-600 font-semibold"> · {cell.men}门</span>
-        ) : null}
       </div>
-      <div className="mt-auto pt-1 grid grid-cols-2 gap-1 text-[11px]">
+      {cell.men && (
+        <div className="text-sm font-bold text-gray-900 mt-0.5">
+          {cell.men}门
+        </div>
+      )}
+      <div className="mt-auto pt-1 flex flex-col items-end gap-0.5 text-[11px]">
         <div>
           <span className="text-gray-400">天</span>{' '}
           <span className="font-bold">{cell.tianPanGan || '—'}</span>
@@ -86,13 +88,22 @@ function PalaceCell({
           <span className="font-bold">{cell.diPanGan || '—'}</span>
         </div>
       </div>
-      {(cell.maXing || cell.kongWang) && (
-        <div className="absolute bottom-1 right-1.5 flex gap-0.5 text-[9px]">
-          {cell.maXing && (
-            <span className="px-1 rounded bg-amber-200 text-amber-900">马</span>
+      {(cell.maXing || cell.kongWang || cell.ruMu || cell.jiXing || cell.menPo) && (
+        <div className="absolute bottom-1 left-1.5 flex gap-0.5 text-[9px]">
+          {cell.jiXing && (
+            <span className="px-1 rounded bg-rose-100 text-rose-700">刑</span>
+          )}
+          {cell.ruMu && (
+            <span className="px-1 rounded bg-stone-200 text-stone-700">墓</span>
+          )}
+          {cell.menPo && (
+            <span className="px-1 rounded bg-orange-100 text-orange-700">迫</span>
           )}
           {cell.kongWang && (
             <span className="px-1 rounded bg-gray-200 text-gray-600">空</span>
+          )}
+          {cell.maXing && (
+            <span className="px-1 rounded bg-amber-200 text-amber-900">马</span>
           )}
         </div>
       )}
@@ -284,7 +295,7 @@ export default function QimenClient({ locale }: { locale: Locale }) {
       </div>
 
       <div className="grid lg:grid-cols-[300px_1fr] gap-6">
-        <section className="rounded-3xl bg-white border border-amber-100 shadow-sm p-5 space-y-4 h-fit">
+        <section className="rounded-2xl bg-white border border-[#f0ece3] shadow-sm p-5 space-y-4 h-fit">
           <label className="block">
             <span className="text-xs font-semibold text-gray-500">
               {t('tools.qimen.datetime')}
@@ -445,15 +456,16 @@ export default function QimenClient({ locale }: { locale: Locale }) {
         <section className="space-y-4">
           {chart && (
             <>
-              <div className="rounded-3xl bg-gradient-to-br from-slate-800 to-amber-800 text-white p-5 md:p-6 shadow-lg">
-                <div className="text-sm opacity-90">{chart.meta.usedDatetime}</div>
-                <div className="text-xl md:text-2xl font-black mt-1">
+              <div className="rounded-2xl bg-[#221d17] text-white p-6 md:p-8 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#FF6F61] to-[#ffb347]" />
+                <div className="text-xs uppercase tracking-[0.2em] text-white/50">{chart.meta.usedDatetime}</div>
+                <div className="font-display text-2xl md:text-3xl mt-3">
                   {chart.meta.dunLabel}
                   {chart.meta.juShu}
                   {t('tools.qimen.ju')} · {chart.meta.yuanLabel} ·{' '}
                   {t('tools.qimen.method.' + chart.meta.method)}
                 </div>
-                <div className="mt-2 text-sm opacity-90 flex flex-wrap gap-x-4 gap-y-1">
+                <div className="mt-4 pt-4 border-t border-white/10 text-sm text-white/70 flex flex-wrap gap-x-6 gap-y-1">
                   <span>
                     {t('tools.qimen.jieQi')}: {chart.meta.jieQi}
                   </span>
@@ -473,15 +485,18 @@ export default function QimenClient({ locale }: { locale: Locale }) {
                   <span>
                     {t('tools.qimen.ma')}: {chart.meta.maZhi}
                   </span>
+                  {chart.meta.shiGanZuoMu && (
+                    <span className="text-[#ffb347] font-semibold">时干自坐墓</span>
+                  )}
                 </div>
-                <div className="mt-2 text-sm tracking-widest opacity-95">
+                <div className="mt-3 font-display text-lg tracking-[0.15em] text-white/90">
                   {chart.meta.siZhu.year} {chart.meta.siZhu.month}{' '}
                   {chart.meta.siZhu.day} {chart.meta.siZhu.hour}
                 </div>
               </div>
 
               {/* 九宫 4 9 2 / 3 5 7 / 8 1 6 */}
-              <div className="rounded-3xl bg-white/80 border border-amber-100 p-3 md:p-5 shadow-sm">
+              <div className="rounded-2xl bg-white/80 border border-[#f0ece3] p-3 md:p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-3 px-1">
                   <h3 className="font-bold text-gray-900">
                     {t('tools.qimen.grid')}
@@ -497,7 +512,7 @@ export default function QimenClient({ locale }: { locale: Locale }) {
                 </div>
               </div>
 
-              <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm text-sm text-gray-600 space-y-1">
+              <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm text-sm text-gray-600 space-y-1">
                 <p>
                   <span className="text-gray-400">{t('tools.qimen.jieRange')}: </span>
                   {chart.meta.jieStart} → {chart.meta.jieEnd}

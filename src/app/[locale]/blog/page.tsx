@@ -299,15 +299,16 @@ export default function BlogPage() {
         </div>
         
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight leading-tight">
             {t('home.hero.title').split(t('home.hero.easternWisdom')).map((part, i, arr) => (
               <span key={i}>
                 {part}
-                {i < arr.length - 1 && <span className="text-[#FF6F61]">{t('home.hero.easternWisdom')}</span>}
+                {i < arr.length - 1 && <span className="text-[#FF6F61] italic">{t('home.hero.easternWisdom')}</span>}
               </span>
             ))}
           </h1>
-          <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
+          <div className="w-12 h-[3px] bg-[#FF6F61] mx-auto mb-6 rounded-full" />
+          <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
             {t('home.hero.subtitle')}
           </p>
         </div>
@@ -349,10 +350,10 @@ export default function BlogPage() {
                       <button
                         key={category}
                         onMouseUp={(e) => handleCategoryClickWithDrag(e, category)}
-                        className={`shrink-0 px-6 py-2.5 rounded-2xl text-sm font-black transition-all duration-300 ${
+                        className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
                           isActive 
-                          ? 'bg-[#FF6F61] text-white shadow-[0_8px_20px_-6px_rgba(255,111,97,0.45)] scale-105' 
-                          : 'bg-white text-gray-500 border border-gray-100 hover:border-[#FF6F61]/30 hover:text-[#FF6F61] active:scale-95'
+                          ? 'bg-[#FF6F61] text-white shadow-sm' 
+                          : 'bg-white text-gray-500 border border-[#f0ece3] hover:border-[#FF6F61]/40 hover:text-[#FF6F61]'
                         }`}
                       >
                         {category}
@@ -370,7 +371,7 @@ export default function BlogPage() {
                         e.stopPropagation();
                       }
                     }}
-                    className="shrink-0 px-6 py-2.5 rounded-2xl bg-[#ffb347]/10 text-[#ffb347] border border-[#ffb347]/20 font-black text-sm hover:bg-[#ffb347] hover:text-white transition-all duration-300"
+                    className="shrink-0 px-5 py-2.5 rounded-full bg-[#ffb347]/10 text-[#d9962e] border border-[#ffb347]/25 font-semibold text-sm hover:bg-[#ffb347] hover:text-white transition-all duration-300"
                   >
                     {t('nav.services')} →
                   </Link>
@@ -396,7 +397,7 @@ export default function BlogPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as 'date' | 'likes' | 'bookmarks')}
-                  className="appearance-none w-full bg-white text-gray-700 font-bold border border-gray-100 rounded-2xl pl-6 pr-12 py-2.5 text-sm focus:outline-none focus:border-[#FF6F61] cursor-pointer shadow-sm hover:shadow-md transition-all duration-300"
+                  className="appearance-none w-full bg-white text-gray-700 font-semibold border border-[#f0ece3] rounded-full pl-6 pr-12 py-2.5 text-sm focus:outline-none focus:border-[#FF6F61] cursor-pointer transition-all duration-300"
                 >
                   <option value="date">{t('sort.byDate')}</option>
                   <option value="likes">{t('sort.byLikes')}</option>
@@ -418,7 +419,7 @@ export default function BlogPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-[16/10] bg-gray-200 rounded-3xl mb-4" />
+                <div className="aspect-[16/10] bg-gray-200 rounded-2xl mb-4" />
                 <div className="h-4 bg-gray-200 rounded-full w-24 mb-3" />
                 <div className="h-6 bg-gray-200 rounded-full w-full mb-2" />
                 <div className="h-6 bg-gray-200 rounded-full w-2/3" />
@@ -426,11 +427,11 @@ export default function BlogPage() {
             ))}
           </div>
         ) : error ? (
-          <div className="bg-red-50 text-red-600 p-8 rounded-3xl text-center font-bold">
+          <div className="bg-red-50 text-red-600 p-8 rounded-2xl text-center font-semibold">
             {t('blog.error')}: {error}
           </div>
         ) : articles.length === 0 ? (
-          <div className="text-center py-32 bg-white rounded-[40px] border border-dashed border-gray-200">
+          <div className="text-center py-32 bg-white rounded-2xl border border-dashed border-[#f0ece3]">
             <p className="text-gray-400 text-xl font-medium">{t('blog.noArticles')}</p>
           </div>
         ) : (
@@ -449,7 +450,7 @@ export default function BlogPage() {
                   key={article.id}
                   className="group block"
                 >
-                  <div className="relative aspect-[16/10] rounded-[32px] overflow-hidden mb-6 shadow-sm group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
+                  <div className="relative aspect-[16/10] rounded-2xl overflow-hidden mb-6 shadow-sm group-hover:shadow-lg transition-all duration-500">
                     <div 
                       className="absolute inset-0 transition-transform duration-700 group-hover:scale-110"
                       style={{
@@ -469,7 +470,7 @@ export default function BlogPage() {
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                     {article.category && (
                       <div className="absolute top-4 left-4">
-                        <span className="px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-xs font-black text-[#FF6F61] shadow-sm uppercase tracking-wider">
+                        <span className="px-3.5 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[11px] font-semibold text-[#FF6F61] shadow-sm uppercase tracking-widest">
                           {t(`blog.category.${article.category.toLowerCase()}`) !== `blog.category.${article.category.toLowerCase()}` 
                             ? t(`blog.category.${article.category.toLowerCase()}`) 
                             : article.category}
@@ -479,10 +480,10 @@ export default function BlogPage() {
                   </div>
                   
                   <div className="space-y-3 px-2">
-                    <h2 className="text-2xl font-black text-gray-900 group-hover:text-[#FF6F61] transition-colors line-clamp-2 leading-[1.3] tracking-tight">
+                    <h2 className="text-xl md:text-2xl font-semibold text-gray-900 group-hover:text-[#FF6F61] transition-colors line-clamp-2 leading-snug">
                       {article.title}
                     </h2>
-                    <p className="text-gray-500 line-clamp-2 text-sm leading-relaxed font-medium">
+                    <p className="text-gray-500 line-clamp-2 text-sm leading-relaxed">
                       {article.summary || article.content_html.replace(/<[^>]*>/g, '').slice(0, 100)}
                     </p>
                     <div className="flex items-center gap-3 pt-2">
@@ -501,10 +502,10 @@ export default function BlogPage() {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-xs font-bold text-gray-900 leading-none">
+                        <span className="text-xs font-semibold text-gray-900 leading-none">
                           {article.author_display_name || 'Rollkey'}
                         </span>
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                        <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mt-1">
                           {formatDate(article.created_at, t('common.locale') || 'en-US')}
                         </span>
                       </div>

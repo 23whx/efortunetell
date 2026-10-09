@@ -153,6 +153,49 @@ const YUAN_LABEL: Record<YuanType, string> = {
   xia: '下元',
 };
 
+/**
+ * 四害
+ */
+
+/** 入墓：天盘干墓宫（阴盘口径：甲墓坤、乙墓乾坤、丙戊墓乾、丁己庚墓艮、辛壬墓巽、癸墓坤） */
+const RU_MU_PALACES: Record<string, number[]> = {
+  甲: [2],
+  乙: [6, 2],
+  丙: [6],
+  戊: [6],
+  丁: [8],
+  己: [8],
+  庚: [8],
+  辛: [4],
+  壬: [4],
+  癸: [2],
+};
+
+/** 六仪击刑：仪落宫 */
+const JI_XING_PALACE: Record<string, number> = {
+  戊: 3, // 甲子戊 子刑卯 → 震三
+  己: 2, // 甲戌己 戌刑未 → 坤二
+  庚: 8, // 甲申庚 申刑寅 → 艮八
+  辛: 9, // 甲午辛 午自刑 → 离九
+  壬: 4, // 甲辰壬 辰自刑 → 巽四
+  癸: 4, // 甲寅癸 寅刑巳 → 巽四
+};
+
+/** 门迫：门克宫（休水/生死土/伤杜木/景火/惊开金；宫五行 1水 2土 3木 4木 6金 7金 8土 9火） */
+const MEN_PO_PALACES: Record<string, number[]> = {
+  休: [9],
+  生: [1],
+  死: [1],
+  伤: [2, 8],
+  杜: [2, 8],
+  惊: [3, 4],
+  开: [3, 4],
+  景: [6, 7],
+};
+
+/** 时干自坐墓的时柱 */
+const SHI_GAN_ZUO_MU = new Set(['戊戌', '丙戌', '癸未', '丁丑', '己丑']);
+
 export function chartYinpanQimen(input: QimenInput): QimenChart {
   const minute = input.minute ?? 0;
   const ziMode: ZiMode = input.ziMode ?? 'late';
@@ -230,21 +273,37 @@ export function chartYinpanQimen(input: QimenInput): QimenChart {
   const kong = xunKongOf(hourGz);
   const kongPalaces = new Set(kong.map((z) => ZHI_PALACE[z]).filter(Boolean));
 
+  const dayGan = pillars.day.gan;
   const gongWei: GongWei[] = [];
   const byPalace: Record<number, GongWei> = {};
   for (let p = 1; p <= 9; p++) {
+    const tianGan = p in tian ? tian[p] : di[p === 5 ? 2 : p] ?? null;
+    const men = p in mens ? mens[p] : BA_MEN[p];
+    const shen = shens[p] ?? null;
+
+    // 入墓：值符落宫甲为神，神不入墓；但该干为日干时仍论入墓
+    let ruMu = Boolean(tianGan && RU_MU_PALACES[tianGan]?.includes(p));
+    if (ruMu && shen === '值符' && tianGan !== dayGan) {
+      ruMu = false;
+    }
+    const jiXing = Boolean(tianGan && JI_XING_PALACE[tianGan] === p);
+    const menPo = Boolean(men && MEN_PO_PALACES[men]?.includes(p));
+
     const cell: GongWei = {
       palace: p,
       position: PALACE_POS[p],
       bagua: PALACE_BAGUA[p],
       diPanGan: di[p] ?? null,
-      tianPanGan: p in tian ? tian[p] : di[p === 5 ? 2 : p] ?? null,
+      tianPanGan: tianGan,
       star: stars[p] ?? JIU_XING[p],
-      men: p in mens ? mens[p] : BA_MEN[p],
-      shen: shens[p] ?? null,
+      men,
+      shen,
       anGan: null,
       maXing: p === maPalace,
       kongWang: kongPalaces.has(p),
+      ruMu,
+      jiXing,
+      menPo,
     };
     gongWei.push(cell);
     byPalace[p] = cell;
@@ -283,6 +342,7 @@ export function chartYinpanQimen(input: QimenInput): QimenChart {
       },
       kongWang: kong,
       maZhi: ma,
+      shiGanZuoMu: SHI_GAN_ZUO_MU.has(hourGz),
       method,
       calendarSource,
       panType: 'yin',

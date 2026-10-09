@@ -133,7 +133,7 @@ export default function NamingClient({ locale }: { locale: Locale }) {
 
       {tab === 'generate' && (
         <div className="grid lg:grid-cols-[300px_1fr] gap-6">
-          <section className="rounded-3xl bg-white border border-amber-100 shadow-sm p-5 space-y-4 h-fit">
+          <section className="rounded-2xl bg-white border border-[#f0ece3] shadow-sm p-5 space-y-4 h-fit">
             <label className="block">
               <span className="text-xs font-semibold text-gray-500">
                 {t('tools.naming.surname')}
@@ -196,12 +196,14 @@ export default function NamingClient({ locale }: { locale: Locale }) {
 
           <section className="space-y-4">
             {xiYong && (
-              <div className="rounded-3xl bg-gradient-to-br from-violet-700 to-amber-600 text-white p-5 shadow-lg">
-                <div className="text-sm opacity-90">
-                  {t('tools.naming.dayMaster')}: {xiYong.dayMaster}（
+              <div className="rounded-2xl bg-[#221d17] text-white p-6 md:p-8 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#FF6F61] to-[#ffb347]" />
+                <div className="text-sm text-white/70">
+                  {t('tools.naming.dayMaster')}:{' '}
+                  <span className="font-display text-lg text-white">{xiYong.dayMaster}</span>（
                   {xiYong.dayMasterWx}）
                 </div>
-                <div className="mt-2 flex flex-wrap gap-3 text-sm">
+                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-white/70">
                   <span>
                     {t('tools.naming.xi')}:{' '}
                     <strong className="tracking-widest">{xiYong.xi.join(' ')}</strong>
@@ -230,10 +232,10 @@ export default function NamingClient({ locale }: { locale: Locale }) {
                 {names.map((n, i) => (
                   <div
                     key={n.given}
-                    className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm flex flex-col sm:flex-row sm:items-center gap-4"
+                    className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm flex flex-col sm:flex-row sm:items-center gap-4"
                   >
-                    <div className="text-3xl font-black tracking-[0.2em] text-gray-900 min-w-[8rem]">
-                      <span className="text-amber-600 text-lg mr-2">#{i + 1}</span>
+                    <div className="font-display text-3xl tracking-[0.15em] text-gray-900 min-w-[8rem]">
+                      <span className="text-[#FF6F61] text-base mr-2 font-sans font-medium">#{i + 1}</span>
                       {n.fullName}
                     </div>
                     <div className="flex-1">
@@ -246,7 +248,7 @@ export default function NamingClient({ locale }: { locale: Locale }) {
                               setTab('lookup');
                               doLookup(c.char);
                             }}
-                            className="px-2.5 py-1 rounded-xl bg-amber-50 border border-amber-100 text-sm"
+                            className="px-2.5 py-1 rounded-xl bg-amber-50 border border-[#f0ece3] text-sm"
                           >
                             <span className="font-bold text-lg">{c.char}</span>
                             <span className="text-xs text-gray-500 ml-1">
@@ -267,7 +269,7 @@ export default function NamingClient({ locale }: { locale: Locale }) {
             )}
 
             {!names.length && !xiYong && (
-              <div className="rounded-3xl border border-dashed border-amber-200 p-10 text-center text-gray-400 text-sm">
+              <div className="rounded-2xl border border-dashed border-amber-200 p-10 text-center text-gray-400 text-sm">
                 {t('tools.naming.emptyGen')}
               </div>
             )}
@@ -280,7 +282,7 @@ export default function NamingClient({ locale }: { locale: Locale }) {
       {tab === 'lookup' && (
         <div className="grid lg:grid-cols-[1fr_1.1fr] gap-6">
           <section className="space-y-4">
-            <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
+            <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm">
               <label className="block">
                 <span className="text-xs font-semibold text-gray-500">
                   {t('tools.naming.lookupChar')}
@@ -343,7 +345,7 @@ export default function NamingClient({ locale }: { locale: Locale }) {
             </div>
           </section>
 
-          <section className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
+          <section className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm">
             <h3 className="font-bold text-gray-900 mb-3">
               {t('tools.naming.browse')}
             </h3>
@@ -394,7 +396,7 @@ export default function NamingClient({ locale }: { locale: Locale }) {
                   key={h.char}
                   type="button"
                   onClick={() => doLookup(h.char)}
-                  className="w-10 h-10 rounded-xl border border-amber-100 hover:border-[#FF6F61] text-lg font-bold"
+                  className="w-10 h-10 rounded-xl border border-[#f0ece3] hover:border-[#FF6F61] text-lg font-bold"
                   title={`${h.wuxing} ${h.kangxi}`}
                 >
                   {h.char}

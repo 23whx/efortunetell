@@ -50,23 +50,25 @@ function PillarColumn({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-3 md:p-4 text-center ${
+      className={`rounded-2xl border p-3 md:p-5 text-center transition-colors ${
         highlightDay
-          ? 'bg-gradient-to-b from-[#FF6F61]/10 to-white border-[#FF6F61]/30'
-          : 'bg-white border-amber-100'
+          ? 'bg-white border-[#FF6F61]/40 shadow-sm'
+          : 'bg-white border-[#f0ece3]'
       }`}
     >
-      <div className="text-xs text-gray-500 font-semibold mb-2">{title}</div>
-      <div className="text-3xl font-black tracking-[0.2em] text-gray-900">
+      <div className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-medium mb-3">
+        {title}
+      </div>
+      <div className="font-display text-4xl md:text-[2.75rem] leading-none text-gray-900">
         {pillar.gan}
       </div>
-      <div className="text-[10px] text-[#FF6F61] font-medium mt-0.5">
+      <div className={`text-[10px] mt-1.5 ${highlightDay ? 'text-[#FF6F61] font-semibold' : 'text-gray-400'}`}>
         {pillar.shiShenOnGan}
       </div>
-      <div className="text-3xl font-black tracking-[0.2em] text-gray-900 mt-2">
+      <div className="font-display text-4xl md:text-[2.75rem] leading-none text-gray-900 mt-2.5">
         {pillar.zhi}
       </div>
-      <div className="mt-2 text-[11px] text-gray-500 leading-relaxed min-h-[2.5rem]">
+      <div className="mt-3 text-[11px] text-gray-500 leading-relaxed min-h-[2.5rem]">
         {pillar.cangGan.map((g, i) => (
           <div key={g + i}>
             {g}
@@ -74,7 +76,7 @@ function PillarColumn({
           </div>
         ))}
       </div>
-      <div className="mt-2 text-xs text-amber-800/80 border-t border-amber-50 pt-2">
+      <div className="mt-3 text-xs text-gray-500 border-t border-[#f0ece3] pt-2.5">
         {pillar.naYin}
       </div>
       <div className="text-[10px] text-gray-400 mt-1">
@@ -268,7 +270,7 @@ export default function BaziClient({ locale }: { locale: Locale }) {
           <ArrowLeft className="w-4 h-4" />
           {t('tools.title')}
         </Link>
-        <h1 className="text-3xl md:text-4xl font-black text-gray-900 mt-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mt-2">
           {t('tools.bazi.title')}
         </h1>
         <p className="text-gray-600 mt-1 max-w-2xl">{t('tools.bazi.subtitle')}</p>
@@ -276,7 +278,7 @@ export default function BaziClient({ locale }: { locale: Locale }) {
 
       <div className="grid lg:grid-cols-[320px_1fr] gap-6">
         {/* Form */}
-        <section className="rounded-3xl bg-white border border-amber-100 shadow-sm p-5 space-y-4 h-fit">
+        <section className="rounded-2xl bg-white border border-[#f0ece3] p-5 md:p-6 space-y-4 h-fit">
           <label className="block">
             <span className="text-xs font-semibold text-gray-500">{t('tools.bazi.birthTime')}</span>
             <input
@@ -301,7 +303,7 @@ export default function BaziClient({ locale }: { locale: Locale }) {
                       : 'bg-white text-gray-600 border-gray-200'
                   }`}
                 >
-                  {t(`bazi.gender.${g}`)}
+                  {t(`tools.bazi.gender.${g}`)}
                 </button>
               ))}
             </div>
@@ -317,11 +319,11 @@ export default function BaziClient({ locale }: { locale: Locale }) {
                   onClick={() => setZiMode(z)}
                   className={`rounded-xl py-2 text-sm font-semibold border ${
                     ziMode === z
-                      ? 'bg-amber-500 text-white border-amber-500'
+                      ? 'bg-[#FF6F61] text-white border-[#FF6F61]'
                       : 'bg-white text-gray-600 border-gray-200'
                   }`}
                 >
-                  {t(`bazi.zi.${z}`)}
+                  {t(`tools.bazi.zi.${z}`)}
                 </button>
               ))}
             </div>
@@ -439,12 +441,15 @@ export default function BaziClient({ locale }: { locale: Locale }) {
         <section className="space-y-4">
           {chart && (
             <>
-              <div className="rounded-3xl bg-gradient-to-br from-[#FF6F61] to-amber-500 text-white p-5 md:p-6 shadow-lg">
-                <div className="text-sm opacity-90">{chart.meta.usedDatetime}</div>
-                <div className="text-2xl md:text-3xl font-black tracking-widest mt-1">
+              <div className="rounded-2xl bg-[#221d17] text-white p-6 md:p-8 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#FF6F61] to-[#ffb347]" />
+                <div className="text-xs uppercase tracking-[0.2em] text-white/50">
+                  {chart.meta.usedDatetime}
+                </div>
+                <div className="font-display text-3xl md:text-4xl tracking-[0.15em] mt-3">
                   {chart.formatted}
                 </div>
-                <div className="mt-2 text-sm opacity-90 flex flex-wrap gap-x-4 gap-y-1">
+                <div className="mt-4 pt-4 border-t border-white/10 text-sm text-white/70 flex flex-wrap gap-x-6 gap-y-1">
                   <span>
                     {t('tools.bazi.zodiac')}: {chart.zodiac}
                   </span>
@@ -468,8 +473,8 @@ export default function BaziClient({ locale }: { locale: Locale }) {
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
-                  <h3 className="font-bold text-gray-900 mb-3">{t('tools.bazi.terms')}</h3>
+                <div className="rounded-2xl bg-white border border-[#f0ece3] p-6">
+                  <h3 className="font-semibold text-gray-900 mb-4">{t('tools.bazi.terms')}</h3>
                   <dl className="text-sm space-y-2">
                     <div className="flex justify-between gap-2">
                       <dt className="text-gray-500">{t('tools.bazi.prevJie')}</dt>
@@ -492,9 +497,9 @@ export default function BaziClient({ locale }: { locale: Locale }) {
                   </dl>
                 </div>
 
-                <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
-                  <h3 className="font-bold text-gray-900 mb-3">{t('tools.bazi.siLing')}</h3>
-                  <p className="text-2xl font-black text-[#FF6F61]">
+                <div className="rounded-2xl bg-white border border-[#f0ece3] p-6">
+                  <h3 className="font-semibold text-gray-900 mb-4">{t('tools.bazi.siLing')}</h3>
+                  <p className="font-display text-3xl text-[#FF6F61]">
                     {chart.siLing.gan}{' '}
                     <span className="text-base font-semibold text-gray-600">
                       {chart.siLing.shiShen}
@@ -507,8 +512,8 @@ export default function BaziClient({ locale }: { locale: Locale }) {
                 </div>
               </div>
 
-              <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
-                <h3 className="font-bold text-gray-900 mb-1">{t('tools.bazi.daYun')}</h3>
+              <div className="rounded-2xl bg-white border border-[#f0ece3] p-6">
+                <h3 className="font-semibold text-gray-900 mb-1">{t('tools.bazi.daYun')}</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   {chart.daYun.qiyunDesc} · {t('tools.bazi.qiyunDate')}: {chart.daYun.qiyunDate}
                 </p>
@@ -528,9 +533,9 @@ export default function BaziClient({ locale }: { locale: Locale }) {
                       {chart.daYun.cycles.map((c) => (
                         <tr key={c.index} className="border-b border-gray-50">
                           <td className="py-2.5 pr-2 text-gray-400">{c.index + 1}</td>
-                          <td className="py-2.5 pr-2 font-bold tracking-wider">{c.ganZhi}</td>
+                          <td className="py-2.5 pr-2 font-display text-base tracking-wider">{c.ganZhi}</td>
                           <td className="py-2.5 pr-2">{c.shiShenOnGan}</td>
-                          <td className="py-2.5 pr-2 text-amber-800/80">{c.naYin}</td>
+                          <td className="py-2.5 pr-2 text-gray-500">{c.naYin}</td>
                           <td className="py-2.5 pr-2">
                             {c.startAge}–{c.endAge}
                           </td>

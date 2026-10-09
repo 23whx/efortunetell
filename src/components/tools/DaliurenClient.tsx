@@ -68,7 +68,7 @@ function WeiCard({
       className={`rounded-2xl border p-4 text-center ${
         highlight
           ? 'border-[#FF6F61] bg-gradient-to-b from-[#FF6F61]/10 to-white'
-          : 'border-amber-100 bg-white'
+          : 'border-[#f0ece3] bg-white'
       }`}
     >
       <div className="text-xs font-semibold text-gray-500 mb-2">{title}</div>
@@ -296,7 +296,7 @@ export default function DaliurenClient({ locale }: { locale: Locale }) {
       </div>
 
       <div className="grid lg:grid-cols-[300px_1fr] gap-6">
-        <section className="rounded-3xl bg-white border border-amber-100 shadow-sm p-5 space-y-4 h-fit">
+        <section className="rounded-2xl bg-white border border-[#f0ece3] shadow-sm p-5 space-y-4 h-fit">
           <label className="block">
             <span className="text-xs font-semibold text-gray-500">
               {t('tools.daliuren.datetime')}
@@ -481,13 +481,14 @@ export default function DaliurenClient({ locale }: { locale: Locale }) {
         <section className="space-y-4">
           {chart && (
             <>
-              <div className="rounded-3xl bg-gradient-to-br from-indigo-900 to-amber-700 text-white p-5 md:p-6 shadow-lg">
-                <div className="text-sm opacity-90">{chart.meta.usedDatetime}</div>
-                <div className="text-xl md:text-2xl font-black mt-1">
+              <div className="rounded-2xl bg-[#221d17] text-white p-6 md:p-8 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#FF6F61] to-[#ffb347]" />
+                <div className="text-xs uppercase tracking-[0.2em] text-white/50">{chart.meta.usedDatetime}</div>
+                <div className="font-display text-2xl md:text-3xl mt-3">
                   {t('tools.daliuren.yueJiang')}: {chart.meta.yueJiang}(
                   {chart.meta.yueJiangZhi}) · {chart.meta.huanJiang}
                 </div>
-                <div className="mt-2 text-sm opacity-90 flex flex-wrap gap-x-4 gap-y-1">
+                <div className="mt-4 pt-4 border-t border-white/10 text-sm text-white/70 flex flex-wrap gap-x-6 gap-y-1">
                   <span>
                     {t('tools.daliuren.diFen')}: {chart.meta.diFen}
                   </span>
@@ -506,14 +507,14 @@ export default function DaliurenClient({ locale }: { locale: Locale }) {
                     {t('tools.daliuren.guiType')}: {chart.meta.guiType}
                   </span>
                 </div>
-                <div className="mt-2 tracking-widest text-sm">
+                <div className="mt-3 font-display text-lg tracking-[0.15em] text-white/90">
                   {chart.meta.siZhu.year} {chart.meta.siZhu.month}{' '}
                   {chart.meta.siZhu.day} {chart.meta.siZhu.hour}
                 </div>
               </div>
 
               {/* 四位自上而下 */}
-              <div className="rounded-3xl bg-white border border-amber-100 p-4 md:p-6 shadow-sm">
+              <div className="rounded-2xl bg-white border border-[#f0ece3] p-4 md:p-6 shadow-sm">
                 <h3 className="font-bold text-gray-900 mb-4">
                   {t('tools.daliuren.siWei')}
                 </h3>
@@ -569,7 +570,7 @@ export default function DaliurenClient({ locale }: { locale: Locale }) {
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
+                <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm">
                   <h3 className="font-bold text-gray-900 mb-2">
                     {t('tools.daliuren.dong')}
                   </h3>
@@ -589,7 +590,7 @@ export default function DaliurenClient({ locale }: { locale: Locale }) {
                     )}
                   </div>
                 </div>
-                <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
+                <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm">
                   <h3 className="font-bold text-gray-900 mb-2">
                     {t('tools.daliuren.relations')}
                   </h3>

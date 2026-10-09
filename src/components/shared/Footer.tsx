@@ -18,13 +18,13 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 mt-auto">
+    <footer className="bg-[#221d17] text-gray-300 mt-auto border-t border-[#FF6F61]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* About Section */}
           <div>
-            <h3 className="text-xl font-bold text-white mb-4">
+            <h3 className="text-lg font-semibold text-white mb-4 font-display">
               {t('footer.about')}
             </h3>
             <p className="text-gray-400 text-sm leading-relaxed">
@@ -34,7 +34,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-xl font-bold text-white mb-4">
+            <h3 className="text-lg font-semibold text-white mb-4 font-display">
               {t('footer.quickLinks')}
             </h3>
             <ul className="space-y-2">
@@ -99,7 +99,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-xl font-bold text-white mb-4">
+            <h3 className="text-lg font-semibold text-white mb-4 font-display">
               {t('footer.contact')}
             </h3>
             <ul className="space-y-2 text-sm">
@@ -129,8 +129,8 @@ export default function Footer() {
         </div>
 
         {/* Friendly Links Section */}
-        <div className="border-t border-gray-700 pt-8 mb-8">
-          <h3 className="text-lg font-bold text-white mb-4">
+        <div className="border-t border-white/10 pt-8 mb-8">
+          <h3 className="text-base font-semibold text-white mb-4 font-display">
             {t('footer.friendlyLinks')}
           </h3>
           <div className="flex flex-wrap gap-4">
@@ -138,7 +138,7 @@ export default function Footer() {
               href="https://oumashu.top/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 hover:border-[#FF6F61] transition-all duration-200 text-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#FF6F61]/60 transition-all duration-200 text-sm"
             >
               <span className="text-gray-300 hover:text-white transition-colors">
                 {t('footer.toolsNavigation')}
@@ -149,7 +149,7 @@ export default function Footer() {
               href="https://acgn-personality-database.top/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 hover:border-[#FF6F61] transition-all duration-200 text-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#FF6F61]/60 transition-all duration-200 text-sm"
             >
               <span className="text-gray-300 hover:text-white transition-colors">
                 {t('footer.acgnDatabase')}
@@ -160,7 +160,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-gray-700 pt-6 text-center">
+        <div className="border-t border-white/10 pt-6 text-center">
           <p className="text-gray-400 text-sm">
             © {currentYear} {t('footer.copyright')}
           </p>

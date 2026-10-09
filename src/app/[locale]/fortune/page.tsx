@@ -58,29 +58,32 @@ export default function FortunePage() {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-8 bg-[#FFFACD]">
-      <h1 className="text-xl md:text-2xl font-bold text-[#FF6F61] mb-4 md:mb-6 text-center">
-        {t('fortune.title')}
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 max-w-4xl mx-auto">
+    <div className="min-h-screen px-4 py-12 md:py-20 bg-[#faf9f6]">
+      <div className="text-center mb-10 md:mb-14">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+          {t('fortune.title')}
+        </h1>
+        <div className="w-12 h-[3px] bg-[#FF6F61] mx-auto mt-5 rounded-full" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
         {services.map((service) => (
           <div 
             key={service.id}
-            className="bg-card text-card-foreground border border-border rounded-lg shadow-md p-4 md:p-6 hover:scale-[1.02] transition-transform duration-200"
+            className="bg-white border border-[#f0ece3] rounded-2xl p-6 md:p-8 hover:border-[#FF6F61]/30 hover:shadow-md transition-all duration-300"
           >
             <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
-              <div className="p-2 bg-secondary rounded-full flex-shrink-0">
+              <div className="p-2 bg-[#FF6F61]/8 rounded-full flex-shrink-0">
                 {service.icon}
               </div>
-              <h2 className="text-lg md:text-xl font-semibold text-card-foreground">
+              <h2 className="text-lg md:text-xl font-semibold text-gray-900">
                 {service.name}
               </h2>
             </div>
-            <p className="text-muted-foreground mb-4 text-sm md:text-base">
+            <p className="text-gray-500 mb-5 text-sm md:text-base leading-relaxed">
               {service.description}
             </p>
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-              <span className="text-primary font-medium text-lg md:text-xl">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 pt-4 border-t border-[#f0ece3]">
+              <span className="text-[#FF6F61] font-semibold text-lg md:text-xl font-display">
                 {service.price}
               </span>
               <Button

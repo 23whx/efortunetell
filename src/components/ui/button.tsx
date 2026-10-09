@@ -52,7 +52,7 @@ const Button: FC<ButtonProps> = ({
       variantStyle = 'bg-gray-100/80 text-gray-800 border border-gray-200 hover:bg-white hover:shadow-md hover:border-gray-300';
       break;
     default: // primary
-      variantStyle = 'bg-[#FF6F61] text-white shadow-lg shadow-[#FF6F61]/20 hover:bg-[#ff8a75] hover:shadow-xl hover:shadow-[#FF6F61]/30 border-none';
+      variantStyle = 'bg-[#FF6F61] text-white shadow-sm hover:bg-[#ff8a75] hover:shadow-md border-none';
       break;
   }
   

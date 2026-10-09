@@ -5,8 +5,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: Outfit, sans-serif;
-  --font-mono: Space Mono, monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-playfair), var(--font-noto-serif-sc), "Noto Serif SC", "Songti SC", ui-serif, Georgia, serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -68,53 +69,38 @@
 }
 
 :root {
-  --background: hsl(0 0% 100%);
+  /* Warm cream base + coral primary (existing brand colors, tokenized) */
+  --background: #faf9f6;
   --foreground: hsl(0 0% 14.5%);
   --card: hsl(0 0% 100%);
   --card-foreground: hsl(0 0% 14.5%);
   --popover: hsl(0 0% 100%);
   --popover-foreground: hsl(0 0% 14.5%);
-  --primary: hsl(0 0% 20.5%);
-  --primary-foreground: hsl(0 0% 98.5%);
-  --secondary: hsl(0 0% 97%);
+  --primary: #FF6F61;
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(40 33% 96%);
   --secondary-foreground: hsl(0 0% 20.5%);
-  --muted: hsl(0 0% 97%);
-  --muted-foreground: hsl(0 0% 55.6%);
-  --accent: hsl(0 0% 97%);
+  --muted: hsl(40 33% 96%);
+  --muted-foreground: hsl(0 0% 45%);
+  --accent: hsl(43 100% 96%);
   --accent-foreground: hsl(0 0% 20.5%);
   --destructive: hsl(0 80% 57.7%);
   --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(0 0% 92.2%);
-  --input: hsl(0 0% 92.2%);
-  --ring: hsl(0 0% 70.8%);
-  --radius: 0.625rem;
-  --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
-  --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
-  --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
-  --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --border: hsl(40 25% 91%);
+  --input: hsl(40 25% 91%);
+  --ring: #FF6F61;
+  --radius: 1rem;
+  --shadow-2xs: 0 1px 2px 0px hsl(30 20% 10% / 0.04);
+  --shadow-xs: 0 1px 2px 0px hsl(30 20% 10% / 0.04);
+  --shadow-sm: 0 1px 3px 0px hsl(30 20% 10% / 0.06), 0 1px 2px -1px hsl(30 20% 10% / 0.06);
+  --shadow: 0 1px 3px 0px hsl(30 20% 10% / 0.06), 0 1px 2px -1px hsl(30 20% 10% / 0.06);
+  --shadow-md: 0 2px 6px -1px hsl(30 20% 10% / 0.08), 0 1px 3px -1px hsl(30 20% 10% / 0.06);
+  --shadow-lg: 0 4px 12px -2px hsl(30 20% 10% / 0.08), 0 2px 4px -2px hsl(30 20% 10% / 0.05);
+  --shadow-xl: 0 8px 24px -4px hsl(30 20% 10% / 0.10);
+  --shadow-2xl: 0 16px 40px -8px hsl(30 20% 10% / 0.14);
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --shadow-color: hsl(196 83% 10%);
-  --shadow-opacity: 0.15;
-  --shadow-blur: 4px;
-  --shadow-spread: 0px;
-  --shadow-offset-x: 2px;
-  --shadow-offset-y: 2px;
   --letter-spacing: 0em;
   --spacing: 0.25rem;
-  --shadow-2xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
-  --shadow-xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
-  --shadow-sm: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 1px 2px -1px hsl(196 83% 10% / 0.15);
-  --shadow: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 1px 2px -1px hsl(196 83% 10% / 0.15);
-  --shadow-md: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 2px 4px -1px hsl(196 83% 10% / 0.15);
-  --shadow-lg: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 4px 6px -1px hsl(196 83% 10% / 0.15);
-  --shadow-xl: 2px 2px 4px 0px hsl(196 83% 10% / 0.15), 2px 8px 10px -1px hsl(196 83% 10% / 0.15);
-  --shadow-2xl: 2px 2px 4px 0px hsl(196 83% 10% / 0.38);
   --tracking-normal: 0em;
 }
 
@@ -222,6 +208,16 @@ html[dir="rtl"] pre {
     color: var(--foreground);
     font-family: var(--font-sans);
   }
+  /* Editorial serif headings across the site */
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Opt-out for form-heavy contexts where serif headings feel wrong */
+.font-display {
+  font-family: var(--font-display);
 }
 
 /* Mobile Optimization Styles */

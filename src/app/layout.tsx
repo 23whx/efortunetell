@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display, Noto_Serif_SC } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/navbar";
@@ -15,6 +15,19 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Display serif for headings (Latin) with CJK serif fallback
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+});
+
+const notoSerifSC = Noto_Serif_SC({
+  variable: "--font-noto-serif-sc",
+  weight: ["600", "700", "900"],
+  preload: false,
 });
 
 export const viewport: Viewport = {
@@ -120,10 +133,10 @@ export default async function RootLayout({
     <html
       lang={htmlLang}
       dir={htmlDir}
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${notoSerifSC.variable}`}
       suppressHydrationWarning
     >
-      <body className="antialiased min-h-screen overflow-auto font-sans bg-[#FFFACD] text-gray-900">
+      <body className="antialiased min-h-screen overflow-auto font-sans bg-[#faf9f6] text-gray-900">
         {/* JSON-LD for WebSite */}
         <Script
           id="website-jsonld"

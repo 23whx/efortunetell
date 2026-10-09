@@ -178,38 +178,31 @@ export default async function ToolsPage({
   const c = COPY[locale];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10 md:py-14">
-      <h1 className="text-3xl md:text-4xl font-black text-gray-900">{c.title}</h1>
-      <p className="mt-2 text-gray-600 max-w-2xl">{c.desc}</p>
-      <div className="mt-8 grid sm:grid-cols-2 gap-4">
+    <div className="max-w-5xl mx-auto px-4 py-12 md:py-20">
+      <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">{c.title}</h1>
+      <div className="w-12 h-[3px] bg-[#FF6F61] mt-5 rounded-full" />
+      <p className="mt-5 text-gray-500 max-w-2xl leading-relaxed">{c.desc}</p>
+      <div className="mt-10 grid sm:grid-cols-2 gap-5">
         {c.items.map((item, i) => {
           const Icon = ICONS[i % ICONS.length];
           const inner = (
             <div
-              className={`rounded-3xl border p-5 h-full transition-all ${
+              className={`group rounded-2xl border p-7 h-full transition-all duration-300 ${
                 item.ready
-                  ? 'bg-white border-amber-100 shadow-sm hover:shadow-md hover:border-[#FF6F61]/30'
-                  : 'bg-white/60 border-gray-100 opacity-80'
+                  ? 'bg-white border-[#f0ece3] hover:border-[#FF6F61]/30 hover:shadow-md'
+                  : 'bg-white/60 border-[#f0ece3] opacity-70'
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-amber-50 text-[#FF6F61] flex items-center justify-center">
-                  <Icon className="w-5 h-5" />
-                </div>
-                {item.badge && (
-                  <span
-                    className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                      item.ready
-                        ? 'bg-emerald-50 text-emerald-700'
-                        : 'bg-gray-100 text-gray-500'
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
+              <div className="flex items-center justify-between gap-3">
+                <Icon className="w-6 h-6 text-[#FF6F61]" strokeWidth={1.75} />
+                <span className="text-gray-300 group-hover:text-[#FF6F61] group-hover:translate-x-0.5 transition-all duration-300">
+                  →
+                </span>
               </div>
-              <h2 className="mt-4 text-lg font-bold text-gray-900">{item.title}</h2>
-              <p className="mt-1 text-sm text-gray-600 leading-relaxed">{item.desc}</p>
+              <h2 className="mt-5 text-xl font-semibold text-gray-900 group-hover:text-[#FF6F61] transition-colors">
+                {item.title}
+              </h2>
+              <p className="mt-2 text-sm text-gray-500 leading-relaxed">{item.desc}</p>
             </div>
           );
           return item.ready ? (

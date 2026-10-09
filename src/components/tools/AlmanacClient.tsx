@@ -54,7 +54,7 @@ function PillarCard({
   naYin: string;
 }) {
   return (
-    <div className="rounded-2xl bg-white border border-amber-100 shadow-sm p-4 text-center">
+    <div className="rounded-2xl bg-white border border-[#f0ece3] shadow-sm p-4 text-center">
       <div className="text-xs text-gray-500 mb-1">{title}</div>
       <div className="text-2xl font-bold tracking-widest text-gray-900">{ganZhi}</div>
       <div className="text-xs text-amber-700/80 mt-1">{naYin}</div>
@@ -137,7 +137,7 @@ export default function AlmanacClient({
 
       <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
         {/* Month grid */}
-        <section className="rounded-3xl bg-white/80 border border-amber-100 shadow-sm p-4 md:p-6">
+        <section className="rounded-2xl bg-white/80 border border-[#f0ece3] shadow-sm p-4 md:p-6">
           <div className="flex items-center justify-between mb-4">
             <button
               type="button"
@@ -184,7 +184,7 @@ export default function AlmanacClient({
                       ? 'bg-[#FF6F61] text-white border-[#FF6F61] shadow-md'
                       : cell.isToday
                         ? 'bg-amber-50 border-amber-200'
-                        : 'bg-white/60 border-transparent hover:border-amber-100 hover:bg-amber-50/60',
+                        : 'bg-white/60 border-transparent hover:border-[#f0ece3] hover:bg-amber-50/60',
                     !cell.isCurrentMonth ? 'opacity-40' : '',
                   ].join(' ')}
                 >
@@ -224,7 +224,8 @@ export default function AlmanacClient({
 
         {/* Day detail */}
         <section className="space-y-4">
-          <div className="rounded-3xl bg-gradient-to-br from-[#FF6F61] to-amber-500 text-white p-6 shadow-lg">
+          <div className="rounded-2xl bg-[#221d17] text-white p-6 md:p-8 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#FF6F61] to-[#ffb347]" />
             <div className="flex items-center justify-between gap-2">
               <button
                 type="button"
@@ -234,13 +235,13 @@ export default function AlmanacClient({
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <div className="text-center">
-                <div className="text-sm opacity-90">
+                <div className="text-xs uppercase tracking-[0.2em] text-white/50">
                   {day.date} · {language === 'zh' ? `星期${day.weekNameZh}` : day.weekName}
                 </div>
-                <div className="text-2xl md:text-3xl font-black mt-1 tracking-wide">
+                <div className="font-display text-2xl md:text-3xl mt-2 tracking-wide">
                   {day.lunar.full}
                 </div>
-                <div className="text-sm mt-1 opacity-90">
+                <div className="text-sm mt-2 text-white/70">
                   {t('almanac.zodiacYear')}: {day.lunar.yearShengXiao} · {day.constellation}
                 </div>
               </div>
@@ -291,7 +292,7 @@ export default function AlmanacClient({
             />
           </div>
 
-          <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm space-y-4">
+          <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm space-y-4">
             <div>
               <h3 className="text-sm font-bold text-emerald-700 mb-2">{t('almanac.yi')}</h3>
               <TagList items={day.yi} tone="yi" />
@@ -302,7 +303,7 @@ export default function AlmanacClient({
             </div>
           </div>
 
-          <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
+          <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm">
             <h3 className="text-sm font-bold text-gray-800 mb-3">{t('almanac.meta')}</h3>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
               <div className="flex justify-between gap-2 border-b border-gray-50 py-1.5">
@@ -350,7 +351,7 @@ export default function AlmanacClient({
             </dl>
           </div>
 
-          <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
+          <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm">
             <h3 className="text-sm font-bold text-gray-800 mb-3">{t('almanac.positions')}</h3>
             <div className="grid grid-cols-2 gap-2 text-sm">
               {(
@@ -375,14 +376,14 @@ export default function AlmanacClient({
             </div>
           </div>
 
-          <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm">
+          <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm">
             <h3 className="text-sm font-bold text-gray-800 mb-2">{t('almanac.jiShen')}</h3>
             <TagList items={day.jiShen} tone="neutral" />
             <h3 className="text-sm font-bold text-gray-800 mt-4 mb-2">{t('almanac.xiongSha')}</h3>
             <TagList items={day.xiongSha} tone="ji" />
           </div>
 
-          <div className="rounded-3xl bg-white border border-amber-100 p-5 shadow-sm overflow-x-auto">
+          <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm overflow-x-auto">
             <h3 className="text-sm font-bold text-gray-800 mb-3">{t('almanac.hours')}</h3>
             <div className="min-w-[520px] grid grid-cols-4 gap-2">
               {day.hours.map((h) => (
