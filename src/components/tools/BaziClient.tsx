@@ -441,15 +441,15 @@ export default function BaziClient({ locale }: { locale: Locale }) {
         <section className="space-y-4">
           {chart && (
             <>
-              <div className="rounded-2xl bg-[#221d17] text-white p-6 md:p-8 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#FF6F61] to-[#ffb347]" />
-                <div className="text-xs uppercase tracking-[0.2em] text-white/50">
+              <div className="result-hero rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                <span aria-hidden className="result-hero-glyph">八</span>
+                <div className="text-xs tracking-[0.2em] text-stone-400 tabular-nums">
                   {chart.meta.usedDatetime}
                 </div>
                 <div className="font-display text-3xl md:text-4xl tracking-[0.15em] mt-3">
                   {chart.formatted}
                 </div>
-                <div className="mt-4 pt-4 border-t border-white/10 text-sm text-white/70 flex flex-wrap gap-x-6 gap-y-1">
+                <div className="mt-4 pt-4 border-t border-[#efe8dc] text-sm text-stone-500 flex flex-wrap gap-x-6 gap-y-1">
                   <span>
                     {t('tools.bazi.zodiac')}: {chart.zodiac}
                   </span>

@@ -451,3 +451,43 @@ html[dir="rtl"] pre {
 .ProseMirror img[src^="/images/"] {
   /* 这个不会直接工作，我们需要用JavaScript解决 */
 }
+/* Tool result header card: light "rice paper" surface instead of a dark block (same theme as the page) */
+.result-hero {
+  isolation: isolate;
+  color: #1c1917;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(255, 111, 97, 0.10) 0%, rgba(255, 111, 97, 0) 55%),
+    #fffdfa;
+  border: 1px solid #efe8dc;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 28px -22px rgba(120, 72, 40, 0.28);
+}
+/* short coral seal mark on the top edge */
+.result-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.5rem;
+  width: 2.5rem;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: #ff6f61;
+}
+/* faint calligraphic watermark (the tool's character) */
+.result-hero-glyph {
+  position: absolute;
+  z-index: -1;
+  right: -0.25rem;
+  bottom: -2.75rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 10rem;
+  line-height: 1;
+  color: rgba(255, 111, 97, 0.08);
+  pointer-events: none;
+  user-select: none;
+}
+@media (max-width: 640px) {
+  .result-hero-glyph { font-size: 7rem; bottom: -2rem; }
+}

@@ -224,45 +224,45 @@ export default function AlmanacClient({
 
         {/* Day detail */}
         <section className="space-y-4">
-          <div className="rounded-2xl bg-[#221d17] text-white p-6 md:p-8 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#FF6F61] to-[#ffb347]" />
+          <div className="result-hero rounded-2xl p-6 md:p-8 relative overflow-hidden">
+            <span aria-hidden className="result-hero-glyph">历</span>
             <div className="flex items-center justify-between gap-2">
               <button
                 type="button"
                 onClick={() => goDate(shiftDateKey(date, -1))}
-                className="p-2 rounded-xl bg-white/15 hover:bg-white/25"
+                className="p-2 rounded-xl bg-white border border-[#efe8dc] text-stone-600 hover:border-[#FF6F61]/50 hover:text-[#c2483c] active:scale-95 transition"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <div className="text-center">
-                <div className="text-xs uppercase tracking-[0.2em] text-white/50">
+                <div className="text-xs tracking-[0.2em] text-stone-400 tabular-nums">
                   {day.date} · {language === 'zh' ? `星期${day.weekNameZh}` : day.weekName}
                 </div>
                 <div className="font-display text-2xl md:text-3xl mt-2 tracking-wide">
                   {day.lunar.full}
                 </div>
-                <div className="text-sm mt-2 text-white/70">
+                <div className="text-sm mt-2 text-stone-500">
                   {t('almanac.zodiacYear')}: {day.lunar.yearShengXiao} · {day.constellation}
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => goDate(shiftDateKey(date, 1))}
-                className="p-2 rounded-xl bg-white/15 hover:bg-white/25"
+                className="p-2 rounded-xl bg-white border border-[#efe8dc] text-stone-600 hover:border-[#FF6F61]/50 hover:text-[#c2483c] active:scale-95 transition"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
-            <div className="mt-4 flex flex-wrap gap-2 justify-center">
+            <div className="mt-4 flex flex-wrap items-stretch gap-2 justify-center">
               <input
                 type="date"
                 value={date}
                 onChange={(e) => e.target.value && goDate(e.target.value)}
-                className="rounded-xl bg-white/20 border border-white/30 px-3 py-1.5 text-sm text-white"
+                className="rounded-xl bg-white border border-[#e6ddcd] px-3 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-[#FF6F61]/40"
               />
               <Link
                 href={withLocale(locale, `/tools/almanac/${date}`)}
-                className="rounded-xl bg-white text-[#FF6F61] px-3 py-1.5 text-sm font-semibold"
+                className="inline-flex items-center rounded-xl bg-[#FF6F61] text-white px-3 py-1.5 text-sm font-semibold hover:bg-[#f25d4f] active:scale-95 transition"
               >
                 {t('almanac.permalink')}
               </Link>

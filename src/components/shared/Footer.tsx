@@ -139,12 +139,12 @@ export default function Footer() {
               <li className="text-gray-400">
                 <span className="font-semibold text-white">X:</span>{' '}
                 <a
-                  href="https://x.com/Rollkey4"
+                  href="https://x.com/Rollkey8"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#FF6F61] transition-colors inline-flex items-center gap-1"
                 >
-                  @Rollkey4
+                  @Rollkey8
                   <ExternalLink size={12} />
                 </a>
               </li>

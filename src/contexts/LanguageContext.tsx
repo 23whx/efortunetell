@@ -21,24 +21,27 @@ export function LanguageProvider({
   /** Only for routes without a locale in the URL (admin): restore the last chosen language. On /{locale} routes the URL wins. */
   useStoredLanguage?: boolean;
 }) {
-  const [language, setLanguageState] = useState<Language>(initialLanguage);
+  // Admin (no locale in URL): language lives in state + localStorage.
+  const [storedLanguage, setStoredLanguage] = useState<Language>(initialLanguage);
 
   useEffect(() => {
-    // 无语言前缀的路由（后台）才从 localStorage 恢复语言；带 /{locale} 的页面以网址为准
-    if (useStoredLanguage && typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('language') as Language;
-      if (savedLanguage && ['zh', 'en', 'ja', 'ko', 'ar'].includes(savedLanguage)) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is only readable after hydration
-        setLanguageState(savedLanguage);
-      }
+    if (!useStoredLanguage || typeof window === 'undefined') return;
+    const savedLanguage = localStorage.getItem('language') as Language;
+    if (savedLanguage && ['zh', 'en', 'ja', 'ko', 'ar'].includes(savedLanguage)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is only readable after hydration
+      setStoredLanguage(savedLanguage);
     }
   }, [useStoredLanguage]);
 
+  // /{locale} routes: the language is derived from the URL (the layout re-renders with the new locale on
+  // navigation), so UI text and page content switch in the same commit — no intermediate state to flash.
+  const language = useStoredLanguage ? storedLanguage : initialLanguage;
+
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
     if (typeof window !== 'undefined') {
       localStorage.setItem('language', lang);
     }
+    if (useStoredLanguage) setStoredLanguage(lang);
   };
 
   const t = useMemo(() => {
@@ -67,4 +70,4 @@ export const useLanguage = (): LanguageContextType => {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
-}; 
+};

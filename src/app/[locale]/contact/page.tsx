@@ -122,12 +122,12 @@ export default function ContactPage() {
               <h4 className="text-2xl font-black text-gray-900 mb-2 tracking-tight">{t('contact.twitter')}</h4>
               <p className="text-sm text-gray-500 font-medium mb-6">{t('contact.fastestResponse')}</p>
               <a 
-                href="https://x.com/Rollkey4" 
+                href="https://x.com/Rollkey8" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between bg-black text-white rounded-2xl p-4 font-black tracking-wider text-center hover:opacity-90 transition-opacity"
               >
-                <span className="flex-1 text-center">@Rollkey4</span>
+                <span className="flex-1 text-center">@Rollkey8</span>
                 <ExternalLink size={18} />
               </a>
             </div>

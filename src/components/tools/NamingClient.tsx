@@ -196,14 +196,14 @@ export default function NamingClient({ locale }: { locale: Locale }) {
 
           <section className="space-y-4">
             {xiYong && (
-              <div className="rounded-2xl bg-[#221d17] text-white p-6 md:p-8 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#FF6F61] to-[#ffb347]" />
-                <div className="text-sm text-white/70">
+              <div className="result-hero rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                <span aria-hidden className="result-hero-glyph">名</span>
+                <div className="text-sm text-stone-500">
                   {t('tools.naming.dayMaster')}:{' '}
-                  <span className="font-display text-lg text-white">{xiYong.dayMaster}</span>（
+                  <span className="font-display text-lg text-stone-900">{xiYong.dayMaster}</span>（
                   {xiYong.dayMasterWx}）
                 </div>
-                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-white/70">
+                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-stone-500">
                   <span>
                     {t('tools.naming.xi')}:{' '}
                     <strong className="tracking-widest">{xiYong.xi.join(' ')}</strong>

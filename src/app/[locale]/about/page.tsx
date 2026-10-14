@@ -70,7 +70,7 @@ const ABOUT: Record<'zh' | 'en', About> = {
   },
 };
 
-const SAME_AS = ['https://x.com/Rollkey4', 'https://www.youtube.com/@Rollkey', 'https://t.me/Rollkey'];
+const SAME_AS = ['https://x.com/Rollkey8', 'https://www.youtube.com/@Rollkey', 'https://t.me/Rollkey'];
 
 type Props = { params: Promise<{ locale: string }> };
 

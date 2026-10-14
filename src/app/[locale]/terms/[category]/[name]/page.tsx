@@ -336,8 +336,8 @@ export default async function TermPage({ params }: Props) {
         </Section>
       )}
 
-      <div className="mt-12 rounded-2xl bg-[#231e1a] px-6 py-5 flex flex-wrap items-center justify-between gap-3">
-        <span className="text-white/80 text-sm">免费工具 · 无需注册</span>
+      <div className="result-hero relative overflow-hidden mt-12 rounded-2xl px-6 py-5 flex flex-wrap items-center justify-between gap-3">
+        <span className="text-stone-600 text-sm">免费工具 · 无需注册</span>
         <Link href={`/zh${tool[0]}`} className="rounded-xl bg-[#FF6F61] px-4 py-2 text-sm font-semibold text-white hover:bg-[#f25d4f] transition-colors">
           {tool[1]} →
         </Link>

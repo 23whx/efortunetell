@@ -39,7 +39,7 @@ export async function generateMetadata({
     },
     description: copy.description,
     applicationName: SITE_NAME,
-    authors: [{ name: 'Rollkey', url: 'https://x.com/Rollkey4' }],
+    authors: [{ name: 'Rollkey', url: 'https://x.com/Rollkey8' }],
     creator: AUTHOR_NAME,
     publisher: SITE_NAME,
     robots: {
@@ -65,8 +65,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: 'summary_large_image',
-      site: '@Rollkey4',
-      creator: '@Rollkey4',
+      site: '@Rollkey8',
+      creator: '@Rollkey8',
       images: [OG_IMAGES.default],
     },
   };
@@ -109,7 +109,7 @@ export default async function LocaleLayout({
         name: SITE_NAME,
         url: SITE_URL,
         logo: { '@type': 'ImageObject', url: `${SITE_URL}/icon.png`, width: 690, height: 690 },
-        sameAs: ['https://x.com/Rollkey4', 'https://www.youtube.com/@Rollkey', 'https://t.me/Rollkey'],
+        sameAs: ['https://x.com/Rollkey8', 'https://www.youtube.com/@Rollkey', 'https://t.me/Rollkey'],
         founder: { '@id': AUTHOR_ID },
         contactPoint: {
           '@type': 'ContactPoint',
@@ -126,7 +126,7 @@ export default async function LocaleLayout({
         url: `${SITE_URL}/zh/about`,
         image: `${SITE_URL}/admin_img.jpg`,
         email: CONTACT_EMAIL,
-        sameAs: ['https://x.com/Rollkey4', 'https://www.youtube.com/@Rollkey', 'https://t.me/Rollkey'],
+        sameAs: ['https://x.com/Rollkey8', 'https://www.youtube.com/@Rollkey', 'https://t.me/Rollkey'],
         knowsAbout: ['BaZi', 'Four Pillars of Destiny', 'Qimen Dunjia', 'Da Liu Ren', 'Feng Shui', 'Chinese almanac', 'Chinese name selection'],
       },
     ],

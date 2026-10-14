@@ -1,32 +1,20 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 import type { Locale } from '@/lib/i18n/config';
-import type { Language } from '@/lib/i18n/detect';
 
-/** Keep LanguageContext + cookie in sync with URL locale */
-export function LocaleSync({
-  locale,
-  htmlLang,
-}: {
-  locale: Locale;
-  htmlLang: string;
-}) {
-  const { language, setLanguage } = useLanguage();
-
+/**
+ * Remember the URL locale in the NEXT_LOCALE cookie (used when redirecting locale-less URLs).
+ * The UI language itself is derived from the URL by LanguageProvider, so nothing to sync here.
+ */
+export function LocaleSync({ locale }: { locale: Locale; htmlLang?: string }) {
   useEffect(() => {
-    if (language !== locale) {
-      setLanguage(locale as Language);
-    }
     try {
       document.cookie = `NEXT_LOCALE=${locale};path=/;max-age=31536000;samesite=lax`;
     } catch {
       /* ignore */
     }
-    document.documentElement.lang = htmlLang;
-    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
-  }, [locale, language, setLanguage, htmlLang]);
+  }, [locale]);
 
   return null;
 }

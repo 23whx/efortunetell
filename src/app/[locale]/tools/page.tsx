@@ -232,33 +232,33 @@ export default async function ToolsPage({
             <div
               className={`group relative overflow-hidden rounded-2xl p-6 md:p-7 h-full min-h-[180px] flex flex-col transition-all duration-300 ${
                 featured
-                  ? 'bg-[#231e1a] text-white hover:shadow-[0_20px_40px_-20px_rgba(35,30,26,0.6)]'
+                  ? 'result-hero hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-28px_rgba(120,72,40,0.5)]'
                   : 'bg-white border border-[#efe8dc] hover:border-[#FF6F61]/40 hover:-translate-y-0.5 hover:shadow-[0_16px_32px_-20px_rgba(120,80,40,0.35)]'
               } ${item.ready ? '' : 'opacity-70'}`}
             >
               <span
                 aria-hidden
                 className={`pointer-events-none absolute -right-3 -bottom-8 font-display font-bold leading-none select-none transition-transform duration-500 group-hover:-translate-y-1 ${
-                  featured ? 'text-[11rem] text-white/[0.06]' : 'text-[8rem] text-[#FF6F61]/[0.07]'
+                  featured ? 'text-[11rem] text-[#FF6F61]/[0.09]' : 'text-[8rem] text-[#FF6F61]/[0.07]'
                 }`}
               >
                 {GLYPHS[i]}
               </span>
               <div className="relative flex items-center justify-between gap-3">
-                <Icon className={`w-6 h-6 ${featured ? 'text-[#ff9a8f]' : 'text-[#FF6F61]'}`} strokeWidth={1.75} />
+                <Icon className={`w-6 h-6 ${'text-[#FF6F61]'}`} strokeWidth={1.75} />
                 <span
                   className={`transition-all duration-300 group-hover:translate-x-0.5 ${
-                    featured ? 'text-white/40 group-hover:text-white' : 'text-stone-300 group-hover:text-[#FF6F61]'
+                    'text-stone-300 group-hover:text-[#FF6F61]'
                   }`}
                   aria-hidden
                 >
                   →
                 </span>
               </div>
-              <h2 className={`relative mt-auto pt-8 font-display font-semibold ${featured ? 'text-2xl md:text-3xl' : 'text-xl text-stone-900'}`}>
+              <h2 className={`relative mt-auto pt-8 font-display font-semibold ${featured ? 'text-2xl md:text-3xl text-stone-900' : 'text-xl text-stone-900'}`}>
                 {item.title}
               </h2>
-              <p className={`relative mt-2 text-sm leading-relaxed max-w-md ${featured ? 'text-white/65' : 'text-stone-500'}`}>{item.desc}</p>
+              <p className={`relative mt-2 text-sm leading-relaxed max-w-md ${'text-stone-500'}`}>{item.desc}</p>
             </div>
           );
           return item.ready ? (
