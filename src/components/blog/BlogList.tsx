@@ -9,6 +9,7 @@ import { formatDate } from '@/utils/date';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { useLocalePath } from '@/hooks/useLocalePath';
 import type { ArticleListItem as Article } from '@/lib/blog/list';
+import { articlePath } from '@/lib/blog/locale';
 
 /** Article list; initialArticles are fetched on the server so the list is in the HTML for crawlers. */
 export default function BlogList({ initialArticles }: { initialArticles: Article[] }) {
@@ -304,6 +305,7 @@ export default function BlogList({ initialArticles }: { initialArticles: Article
               >
                 <button 
                   onClick={() => scrollByAmount(-200)}
+                  aria-label="Scroll left"
                   className="pointer-events-auto ml-1 w-9 h-9 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center hover:bg-[#FF6F61] hover:text-white transition-all active:scale-90"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -361,6 +363,7 @@ export default function BlogList({ initialArticles }: { initialArticles: Article
               >
                 <button 
                   onClick={() => scrollByAmount(200)}
+                  aria-label="Scroll right"
                   className="pointer-events-auto mr-1 w-9 h-9 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center hover:bg-[#FF6F61] hover:text-white transition-all active:scale-90"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
@@ -400,7 +403,7 @@ export default function BlogList({ initialArticles }: { initialArticles: Article
               .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
               .map((article, index) => (
                 <Link
-                  href={lp(`/blog/${article.id}`)}
+                  href={lp(articlePath(article))}
                   key={article.id}
                   className="group block"
                 >

@@ -34,7 +34,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
 
   return (
-    <SiteFrame lang="en" dir="ltr" locale={defaultLocale}>
+    <SiteFrame lang="en" dir="ltr" locale={defaultLocale} useStoredLanguage>
       <div className="min-h-screen bg-[#faf9f6]">
         {children}
       </div>

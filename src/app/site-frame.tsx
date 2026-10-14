@@ -22,12 +22,14 @@ export default function SiteFrame({
   dir,
   locale,
   head,
+  useStoredLanguage = false,
   children,
 }: {
   lang: string;
   dir: 'ltr' | 'rtl';
   locale: Locale;
   head?: React.ReactNode;
+  useStoredLanguage?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -38,7 +40,7 @@ export default function SiteFrame({
         {head}
       </head>
       <body className="antialiased min-h-screen overflow-auto font-sans bg-[#faf9f6] text-gray-900">
-        <LanguageProvider initialLanguage={locale}>
+        <LanguageProvider initialLanguage={locale} useStoredLanguage={useStoredLanguage}>
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="pt-16 md:pt-20 flex-1">

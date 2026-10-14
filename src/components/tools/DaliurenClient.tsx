@@ -352,7 +352,7 @@ export default function DaliurenClient({ locale }: { locale: Locale }) {
                   onClick={() => setHuanJiang(h)}
                   className={`rounded-xl py-2 text-sm font-semibold border ${
                     huanJiang === h
-                      ? 'bg-amber-500 text-white border-amber-500'
+                      ? 'bg-[#FF6F61] text-white border-[#FF6F61]'
                       : 'bg-white text-gray-600 border-gray-200'
                   }`}
                 >

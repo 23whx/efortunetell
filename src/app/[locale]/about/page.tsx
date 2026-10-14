@@ -18,7 +18,7 @@ const ABOUT: Record<'zh' | 'en', About> = {
       {
         h: '我们提供什么',
         p: [
-          '免费在线工具：八字排盘（四柱、藏干、十神、纳音、空亡、大运）、阴盘奇门排盘、大六壬起课、万年历老黄历（每日宜忌、冲煞、吉时）与八字起名。',
+          '免费在线工具：八字排盘（四柱、藏干、十神、纳音、空亡、大运）、阴盘奇门排盘、大六壬起课（四位课式）、万年历老黄历（每日宜忌、冲煞、吉时）与八字起名。',
           '原创文章：十神、格局、用神、调候、大运流年等八字理论，以及奇门、六壬的实战解读。',
           '一对一咨询：八字详批、奇门与六壬占断、择日与起名，目前通过邮件预约。',
         ],
@@ -47,7 +47,7 @@ const ABOUT: Record<'zh' | 'en', About> = {
       {
         h: 'What you will find here',
         p: [
-          'Free tools: a BaZi chart (four pillars, hidden stems, Ten Gods, Na Yin, void, luck cycles), a Yin Pan Qimen Dunjia chart, Da Liu Ren lessons, a daily Chinese almanac (Tong Shu: auspicious and inauspicious activities, clashes, lucky hours) and BaZi-based name selection.',
+          'Free tools: a BaZi chart (four pillars, hidden stems, Ten Gods, Na Yin, void, luck cycles), a Yin Pan Qimen Dunjia chart, a Da Liu Ren four-position chart, a daily Chinese almanac (Tong Shu: auspicious and inauspicious activities, clashes, lucky hours) and BaZi-based name selection.',
           'Original articles on Ten Gods, chart structures, useful gods, climate adjustment and luck cycles, plus practical Qimen and Da Liu Ren readings.',
           'One-to-one consultations: BaZi readings, Qimen and Da Liu Ren divination, date and name selection — currently booked by email.',
         ],

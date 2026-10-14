@@ -3,6 +3,7 @@
  * 对齐《易世家》规格，参看《热卜》字段。
  * 四柱/节气/阴阳遁：统一走 @/lib/paipan/calendar（lunar-javascript）
  */
+import { Solar } from 'lunar-javascript';
 import {
   currentJieQiSegment,
   formatLocal,
@@ -49,17 +50,47 @@ function dunType(dt: Date): DunType {
   return qimenDunType(dt);
 }
 
-/** 拆补简化：节后 0–4 上元，5–9 中，10+ 下 */
-function yuanBySimple(dt: Date, jieStart: Date): YuanType {
-  const days = Math.floor(
-    (Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()) -
-      Date.UTC(jieStart.getFullYear(), jieStart.getMonth(), jieStart.getDate())) /
-      86400000
-  );
-  const d = Math.max(days, 0);
-  if (d < 5) return 'shang';
-  if (d < 10) return 'zhong';
+const JIA_ZI_60 = (() => {
+  const G = '甲乙丙丁戊己庚辛壬癸';
+  const Z = '子丑寅卯辰巳午未申酉戌亥';
+  const a: string[] = [];
+  for (let i = 0; i < 60; i++) a.push(G[i % 10] + Z[i % 12]);
+  return a;
+})();
+
+/**
+ * 拆补法三元：看日柱的符头（之前最近的甲/己日）地支
+ * 子午卯酉 → 上元，寅申巳亥 → 中元，辰戌丑未 → 下元
+ */
+function yuanByFuTou(dayGz: string): YuanType {
+  const idx = JIA_ZI_60.indexOf(dayGz);
+  const fuTou = JIA_ZI_60[idx - (idx % 5)];
+  const zhi = fuTou[1];
+  if ('子午卯酉'.includes(zhi)) return 'shang';
+  if ('寅申巳亥'.includes(zhi)) return 'zhong';
   return 'xia';
+}
+
+const ZHI_ORDER = '子丑寅卯辰巳午未申酉戌亥';
+
+/**
+ * 阴盘定局：(农历年支序数 + 农历月 + 农历日 + 时支序数) ÷ 9 取余，余 0 作 9 局
+ * 地支序数子 1 … 亥 12；闰月按本月数
+ */
+function yinpanJu(dt: Date, hourZhi: string, ziMode: ZiMode): number {
+  // 23 点换日时，夜子时按次日的农历日起局，与日柱一致
+  const base = ziMode === 'late' && dt.getHours() === 23 ? new Date(dt.getTime() + 3600 * 1000) : dt;
+  const lunar = Solar.fromYmdHms(base.getFullYear(), base.getMonth() + 1, base.getDate(), 12, 0, 0).getLunar() as unknown as {
+    getYearZhi: () => string;
+    getMonth: () => number;
+    getDay: () => number;
+  };
+  const sum =
+    ZHI_ORDER.indexOf(lunar.getYearZhi()) + 1 +
+    Math.abs(lunar.getMonth()) +
+    lunar.getDay() +
+    ZHI_ORDER.indexOf(hourZhi) + 1;
+  return sum % 9 === 0 ? 9 : sum % 9;
 }
 
 function juShu(dun: DunType, jieName: string, yuan: YuanType): { ju: number; juKey: string } {
@@ -89,27 +120,20 @@ function ring(dun: DunType): number[] {
   return dun === 'yang' ? [...PALACE_RING_YANG] : [...PALACE_RING_YIN];
 }
 
+/** 地盘三奇六仪：戊落局数宫，按洛书数序 1→9（阳顺）或 9→1（阴逆）排布，中五宫寄坤二 */
 function placeDiPan(dun: DunType, ju: number): Record<number, string> {
-  const r = ring(dun);
-  let startPalace = ju === 5 ? 2 : ju;
-  if (!r.includes(startPalace)) startPalace = r[0];
-  const si = r.indexOf(startPalace);
   const pos: Record<number, string> = {};
   for (let i = 0; i < SAN_QI_LIU_YI.length; i++) {
-    const palace =
-      dun === 'yang' ? r[(si + i) % r.length] : r[(si - i + r.length * 8) % r.length];
+    const palace = dun === 'yang' ? ((ju - 1 + i) % 9) + 1 : ((((ju - 1 - i) % 9) + 9) % 9) + 1;
     pos[palace] = SAN_QI_LIU_YI[i];
   }
-  pos[5] = pos[2] || '';
   return pos;
 }
 
 function invertMap(m: Record<number, string>): Record<string, number> {
   const inv: Record<string, number> = {};
   for (const [p, g] of Object.entries(m)) {
-    const palace = Number(p);
-    if (palace === 5) continue;
-    inv[g] = palace;
+    inv[g] = Number(p);
   }
   return inv;
 }
@@ -199,7 +223,7 @@ const SHI_GAN_ZUO_MU = new Set(['戊戌', '丙戌', '癸未', '丁丑', '己丑'
 export function chartYinpanQimen(input: QimenInput): QimenChart {
   const minute = input.minute ?? 0;
   const ziMode: ZiMode = input.ziMode ?? 'late';
-  const method: QimenMethod = input.method ?? 'chaibu';
+  const method: QimenMethod = input.method ?? 'yinpan';
   const useTrueSolar = Boolean(input.useTrueSolarTime);
   const calendarSource: QimenCalendarSource = input.calendarSource ?? 'lunar';
 
@@ -218,55 +242,53 @@ export function chartYinpanQimen(input: QimenInput): QimenChart {
 
   const { name: jieName, start: jieStart, end: jieEnd } = currentQimenJie(used);
   const dun = dunType(used);
-  // 拆补简化三元；置闰预留同路径（差异见文档）
-  const yuan = yuanBySimple(used, jieStart);
-  const { ju, juKey } = juShu(dun, jieName, yuan);
+  const yuan: YuanType | null = method === 'chaibu' ? yuanByFuTou(dayGz) : null;
+  const ju = yuan ? juShu(dun, jieName, yuan).ju : yinpanJu(used, hourZhi, ziMode);
 
   const di = placeDiPan(dun, ju);
   const ganToPalace = invertMap(di);
 
   const xs = xunShouOfHour(hourGz);
   const yi = XUN_SHOU_YI[xs] || '戊';
-  let origin = ganToPalace[yi] ?? 2;
-  let target = ganToPalace[hourGan] ?? origin;
-  if (origin === 5) origin = 2;
-  if (target === 5) target = 2;
+  // 旬首（六仪）所在地盘宫；落中五则寄坤二
+  const originRaw = ganToPalace[yi];
+  const origin = originRaw === 5 ? 2 : originRaw;
+  // 时干所在地盘宫（甲时用旬首仪 → 伏吟）；中五寄坤二
+  const hourYi = hourGan === '甲' ? yi : hourGan;
+  const targetRaw = ganToPalace[hourYi] ?? originRaw;
+  const target = targetRaw === 5 ? 2 : targetRaw;
 
-  const originStarPalace = origin === 5 ? 2 : origin;
-  const zhiFuStar = JIU_XING[originStarPalace];
-  const zhiShiName = BA_MEN[originStarPalace] || '休';
+  const zhiFuStar = JIU_XING[originRaw];
+  const zhiShiName = BA_MEN[origin] || '死';
 
-  const r = ring(dun);
-  const oI = r.indexOf(r.includes(origin) ? origin : 2);
-  const tI = r.indexOf(r.includes(target) ? target : 2);
-  const shift = (tI - oI + r.length) % r.length;
-
+  // 九星与天盘干：整体沿外八宫旋转，使值符星落到时干宫；天禽与中五干随天芮（坤二）
+  const r = [...PALACE_RING_YANG];
+  const shift = (r.indexOf(target) - r.indexOf(origin) + 8) % 8;
   const tian: Record<number, string> = {};
   const stars: Record<number, string> = {};
-  const mens: Record<number, string | null> = {};
-  const shens: Record<number, string> = {};
-
   for (const p of r) {
-    const src = r[(r.indexOf(p) - shift + r.length) % r.length];
+    const src = r[(r.indexOf(p) - shift + 8) % 8];
     stars[p] = JIU_XING[src];
     tian[p] = di[src] || '';
-    mens[p] = BA_MEN[src];
   }
+  const qinPalace = r[(r.indexOf(2) + shift) % 8];
   stars[5] = '天禽';
-  tian[5] = di[2] || '';
-  mens[5] = null;
 
-  // 八神：值符在 target，阳顺阴逆
+  // 值使门：从旬首宫起，按时辰数（旬首时为 0）沿洛书数序走（阳 1→9、阴 9→1），落五寄坤；其余门顺时针依次排
+  const steps = JIA_ZI_60.indexOf(hourGz) % 10;
+  const startNum = originRaw;
+  const walked = dun === 'yang' ? ((startNum - 1 + steps) % 9) + 1 : ((((startNum - 1 - steps) % 9) + 9) % 9) + 1;
+  const shiPalace = walked === 5 ? 2 : walked;
+  const menShift = (r.indexOf(shiPalace) - r.indexOf(origin) + 8) % 8;
+  const mens: Record<number, string | null> = { 5: null };
+  for (const p of r) mens[p] = BA_MEN[r[(r.indexOf(p) - menShift + 8) % 8]];
+
+  // 八神：值符落时干宫，阳遁顺时针、阴遁逆时针
+  const shens: Record<number, string> = {};
   for (const p of r) {
-    let idx: number;
-    if (dun === 'yang') {
-      idx = (r.indexOf(p) - tI + r.length) % r.length;
-    } else {
-      idx = (tI - r.indexOf(p) + r.length) % r.length;
-    }
-    shens[p] = BA_SHEN[idx % 8];
+    const offset = (r.indexOf(p) - r.indexOf(target) + 8) % 8;
+    shens[p] = BA_SHEN[dun === 'yang' ? offset : (8 - offset) % 8];
   }
-  shens[5] = shens[2];
 
   const ma = yiMaZhi(hourZhi);
   const maPalace = ZHI_PALACE[ma];
@@ -277,9 +299,9 @@ export function chartYinpanQimen(input: QimenInput): QimenChart {
   const gongWei: GongWei[] = [];
   const byPalace: Record<number, GongWei> = {};
   for (let p = 1; p <= 9; p++) {
-    const tianGan = p in tian ? tian[p] : di[p === 5 ? 2 : p] ?? null;
-    const men = p in mens ? mens[p] : BA_MEN[p];
-    const shen = shens[p] ?? null;
+    const tianGan = tian[p] || null;
+    const men = mens[p] ?? null;
+    const shen = p === 5 ? null : shens[p] ?? null;
 
     // 入墓：值符落宫甲为神，神不入墓；但该干为日干时仍论入墓
     let ruMu = Boolean(tianGan && RU_MU_PALACES[tianGan]?.includes(p));
@@ -299,6 +321,8 @@ export function chartYinpanQimen(input: QimenInput): QimenChart {
       men,
       shen,
       anGan: null,
+      // 天禽星与中五宫地盘干寄坤，随天芮落宫
+      qinGan: p === qinPalace ? di[5] || null : null,
       maXing: p === maPalace,
       kongWang: kongPalaces.has(p),
       ruMu,
@@ -309,17 +333,11 @@ export function chartYinpanQimen(input: QimenInput): QimenChart {
     byPalace[p] = cell;
   }
 
-  void juKey;
-  void method; // zhirun uses same path until full 置闰 implemented
-
-  const sourceNote =
-    calendarSource === 'yishijia'
-      ? '定局/九宫按易世家表；四柱与节气为 lunar-javascript（旧 JD 日柱已废弃）。'
-      : '四柱/节气/阴阳遁：lunar-javascript；定局表按易世家。';
+  const sourceNote = '节气时刻取自寿星天文历，冬至后阳遁、夏至后阴遁。';
 
   return {
     meta: {
-      product: '易世家规格 · 时家阴盘',
+      product: '时家阴盘奇门',
       inputCivil: formatLocal(civil),
       usedDatetime: formatLocal(used),
       dun,
@@ -328,7 +346,7 @@ export function chartYinpanQimen(input: QimenInput): QimenChart {
       jieStart: formatLocal(jieStart),
       jieEnd: formatLocal(jieEnd),
       yuan,
-      yuanLabel: YUAN_LABEL[yuan],
+      yuanLabel: yuan ? YUAN_LABEL[yuan] : '',
       juShu: ju,
       xunShou: xs,
       xunShouYi: yi,
@@ -348,9 +366,9 @@ export function chartYinpanQimen(input: QimenInput): QimenChart {
       panType: 'yin',
       homeType: 'shi',
       note:
-        method === 'zhirun'
-          ? `置闰分支尚未独立实现，当前与拆补同路径。${sourceNote}`
-          : `拆补简化三元（节后 5 日一元）。${sourceNote}`,
+        method === 'chaibu'
+          ? `拆补法：节气定局，日柱符头定三元。${sourceNote}`
+          : `阴盘定局：(农历年支数 + 农历月 + 农历日 + 时支数) ÷ 9 取余。${sourceNote}`,
     },
     diPan: Object.fromEntries(
       Object.entries(di).map(([k, v]) => [String(k), v])

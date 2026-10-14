@@ -229,7 +229,7 @@ export function chartBazi(input: BaZiInput): BaZiChart {
 
   return {
     meta: {
-      product: '易世家规格 · 本地前端',
+      product: '子平八字 · 本地计算',
       inputCivil: formatLocal(civil),
       usedDatetime: formatLocal(used),
       timezone: 'Asia/Shanghai',
@@ -254,7 +254,7 @@ export function chartBazi(input: BaZiInput): BaZiChart {
         onTerm,
       },
       engineNote:
-        '四柱历法：lunar-javascript（寿星）。藏干/十神/大运表按易世家规格。司令为人元分野通行表。',
+        '立春换年、节令换月，节气时刻取自寿星天文历；司令按人元司令分野表，三天折一年起运。',
     },
     siZhu: {
       year: yearView,

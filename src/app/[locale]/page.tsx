@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { isLocale, localeHtmlLang } from '@/lib/i18n/config';
 import { SITE_COPY, absoluteUrl, buildPageMetadata } from '@/lib/i18n/seo';
 import { getPublishedArticles } from '@/lib/blog/list';
+import { articlePath } from '@/lib/blog/locale';
 import BlogList from '@/components/blog/BlogList';
 import { WEBSITE_ID, jsonLd } from '@/lib/site';
 
@@ -44,7 +45,7 @@ export default async function Home({ params }: Props) {
       itemListElement: articles.slice(0, 30).map((a, i) => ({
         '@type': 'ListItem',
         position: i + 1,
-        url: absoluteUrl('zh', `/blog/${a.id}`),
+        url: absoluteUrl('zh', articlePath(a)),
         name: a.title,
       })),
     },

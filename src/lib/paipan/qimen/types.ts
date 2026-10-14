@@ -2,7 +2,8 @@ import type { ZiMode } from '@/lib/paipan/bazi';
 
 export type DunType = 'yang' | 'yin';
 export type YuanType = 'shang' | 'zhong' | 'xia';
-export type QimenMethod = 'chaibu' | 'zhirun';
+/** yinpan：阴盘定局（年支+农历月日+时支）；chaibu：拆补法（节气 + 符头三元） */
+export type QimenMethod = 'yinpan' | 'chaibu';
 /**
  * 历法源：
  * - lunar（默认）：四柱/节气均用 lunar-javascript（与黄历一致，推荐）
@@ -19,7 +20,7 @@ export interface QimenInput {
   ziMode?: ZiMode;
   useTrueSolarTime?: boolean;
   longitude?: number;
-  /** 默认 chaibu 拆补；zhirun 暂与拆补同路径并标注 */
+  /** 默认 yinpan */
   method?: QimenMethod;
   /** 默认 lunar；yishijia 仅影响 meta 标注（定局表本即易世家） */
   calendarSource?: QimenCalendarSource;
@@ -35,6 +36,8 @@ export interface GongWei {
   men: string | null;
   shen: string | null;
   anGan: string | null;
+  /** 中五宫地盘干（随天禽寄坤、随天芮落宫） */
+  qinGan: string | null;
   maXing: boolean;
   kongWang: boolean;
   /** 四害：天盘干入墓（值符神不入墓，除非该干为日干） */
@@ -55,7 +58,8 @@ export interface QimenChart {
     jieQi: string;
     jieStart: string;
     jieEnd: string;
-    yuan: YuanType;
+    /** 仅拆补法有三元 */
+    yuan: YuanType | null;
     yuanLabel: string;
     juShu: number;
     xunShou: string;

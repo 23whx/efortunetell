@@ -50,9 +50,9 @@ export default function AdminWritePage() {
   const [showPresets, setShowPresets] = useState(false);
 
   const presets = [
-    { name: t('blog.category.bazi'), url: '/cover/bazi.png' },
-    { name: t('blog.category.qimen'), url: '/cover/qimen.png' },
-    { name: t('keyword.bagua'), url: '/cover/bagua.png' },
+    { name: t('blog.category.bazi'), url: '/cover/bazi.webp' },
+    { name: t('blog.category.qimen'), url: '/cover/qimen.webp' },
+    { name: t('keyword.bagua'), url: '/cover/bagua.webp' },
   ];
 
   // 加载现有文章

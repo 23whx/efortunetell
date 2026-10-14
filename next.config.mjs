@@ -16,6 +16,14 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
+  async rewrites() {
+    return {
+      // Default article covers: the DB stores /cover/*.png (1–2.8 MB each); serve the 30–90 KB WebP versions instead
+      beforeFiles: [
+        { source: '/cover/:name(bazi|qimen|bagua).png', destination: '/cover/:name.webp' },
+      ],
+    };
+  },
   async headers() {
     return [
       {

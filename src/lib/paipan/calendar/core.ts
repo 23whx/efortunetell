@@ -65,7 +65,7 @@ function splitGz(gz: string): GanZhiParts {
 
 /**
  * 用 lunar-javascript 取四柱（全站唯一权威路径）
- * @param ziMode late=晚子(23 点换日) early=早子
+ * @param ziMode late = 23 点换日（不分早晚子，lunar sect 1）；early = 0 点换日、分早晚子，夜子时日柱仍为当天（sect 2）
  */
 export function fourPillarsFromLunar(
   dt: Date,

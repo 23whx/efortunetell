@@ -1,4 +1,5 @@
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
+import { cache } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import BlogDetails, { BlogArticle } from '@/components/blog/BlogDetails';
@@ -8,12 +9,30 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getServerT } from '@/lib/i18n/server';
 import { isLocale, localeHtmlLang, type Locale } from '@/lib/i18n/config';
 import { absoluteUrl } from '@/lib/i18n/seo';
-import { articleContentLocale as contentLocale } from '@/lib/blog/locale';
+import { articleContentLocale as contentLocale, articlePath } from '@/lib/blog/locale';
 import { AUTHOR_ID, OG_IMAGES, ORG_ID, SITE_NAME, SITE_URL, WEBSITE_ID, jsonLd } from '@/lib/site';
 
 interface BlogDetailPageProps {
   params: Promise<{ locale: string; id: string }>
 }
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** The route segment is the article slug (canonical) or, for old links, its UUID. */
+const getArticleRow = cache(async (param: string) => {
+  let key = param;
+  try {
+    key = decodeURIComponent(param);
+  } catch {}
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('articles')
+    .select('id,slug,title,summary,content_html,category,tags,cover_image_url,created_at,updated_at,author_id')
+    .eq(UUID_RE.test(key) ? 'id' : 'slug', key)
+    .maybeSingle();
+  if (error) throw error;
+  return { row: data, byId: UUID_RE.test(key) };
+});
 
 function plainText(html: string | null | undefined): string {
   return (html || '').replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
@@ -29,15 +48,10 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
   const { locale, id } = await params;
   const { t } = await getServerT(isLocale(locale) ? locale : undefined);
   try {
-    const supabase = await createSupabaseServerClient();
-    const { data: article } = await supabase
-      .from('articles')
-      .select('id,title,summary,content_html,category,tags,cover_image_url,created_at,updated_at')
-      .eq('id', id)
-      .maybeSingle();
+    const { row: article } = await getArticleRow(id);
 
     if (article) {
-      const canonicalUrl = absoluteUrl(contentLocale(article.title), `/blog/${article.id}`);
+      const canonicalUrl = absoluteUrl(contentLocale(article.title), articlePath(article));
       const description = article.summary || excerpt(article.content_html) || article.title;
       const image = article.cover_image_url
         ? { url: article.cover_image_url, alt: article.title }
@@ -96,18 +110,18 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   if (!id) return notFound();
 
   let article: BlogArticle | null = null;
+  let articleSlug: string | null = null;
   let error: string | null = null;
+  let redirectTo: string | null = null;
   
   try {
-    const supabase = await createSupabaseServerClient();
-
-    const { data: row, error: fetchError } = await supabase
-      .from('articles')
-      .select('id,title,summary,content_html,category,tags,cover_image_url,created_at,updated_at,author_id')
-      .eq('id', id)
-      .maybeSingle();
-    if (fetchError) throw fetchError;
+    const { row, byId } = await getArticleRow(id);
     if (!row) return notFound();
+    // Old UUID links → permanent redirect to the readable slug URL
+    if (byId && row.slug) redirectTo = `/${locale}${articlePath(row)}`;
+    articleSlug = row.slug;
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: author } = await supabase
       .from('profiles')
@@ -132,10 +146,12 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     console.error('Error fetching article details:', err);
     error = err instanceof Error ? err.message : t('blog.error');
   }
+  // Outside try/catch: permanentRedirect works by throwing
+  if (redirectTo) permanentRedirect(redirectTo);
   
   // Build structured data for the article (JSON-LD), rendered into the server HTML
   const lang = article ? contentLocale(article.title) : 'zh';
-  const articleUrl = absoluteUrl(lang, `/blog/${article?.id}`);
+  const articleUrl = absoluteUrl(lang, articlePath({ slug: articleSlug, id: article?.id ?? id }));
   const uiLocale: Locale = isLocale(locale) ? locale : 'en';
   const authorName = article?.author_display_name;
   const isSiteAuthor = !authorName || authorName === 'Rollkey' || authorName === '旭通' || authorName === '滚键Rollkey';

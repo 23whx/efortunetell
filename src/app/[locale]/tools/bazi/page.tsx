@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { buildPageMetadata } from '@/lib/i18n/seo';
 import ToolJsonLd from '@/components/seo/ToolJsonLd';
+import ToolGuide from '@/components/seo/ToolGuide';
 import BaziClient from '@/components/tools/BaziClient';
 
 const META: Record<Locale, { title: string; description: string }> = {
@@ -14,7 +15,7 @@ const META: Record<Locale, { title: string; description: string }> = {
   zh: {
     title: '八字排盘（四柱）',
     description:
-      '免费在线八字排盘：四柱、藏干、十神、纳音、空亡、司令、大运起运交运、出生节气。前端本地计算，对齐易世家规格。',
+      '免费在线八字排盘：四柱、藏干、十神、纳音、空亡、司令、大运起运交运、出生节气。在浏览器本地计算，不上传出生信息。',
   },
   ja: {
     title: '四柱推命・八字排盤',
@@ -59,6 +60,7 @@ export default async function BaziToolPage({
     <>
       <ToolJsonLd locale={raw} path="/tools/bazi" name={META[raw].title} description={META[raw].description} image="bazi" />
       <BaziClient locale={raw} />
+      <ToolGuide tool="bazi" locale={raw} />
     </>
   );
 }

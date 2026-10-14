@@ -150,6 +150,18 @@ const COPY: Record<
 };
 
 const ICONS = [CalendarDays, Sparkles, Compass, ScrollText, PenLine];
+/** Large watermark glyph per tool (same order as items) */
+const GLYPHS = ['历', '八', '奇', '壬', '名'];
+/** Bento spans: the almanac is the featured card */
+const SPANS = ['sm:col-span-6 lg:col-span-4', 'sm:col-span-3 lg:col-span-2', 'sm:col-span-3 lg:col-span-2', 'sm:col-span-3 lg:col-span-2', 'sm:col-span-3 lg:col-span-2'];
+
+const TRUST: Record<Locale, string[]> = {
+  zh: ['完全免费', '无需注册', '浏览器本地计算'],
+  en: ['Free', 'No sign-up', 'Runs in your browser'],
+  ja: ['無料', '登録不要', 'ブラウザで計算'],
+  ko: ['무료', '가입 불필요', '브라우저에서 계산'],
+  ar: ['مجاني', 'بدون تسجيل', 'يعمل في متصفحك'],
+};
 
 export async function generateMetadata({
   params,
@@ -200,40 +212,61 @@ export default async function ToolsPage({
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12 md:py-20">
+    <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(ld) }} />
-      <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">{c.title}</h1>
-      <div className="w-12 h-[3px] bg-[#FF6F61] mt-5 rounded-full" />
-      <p className="mt-5 text-gray-500 max-w-2xl leading-relaxed">{c.desc}</p>
-      <div className="mt-10 grid sm:grid-cols-2 gap-5">
+      <h1 className="font-display text-4xl md:text-5xl font-bold text-stone-900 tracking-tight">{c.title}</h1>
+      <p className="mt-4 text-stone-500 max-w-2xl leading-relaxed text-pretty">{c.desc}</p>
+      <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-stone-600">
+        {TRUST[locale].map((x) => (
+          <li key={x} className="inline-flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6F61]" aria-hidden />
+            {x}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-10 grid sm:grid-cols-6 gap-4 md:gap-5">
         {c.items.map((item, i) => {
           const Icon = ICONS[i % ICONS.length];
+          const featured = i === 0;
           const inner = (
             <div
-              className={`group rounded-2xl border p-7 h-full transition-all duration-300 ${
-                item.ready
-                  ? 'bg-white border-[#f0ece3] hover:border-[#FF6F61]/30 hover:shadow-md'
-                  : 'bg-white/60 border-[#f0ece3] opacity-70'
-              }`}
+              className={`group relative overflow-hidden rounded-2xl p-6 md:p-7 h-full min-h-[180px] flex flex-col transition-all duration-300 ${
+                featured
+                  ? 'bg-[#231e1a] text-white hover:shadow-[0_20px_40px_-20px_rgba(35,30,26,0.6)]'
+                  : 'bg-white border border-[#efe8dc] hover:border-[#FF6F61]/40 hover:-translate-y-0.5 hover:shadow-[0_16px_32px_-20px_rgba(120,80,40,0.35)]'
+              } ${item.ready ? '' : 'opacity-70'}`}
             >
-              <div className="flex items-center justify-between gap-3">
-                <Icon className="w-6 h-6 text-[#FF6F61]" strokeWidth={1.75} />
-                <span className="text-gray-300 group-hover:text-[#FF6F61] group-hover:translate-x-0.5 transition-all duration-300">
+              <span
+                aria-hidden
+                className={`pointer-events-none absolute -right-3 -bottom-8 font-display font-bold leading-none select-none transition-transform duration-500 group-hover:-translate-y-1 ${
+                  featured ? 'text-[11rem] text-white/[0.06]' : 'text-[8rem] text-[#FF6F61]/[0.07]'
+                }`}
+              >
+                {GLYPHS[i]}
+              </span>
+              <div className="relative flex items-center justify-between gap-3">
+                <Icon className={`w-6 h-6 ${featured ? 'text-[#ff9a8f]' : 'text-[#FF6F61]'}`} strokeWidth={1.75} />
+                <span
+                  className={`transition-all duration-300 group-hover:translate-x-0.5 ${
+                    featured ? 'text-white/40 group-hover:text-white' : 'text-stone-300 group-hover:text-[#FF6F61]'
+                  }`}
+                  aria-hidden
+                >
                   →
                 </span>
               </div>
-              <h2 className="mt-5 text-xl font-semibold text-gray-900 group-hover:text-[#FF6F61] transition-colors">
+              <h2 className={`relative mt-auto pt-8 font-display font-semibold ${featured ? 'text-2xl md:text-3xl' : 'text-xl text-stone-900'}`}>
                 {item.title}
               </h2>
-              <p className="mt-2 text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+              <p className={`relative mt-2 text-sm leading-relaxed max-w-md ${featured ? 'text-white/65' : 'text-stone-500'}`}>{item.desc}</p>
             </div>
           );
           return item.ready ? (
-            <Link key={item.href} href={withLocale(locale, item.href)}>
+            <Link key={item.href} href={withLocale(locale, item.href)} className={`${SPANS[i] ?? 'sm:col-span-3 lg:col-span-2'} rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F61] focus-visible:ring-offset-2`}>
               {inner}
             </Link>
           ) : (
-            <div key={item.href}>{inner}</div>
+            <div key={item.href} className={SPANS[i] ?? 'sm:col-span-3 lg:col-span-2'}>{inner}</div>
           );
         })}
       </div>

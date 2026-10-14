@@ -17,9 +17,10 @@ const playfair = Playfair_Display({
   weight: ["600", "700", "800"],
 });
 
+// One weight only: each CJK weight adds ~100 @font-face slices (~93 KB of render-blocking CSS)
 const notoSerifSC = Noto_Serif_SC({
   variable: "--font-noto-serif-sc",
-  weight: ["600", "700", "900"],
+  weight: ["700"],
   preload: false,
 });
 

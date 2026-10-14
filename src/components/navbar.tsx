@@ -336,6 +336,8 @@ export default function Navbar() {
           <button 
             className="md:hidden p-2.5 rounded-xl bg-gray-50 border border-gray-100 text-gray-900 active:scale-90 transition-transform"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Menu"
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>

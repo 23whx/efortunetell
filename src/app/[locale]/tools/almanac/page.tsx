@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { buildPageMetadata } from '@/lib/i18n/seo';
 import ToolJsonLd from '@/components/seo/ToolJsonLd';
+import ToolGuide from '@/components/seo/ToolGuide';
 import { getAlmanacDay, todayDateKey } from '@/lib/paipan/almanac';
 import AlmanacClient from '@/components/tools/AlmanacClient';
 
@@ -76,6 +77,7 @@ export default async function AlmanacPage({
     <>
       <ToolJsonLd locale={locale} path="/tools/almanac" name={META[locale].title} description={META[locale].description} image="almanac" />
       <AlmanacClient locale={locale} initialDate={date} initialDay={day} />
+      <ToolGuide tool="almanac" locale={raw} />
     </>
   );
 }

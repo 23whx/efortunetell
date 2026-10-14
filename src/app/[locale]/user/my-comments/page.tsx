@@ -8,6 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { MessageSquare, Reply, ArrowLeft, Trash2, ExternalLink } from 'lucide-react';
 import Button from '@/components/ui/button';
 import { useLocalePath } from '@/hooks/useLocalePath';
+import { articlePath } from '@/lib/blog/locale';
 
 interface CommentWithArticle {
   id: string;
@@ -163,7 +164,7 @@ export default function MyCommentsPage() {
                 {/* Article Info */}
                 <div className="flex items-start justify-between mb-4">
                   <Link
-                    href={lp(`/blog/${comment.article_id}`)}
+                    href={lp(articlePath({ slug: comment.article_slug, id: comment.article_id }))}
                     className="flex items-center gap-2 text-[#FF6F61] hover:text-[#FF5A4D] font-bold group"
                   >
                     <ExternalLink size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

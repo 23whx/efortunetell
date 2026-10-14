@@ -26,7 +26,7 @@ export function isYangGan(gan: string): boolean {
 
 /** 易世家藏干顺序：本气/中气/余气；未=己丁乙 */
 export const CANG_GAN: Record<string, string[]> = {
-  子: ['壬'],
+  子: ['癸'],
   丑: ['己', '癸', '辛'],
   寅: ['甲', '丙', '戊'],
   卯: ['乙'],
@@ -100,7 +100,10 @@ export const WU_SHU: Record<string, string> = {
  * 通行子平表；与部分 App 在边界日可能差 1 天
  */
 export const SI_LING: Record<string, Array<{ gan: string; days: number }>> = {
-  子: [{ gan: '壬', days: 30 }],
+  子: [
+    { gan: '壬', days: 10 },
+    { gan: '癸', days: 20 },
+  ],
   丑: [
     { gan: '癸', days: 9 },
     { gan: '辛', days: 3 },

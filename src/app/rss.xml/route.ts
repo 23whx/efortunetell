@@ -1,6 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SITE_URL } from '@/lib/site';
-import { articleContentLocale } from '@/lib/blog/locale';
+import { articleContentLocale, articlePath } from '@/lib/blog/locale';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,13 +21,13 @@ export async function GET() {
     const supabase = await createSupabaseServerClient();
     const { data } = await supabase
       .from('articles')
-      .select('id,title,summary,created_at,updated_at,cover_image_url')
+      .select('id,slug,title,summary,created_at,updated_at,cover_image_url')
       .eq('status', 'published')
       .order('created_at', { ascending: false })
       .limit(50);
 
     (data || []).forEach((a) => {
-      const link = `${baseUrl}/${articleContentLocale(a.title)}/blog/${a.id}`;
+      const link = `${baseUrl}/${articleContentLocale(a.title)}${articlePath(a)}`;
       const title = esc(a.title || 'Untitled');
       const desc = esc(a.summary || '');
       const pubDate = new Date(a.created_at || new Date().toISOString()).toUTCString();

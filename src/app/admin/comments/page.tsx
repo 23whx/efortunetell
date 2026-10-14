@@ -1,4 +1,5 @@
 'use client';
+import { articlePath } from '@/lib/blog/locale';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -243,7 +244,7 @@ export default function AdminCommentsPage() {
                       </span>
                     </div>
                     <Link
-                      href={`/blog/${comment.article_id}`}
+                      href={articlePath({ slug: comment.article_slug, id: comment.article_id })}
                       className="flex items-center gap-2 text-sm text-[#FF6F61] hover:text-[#FF5A4D] group"
                       target="_blank"
                     >

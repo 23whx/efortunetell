@@ -14,22 +14,25 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export function LanguageProvider({
   children,
   initialLanguage = 'en',
+  useStoredLanguage = false,
 }: {
   children: React.ReactNode;
   initialLanguage?: Language;
+  /** Only for routes without a locale in the URL (admin): restore the last chosen language. On /{locale} routes the URL wins. */
+  useStoredLanguage?: boolean;
 }) {
   const [language, setLanguageState] = useState<Language>(initialLanguage);
 
   useEffect(() => {
-    // 从 localStorage 读取语言设置（用户手动选择优先级最高）
-    if (typeof window !== 'undefined') {
+    // 无语言前缀的路由（后台）才从 localStorage 恢复语言；带 /{locale} 的页面以网址为准
+    if (useStoredLanguage && typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('language') as Language;
       if (savedLanguage && ['zh', 'en', 'ja', 'ko', 'ar'].includes(savedLanguage)) {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is only readable after hydration
         setLanguageState(savedLanguage);
       }
     }
-  }, []);
+  }, [useStoredLanguage]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);

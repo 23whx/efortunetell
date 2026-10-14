@@ -3,9 +3,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { locales, defaultLocale, withLocale } from '@/lib/i18n/config';
 import { buildLanguageAlternates } from '@/lib/i18n/seo';
 import { todayDateKey, shiftDateKey } from '@/lib/paipan/almanac';
-import { articleContentLocale } from '@/lib/blog/locale';
+import { articleContentLocale, articlePath } from '@/lib/blog/locale';
 import { PILLARS } from '@/lib/seo/pillars';
 import { SITE_URL } from '@/lib/site';
+import { TERM_CATEGORIES, termPath, type TermCategory } from '@/lib/glossary';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
@@ -46,6 +47,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     localized(p.path, { changeFrequency: p.changeFrequency, priority: p.priority })
   );
 
+  // Chinese terms library (zh only; other locales redirect to /zh)
+  const termPages: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/zh/terms`, lastModified: new Date('2026-10-14'), changeFrequency: 'monthly', priority: 0.8 },
+    ...(Object.keys(TERM_CATEGORIES) as TermCategory[]).flatMap((c) =>
+      TERM_CATEGORIES[c].names.map((n) => ({
+        url: `${baseUrl}/zh${termPath(c, n)}`,
+        lastModified: new Date('2026-10-14'),
+        changeFrequency: (c === 'jieqi' ? 'yearly' : 'monthly') as 'yearly' | 'monthly',
+        priority: 0.6,
+      }))
+    ),
+  ];
+
   // About + privacy are written in zh + en only (ja/ko/ar canonicalize to /en/...)
   const privacyPages: MetadataRoute.Sitemap = (['/about', '/privacy'] as const).flatMap((path) =>
     (['en', 'zh'] as const).map((locale) => ({
@@ -76,7 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from('articles')
-      .select('id, title, updated_at, created_at')
+      .select('id, slug, title, updated_at, created_at')
       .eq('status', 'published')
       .order('updated_at', { ascending: false })
       .limit(1000);
@@ -84,7 +98,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (!error && Array.isArray(data)) {
       // One URL per article: the canonical content-language URL (other locales canonicalize to it)
       articlePages = data.map((article) => ({
-        url: `${baseUrl}${withLocale(articleContentLocale(article.title), `/blog/${article.id}`)}`,
+        url: `${baseUrl}${withLocale(articleContentLocale(article.title), articlePath(article))}`,
         lastModified: new Date(article.updated_at || article.created_at),
         changeFrequency: 'monthly' as const,
         priority: 0.8,
@@ -96,5 +110,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('[sitemap] Exception while fetching articles:', err);
   }
 
-  return [...staticPages, ...privacyPages, ...almanacDays, ...articlePages];
+  return [...staticPages, ...privacyPages, ...termPages, ...almanacDays, ...articlePages];
 }

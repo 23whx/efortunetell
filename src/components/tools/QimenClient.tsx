@@ -39,6 +39,17 @@ type SaveRow = {
   created_at: string;
 };
 
+const TRIGRAM: Record<string, string> = {
+  坎: '☵', 坤: '☷', 震: '☳', 巽: '☴', 中: '', 乾: '☰', 兑: '☱', 艮: '☶', 离: '☲',
+};
+
+/** 吉门（开休生）、凶门（死惊伤）、中平（杜景） */
+const DOOR_TONE: Record<string, string> = {
+  开: 'text-emerald-700', 休: 'text-emerald-700', 生: 'text-emerald-700',
+  死: 'text-rose-700', 惊: 'text-rose-700', 伤: 'text-rose-700',
+  杜: 'text-stone-600', 景: 'text-stone-600',
+};
+
 function PalaceCell({
   palace,
   chart,
@@ -48,44 +59,52 @@ function PalaceCell({
 }) {
   const cell = chart.byPalace[palace];
   if (!cell) return null;
+  const isFu = cell.shen === '值符';
+  const isShi = palace !== 5 && cell.men === chart.meta.zhiShi;
   return (
     <div
       className={[
-        'relative rounded-2xl border p-2 md:p-3 min-h-[110px] md:min-h-[128px] flex flex-col',
-        cell.maXing
-          ? 'border-amber-400 bg-amber-50/80'
-          : cell.kongWang
-            ? 'border-gray-300 bg-gray-50/80'
-            : 'border-[#f0ece3] bg-white',
-        palace === 5 ? 'ring-1 ring-amber-200' : '',
+        'relative rounded-xl border p-2 md:p-3 min-h-[124px] md:aspect-square flex flex-col transition-colors',
+        palace === 5
+          ? 'bg-[#f6f1e7] border-[#e9e1d0]'
+          : isFu
+            ? 'bg-[#fff4f1] border-[#FF6F61]/50'
+            : cell.kongWang
+              ? 'bg-stone-50 border-stone-200'
+              : 'bg-white border-[#efe8dc]',
       ].join(' ')}
     >
-      <div className="flex items-start justify-between text-[10px] text-gray-400 mb-1">
-        <span>
+      <div className="flex items-start justify-between text-[10px] text-stone-400 leading-none">
+        <span className="tabular-nums">
+          <span className="text-sm text-stone-500 mr-0.5" aria-hidden>{TRIGRAM[cell.bagua]}</span>
           {cell.bagua}
           {palace}
         </span>
-        <span className="text-[9px]">{cell.position}</span>
+        <span className="flex gap-1">
+          {isFu && <span className="px-1 py-0.5 rounded bg-[#FF6F61] text-white text-[9px] font-semibold">符</span>}
+          {isShi && <span className="px-1 py-0.5 rounded bg-stone-800 text-white text-[9px] font-semibold">使</span>}
+        </span>
       </div>
-      <div className="text-sm font-bold text-gray-900 truncate">
-        {cell.shen || '—'}
+      <div className="mt-1.5 space-y-0.5 leading-tight">
+        <div className="text-[13px] md:text-sm text-stone-500">{cell.shen || ' '}</div>
+        <div className="text-sm md:text-base font-semibold text-stone-900 font-display">{cell.star || '—'}</div>
+        {cell.men && (
+          <div className={`text-sm md:text-base font-semibold font-display ${DOOR_TONE[cell.men] || 'text-stone-900'}`}>
+            {cell.men}门
+          </div>
+        )}
       </div>
-      <div className="text-sm font-bold text-gray-900 mt-0.5">
-        {cell.star || '—'}
-      </div>
-      {cell.men && (
-        <div className="text-sm font-bold text-gray-900 mt-0.5">
-          {cell.men}门
-        </div>
-      )}
-      <div className="mt-auto pt-1 flex flex-col items-end gap-0.5 text-[11px]">
+      <div className="mt-auto flex flex-col items-end gap-0.5 text-[11px] tabular-nums">
+        {palace !== 5 && (
+          <div>
+            <span className="text-stone-400">天</span>{' '}
+            <span className="font-bold text-stone-900">{cell.tianPanGan || '—'}</span>
+            {cell.qinGan && <span className="font-bold text-stone-500">{cell.qinGan}</span>}
+          </div>
+        )}
         <div>
-          <span className="text-gray-400">天</span>{' '}
-          <span className="font-bold">{cell.tianPanGan || '—'}</span>
-        </div>
-        <div>
-          <span className="text-gray-400">地</span>{' '}
-          <span className="font-bold">{cell.diPanGan || '—'}</span>
+          <span className="text-stone-400">地</span>{' '}
+          <span className="font-bold text-stone-700">{cell.diPanGan || '—'}</span>
         </div>
       </div>
       {(cell.maXing || cell.kongWang || cell.ruMu || cell.jiXing || cell.menPo) && (
@@ -117,7 +136,7 @@ export default function QimenClient({ locale }: { locale: Locale }) {
   const [ziMode, setZiMode] = useState<ZiMode>('late');
   const [useTrueSolar, setUseTrueSolar] = useState(false);
   const [longitude, setLongitude] = useState('116.4');
-  const [method, setMethod] = useState<QimenMethod>('chaibu');
+  const [method, setMethod] = useState<QimenMethod>('yinpan');
   const [chart, setChart] = useState<QimenChart | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -249,7 +268,7 @@ export default function QimenClient({ locale }: { locale: Locale }) {
     setZiMode(p.ziMode || 'late');
     setUseTrueSolar(Boolean(p.useTrueSolarTime));
     if (p.longitude) setLongitude(String(p.longitude));
-    setMethod(p.method || 'chaibu');
+    setMethod(p.method === 'chaibu' ? 'chaibu' : 'yinpan');
     setTimeout(() => {
       try {
         setChart(
@@ -262,7 +281,7 @@ export default function QimenClient({ locale }: { locale: Locale }) {
             ziMode: p.ziMode || 'late',
             useTrueSolarTime: Boolean(p.useTrueSolarTime),
             longitude: p.longitude,
-            method: p.method || 'chaibu',
+            method: p.method === 'chaibu' ? 'chaibu' : 'yinpan',
           })
         );
       } catch {
@@ -320,7 +339,7 @@ export default function QimenClient({ locale }: { locale: Locale }) {
                   onClick={() => setZiMode(z)}
                   className={`rounded-xl py-2 text-sm font-semibold border ${
                     ziMode === z
-                      ? 'bg-amber-500 text-white border-amber-500'
+                      ? 'bg-[#FF6F61] text-white border-[#FF6F61]'
                       : 'bg-white text-gray-600 border-gray-200'
                   }`}
                 >
@@ -335,7 +354,7 @@ export default function QimenClient({ locale }: { locale: Locale }) {
               {t('tools.qimen.method')}
             </span>
             <div className="mt-1 grid grid-cols-2 gap-2">
-              {(['chaibu', 'zhirun'] as const).map((m) => (
+              {(['yinpan', 'chaibu'] as const).map((m) => (
                 <button
                   key={m}
                   type="button"
@@ -462,7 +481,7 @@ export default function QimenClient({ locale }: { locale: Locale }) {
                 <div className="font-display text-2xl md:text-3xl mt-3">
                   {chart.meta.dunLabel}
                   {chart.meta.juShu}
-                  {t('tools.qimen.ju')} · {chart.meta.yuanLabel} ·{' '}
+                  {t('tools.qimen.ju')} · {chart.meta.yuanLabel && <>{chart.meta.yuanLabel} · </>}
                   {t('tools.qimen.method.' + chart.meta.method)}
                 </div>
                 <div className="mt-4 pt-4 border-t border-white/10 text-sm text-white/70 flex flex-wrap gap-x-6 gap-y-1">
@@ -501,8 +520,8 @@ export default function QimenClient({ locale }: { locale: Locale }) {
                   <h3 className="font-bold text-gray-900">
                     {t('tools.qimen.grid')}
                   </h3>
-                  <span className="text-[11px] text-gray-400">
-                    SE S SW · E C W · NE N NW
+                  <span className="text-[11px] text-stone-400">
+                    {t('tools.qimen.gridHint')}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 md:gap-3 max-w-xl mx-auto">

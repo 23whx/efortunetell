@@ -72,6 +72,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/zh/terms"
+                  className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
+                >
+                  {t('footer.terms')}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href={lp('/services')}
                   className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
                 >

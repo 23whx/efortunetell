@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { buildPageMetadata } from '@/lib/i18n/seo';
 import ToolJsonLd from '@/components/seo/ToolJsonLd';
+import ToolGuide from '@/components/seo/ToolGuide';
 import NamingClient from '@/components/tools/NamingClient';
 
 const META: Record<Locale, { title: string; description: string }> = {
@@ -59,6 +60,7 @@ export default async function NamingPage({
     <>
       <ToolJsonLd locale={raw} path="/tools/naming" name={META[raw].title} description={META[raw].description} image="naming" />
       <NamingClient locale={raw} />
+      <ToolGuide tool="naming" locale={raw} />
     </>
   );
 }

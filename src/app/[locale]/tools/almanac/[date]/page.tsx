@@ -4,6 +4,7 @@ import { isLocale, type Locale } from '@/lib/i18n/config';
 import { buildPageMetadata } from '@/lib/i18n/seo';
 import { getAlmanacDay, parseDateKey } from '@/lib/paipan/almanac';
 import AlmanacClient from '@/components/tools/AlmanacClient';
+import ToolGuide from '@/components/seo/ToolGuide';
 
 type Props = { params: Promise<{ locale: string; date: string }> };
 
@@ -43,5 +44,10 @@ export default async function AlmanacDatePage({ params }: Props) {
   if (!isLocale(raw) || !parseDateKey(date)) notFound();
   const day = getAlmanacDay(date);
   if (!day) notFound();
-  return <AlmanacClient locale={raw} initialDate={date} initialDay={day} />;
+  return (
+    <>
+      <AlmanacClient locale={raw} initialDate={date} initialDay={day} />
+      <ToolGuide tool="almanac" locale={raw} />
+    </>
+  );
 }

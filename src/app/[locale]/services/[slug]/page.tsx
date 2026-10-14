@@ -7,6 +7,7 @@ import { getServerT } from '@/lib/i18n/server';
 import { isLocale, localeHtmlLang, type Locale } from '@/lib/i18n/config';
 import { absoluteUrl, buildPageMetadata } from '@/lib/i18n/seo';
 import { WEBSITE_ID, jsonLd, type OgImageKey } from '@/lib/site';
+import { articlePath } from '@/lib/blog/locale';
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -44,7 +45,7 @@ export default async function PillarPage({ params }: Props) {
   const supabase = await createSupabaseServerClient();
   const baseArticlesQuery = supabase
     .from('articles')
-    .select('id,title,summary,created_at,tags,cover_image_url')
+    .select('id,slug,title,summary,created_at,tags,cover_image_url')
     .eq('status', 'published')
     .eq('category', pillar.category)
     .order('created_at', { ascending: false })
@@ -60,7 +61,7 @@ export default async function PillarPage({ params }: Props) {
     pillar.category === '八字'
       ? await supabase
           .from('articles')
-          .select('id,title,summary,created_at,tags,cover_image_url')
+          .select('id,slug,title,summary,created_at,tags,cover_image_url')
           .eq('status', 'published')
           .eq('category', '八字')
           .contains('tags', ['八字理论'])
@@ -92,7 +93,7 @@ export default async function PillarPage({ params }: Props) {
       itemListElement: [...(articles || []), ...(baziTheoryArticles || [])].map((a, i) => ({
         '@type': 'ListItem',
         position: i + 1,
-        url: absoluteUrl('zh', `/blog/${a.id}`),
+        url: absoluteUrl('zh', articlePath(a)),
         name: a.title,
       })),
     },
@@ -148,7 +149,7 @@ export default async function PillarPage({ params }: Props) {
             {(articles || []).map((a) => (
               <Link
                 key={a.id}
-                href={`/${locale}/blog/${a.id}`}
+                href={`/${locale}${articlePath(a)}`}
                 className="group bg-white rounded-[32px] border border-gray-100 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-500"
               >
                 <div className="relative aspect-[16/10] bg-gray-100">
@@ -198,7 +199,7 @@ export default async function PillarPage({ params }: Props) {
                 {(baziTheoryArticles || []).map((a) => (
                   <Link
                     key={a.id}
-                    href={`/${locale}/blog/${a.id}`}
+                    href={`/${locale}${articlePath(a)}`}
                     className="group bg-white rounded-[32px] border border-gray-100 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-500"
                   >
                     <div className="relative aspect-[16/10] bg-gray-100">

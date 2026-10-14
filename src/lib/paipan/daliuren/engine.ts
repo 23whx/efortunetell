@@ -331,8 +331,9 @@ function wangShuaiOf(wx: string, monthZhi: string): string {
   // 生旺者 = 休
   const shengWang = Object.entries(WX_SHENG).find(([, v]) => v === wang)?.[0];
   if (wx === shengWang) return '休';
-  if (WX_KE[wang] === wx) return '囚'; // 旺克我
-  if (WX_KE[wx] === wang) return '死'; // 我克旺 → 实际我克者死
+  // 当令者旺，旺所生者相，生旺者休，克旺者囚，旺所克者死
+  if (WX_KE[wx] === wang) return '囚';
+  if (WX_KE[wang] === wx) return '死';
   // 简化兜底
   if (wx === si) return '休';
   return '囚';
@@ -569,7 +570,7 @@ export function chartDaliuren(input: DaliurenInput): DaliurenChart {
       guiType: GUI_TYPE_LABEL[guiType],
       yongSeat: yong,
       yongSeatLabel: SEAT_LABEL[yong],
-      note: '算法对齐热卜金口诀参考实现（四位课式）；UI 仅称大六壬。神煞详表可后续扩展。',
+      note: '月将按所选方式换将，四位自上而下为人元、贵神、将神、地分。',
     },
     siWei: {
       renYuan: slot('renYuan', { gan: ren, wx: renWx }),

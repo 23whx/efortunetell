@@ -137,7 +137,7 @@ export default function AlmanacClient({
 
       <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
         {/* Month grid */}
-        <section className="rounded-2xl bg-white/80 border border-[#f0ece3] shadow-sm p-4 md:p-6">
+        <section className="rounded-2xl bg-white/80 border border-[#f0ece3] shadow-sm p-4 md:p-6 lg:self-start lg:sticky lg:top-24">
           <div className="flex items-center justify-between mb-4">
             <button
               type="button"

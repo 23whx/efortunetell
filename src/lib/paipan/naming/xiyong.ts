@@ -3,6 +3,7 @@
  * 以日主五行为我，统计四柱干支五行多寡：
  * - 缺者优先为喜
  * - 我弱则喜生我、同我；我强则喜我克、我生（泄）
+ * - 月支按 3 倍计（得令与否是旺衰第一要素）
  */
 import { chartBazi, GAN_WX, ZHI_WX, type Gender } from '@/lib/paipan/bazi';
 import type { XiYongResult, Wuxing } from './types';
@@ -59,7 +60,8 @@ export function computeXiYong(input: {
     const gw = (GAN_WX[p.gan] || '') as Wuxing;
     const zw = (ZHI_WX[p.zhi] || '') as Wuxing;
     if (gw in counts) counts[gw] += 1.2; // 天干权重略高
-    if (zw in counts) counts[zw] += 1;
+    // 月令决定旺衰，月支权重最高（得令者旺）
+    if (zw in counts) counts[zw] += p === chart.siZhu.month ? 3 : 1;
     // 藏干略计
     for (const cg of p.cangGan) {
       const cw = (GAN_WX[cg] || '') as Wuxing;

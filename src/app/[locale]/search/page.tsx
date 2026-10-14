@@ -8,6 +8,8 @@ import { Calendar } from "lucide-react";
 import { formatDate } from '@/utils/date';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLocalePath } from '@/hooks/useLocalePath';
+import { articlePath } from '@/lib/blog/locale';
 
 // 文章接口定义
 interface Article {
@@ -27,6 +29,7 @@ function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
   const { t } = useLanguage();
+  const lp = useLocalePath();
   
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,7 +142,7 @@ function SearchResults() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {articles.map((article) => (
             <Link
-              href={`/blog/${article.id}`}
+              href={lp(articlePath(article))}
               key={article.id}
               className="group block bg-white rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 border border-gray-100"
             >

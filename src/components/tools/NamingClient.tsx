@@ -357,7 +357,7 @@ export default function NamingClient({ locale }: { locale: Locale }) {
                   onClick={() => browse.byWx(w)}
                   className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${
                     browseWx === w
-                      ? 'bg-amber-500 text-white border-amber-500'
+                      ? 'bg-[#FF6F61] text-white border-[#FF6F61]'
                       : 'border-gray-200 text-gray-600'
                   }`}
                 >
