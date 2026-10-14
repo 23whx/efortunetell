@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale: raw,
     path: `/tools/hanzi/${encodeURIComponent(char)}`,
+    image: 'naming',
     title: titles[raw],
     description: descs[raw],
     keywords: [char, '康熙笔画', '五行', '部首', '汉字'],

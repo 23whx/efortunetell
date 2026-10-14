@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { buildPageMetadata } from '@/lib/i18n/seo';
+import ToolJsonLd from '@/components/seo/ToolJsonLd';
 import BaziClient from '@/components/tools/BaziClient';
 
 const META: Record<Locale, { title: string; description: string }> = {
@@ -40,6 +41,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: raw,
     path: '/tools/bazi',
+    image: 'bazi',
     title: m.title,
     description: m.description,
     keywords: ['BaZi', 'Four Pillars', '八字排盘', '四柱', '大运', '藏干', '十神'],
@@ -53,5 +55,10 @@ export default async function BaziToolPage({
 }) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
-  return <BaziClient locale={raw} />;
+  return (
+    <>
+      <ToolJsonLd locale={raw} path="/tools/bazi" name={META[raw].title} description={META[raw].description} image="bazi" />
+      <BaziClient locale={raw} />
+    </>
+  );
 }

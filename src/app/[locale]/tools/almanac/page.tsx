@@ -2,8 +2,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { buildPageMetadata } from '@/lib/i18n/seo';
+import ToolJsonLd from '@/components/seo/ToolJsonLd';
 import { getAlmanacDay, todayDateKey } from '@/lib/paipan/almanac';
 import AlmanacClient from '@/components/tools/AlmanacClient';
+
+// "Today" is computed at render time — regenerate hourly so the page never shows a stale date
+export const revalidate = 3600;
 
 const META: Record<Locale, { title: string; description: string }> = {
   en: {
@@ -41,6 +45,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: raw,
     path: '/tools/almanac',
+    image: 'almanac',
     title: m.title,
     description: m.description,
     keywords: [
@@ -67,5 +72,10 @@ export default async function AlmanacPage({
   const day = getAlmanacDay(date);
   if (!day) notFound();
 
-  return <AlmanacClient locale={locale} initialDate={date} initialDay={day} />;
+  return (
+    <>
+      <ToolJsonLd locale={locale} path="/tools/almanac" name={META[locale].title} description={META[locale].description} image="almanac" />
+      <AlmanacClient locale={locale} initialDate={date} initialDay={day} />
+    </>
+  );
 }

@@ -6,6 +6,7 @@ import { Calendar, Share2, ArrowUp } from 'lucide-react';
 import { formatDate } from '@/utils/date';
 import ShareModal from '@/components/ui/ShareModal';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { articleContentLocale } from '@/lib/blog/locale';
 
 export type BlogArticle = {
   id: string;
@@ -40,7 +41,10 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffacd' }}>
-      <div className="max-w-4xl mx-auto bg-white shadow-sm">
+      <article
+        className="max-w-4xl mx-auto bg-white shadow-sm"
+        lang={articleContentLocale(article.title) === 'zh' ? 'zh-CN' : 'en'}
+      >
         {coverImageUrl && (
           <div className="w-full h-80 relative overflow-hidden">
               <Image
@@ -56,7 +60,7 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
         )}
 
         <div className="px-8 py-8">
-          <div className="mb-8">
+          <header className="mb-8">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               {article.category && (
               <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#fff5f4', color: '#ff6f61' }}>
@@ -108,9 +112,9 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-500">
+                  <time className="text-gray-500" dateTime={article.created_at} suppressHydrationWarning>
                     {formatDate(article.created_at, t('common.locale') || 'en-US')}
-                  </span>
+                  </time>
                 </div>
               </div>
 
@@ -122,7 +126,7 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
                 <span>{t('blog.share')}</span>
               </button>
             </div>
-          </div>
+          </header>
 
           <div className="prose prose-lg max-w-none mb-12">
             <style jsx>{`
@@ -147,7 +151,7 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
             />
           </div>
         </div>
-      </div>
+      </article>
 
       {showBackToTop && (
         <button

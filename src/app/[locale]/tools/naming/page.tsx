@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { buildPageMetadata } from '@/lib/i18n/seo';
+import ToolJsonLd from '@/components/seo/ToolJsonLd';
 import NamingClient from '@/components/tools/NamingClient';
 
 const META: Record<Locale, { title: string; description: string }> = {
@@ -40,6 +41,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: raw,
     path: '/tools/naming',
+    image: 'naming',
     title: m.title,
     description: m.description,
     keywords: ['起名', '改名', '康熙笔画', '五行', 'Chinese naming', 'BaZi'],
@@ -53,5 +55,10 @@ export default async function NamingPage({
 }) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
-  return <NamingClient locale={raw} />;
+  return (
+    <>
+      <ToolJsonLd locale={raw} path="/tools/naming" name={META[raw].title} description={META[raw].description} image="naming" />
+      <NamingClient locale={raw} />
+    </>
+  );
 }

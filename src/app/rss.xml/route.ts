@@ -1,4 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { SITE_URL } from '@/lib/site';
+import { articleContentLocale } from '@/lib/blog/locale';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +14,7 @@ function esc(s: string) {
 }
 
 export async function GET() {
-  const baseUrl = 'https://efortunetell.blog';
+  const baseUrl = SITE_URL;
 
   let items = '';
   try {
@@ -25,7 +27,7 @@ export async function GET() {
       .limit(50);
 
     (data || []).forEach((a) => {
-      const link = `${baseUrl}/blog/${a.id}`;
+      const link = `${baseUrl}/${articleContentLocale(a.title)}/blog/${a.id}`;
       const title = esc(a.title || 'Untitled');
       const desc = esc(a.summary || '');
       const pubDate = new Date(a.created_at || new Date().toISOString()).toUTCString();
@@ -53,9 +55,9 @@ export async function GET() {
     `<rss version="2.0">` +
     `<channel>` +
     `<title>Rollkey Divination Blog</title>` +
-    `<link>${baseUrl}</link>` +
+    `<link>${baseUrl}/zh</link>` +
     `<description>Chinese metaphysics: BaZi, Qi Men Dun Jia, Da Liu Ren, Zi Wei Dou Shu and more.</description>` +
-    `<language>en</language>` +
+    `<language>zh-CN</language>` +
     `<lastBuildDate>${new Date().toUTCString()}</lastBuildDate>` +
     items +
     `</channel>` +

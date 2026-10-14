@@ -3,7 +3,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CalendarDays, Sparkles, Compass, ScrollText, PenLine } from 'lucide-react';
 import { isLocale, withLocale, type Locale } from '@/lib/i18n/config';
-import { buildPageMetadata } from '@/lib/i18n/seo';
+import { absoluteUrl, buildPageMetadata } from '@/lib/i18n/seo';
+import { WEBSITE_ID, jsonLd } from '@/lib/site';
 
 const COPY: Record<
   Locale,
@@ -161,6 +162,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: raw,
     path: '/tools',
+    image: 'tools',
     title: c.title,
     description: c.desc,
     keywords: ['Chinese almanac', 'BaZi', 'Qimen', 'Da Liu Ren', 'naming', '万年历', '八字'],
@@ -177,8 +179,29 @@ export default async function ToolsPage({
   const locale = raw as Locale;
   const c = COPY[locale];
 
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: c.title,
+    description: c.desc,
+    url: absoluteUrl(locale, '/tools'),
+    isPartOf: { '@id': WEBSITE_ID },
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: c.items
+        .filter((item) => item.ready)
+        .map((item, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: item.title,
+          url: absoluteUrl(locale, item.href),
+        })),
+    },
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 md:py-20">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(ld) }} />
       <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">{c.title}</h1>
       <div className="w-12 h-[3px] bg-[#FF6F61] mt-5 rounded-full" />
       <p className="mt-5 text-gray-500 max-w-2xl leading-relaxed">{c.desc}</p>

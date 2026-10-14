@@ -4,44 +4,64 @@ import { ArrowLeft } from 'lucide-react';
 import BlogDetails, { BlogArticle } from '@/components/blog/BlogDetails';
 import Comments from '@/components/blog/Comments';
 import { Metadata } from 'next';
-import Script from 'next/script';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getServerT } from '@/lib/i18n/server';
+import { isLocale, localeHtmlLang, type Locale } from '@/lib/i18n/config';
+import { absoluteUrl } from '@/lib/i18n/seo';
+import { articleContentLocale as contentLocale } from '@/lib/blog/locale';
+import { AUTHOR_ID, OG_IMAGES, ORG_ID, SITE_NAME, SITE_URL, WEBSITE_ID, jsonLd } from '@/lib/site';
 
 interface BlogDetailPageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ locale: string; id: string }>
+}
+
+function plainText(html: string | null | undefined): string {
+  return (html || '').replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function excerpt(html: string | null | undefined, max = 155): string {
+  const text = plainText(html);
+  return text.length > max ? `${text.slice(0, max)}…` : text;
 }
 
 // 生成页面元数据
 export async function generateMetadata({ params }: BlogDetailPageProps): Promise<Metadata> {
-  const { t } = await getServerT();
+  const { locale, id } = await params;
+  const { t } = await getServerT(isLocale(locale) ? locale : undefined);
   try {
-    const { id } = await params;
     const supabase = await createSupabaseServerClient();
     const { data: article } = await supabase
       .from('articles')
-      .select('id,title,summary,tags,cover_image_url,created_at,updated_at')
+      .select('id,title,summary,content_html,category,tags,cover_image_url,created_at,updated_at')
       .eq('id', id)
       .maybeSingle();
 
     if (article) {
-      const baseUrl = 'https://efortunetell.blog';
-      const canonicalUrl = `${baseUrl}/blog/${article.id}`;
-      const imageUrl = article.cover_image_url || undefined;
+      const canonicalUrl = absoluteUrl(contentLocale(article.title), `/blog/${article.id}`);
+      const description = article.summary || excerpt(article.content_html) || article.title;
+      const image = article.cover_image_url
+        ? { url: article.cover_image_url, alt: article.title }
+        : { url: OG_IMAGES.default, width: 1200, height: 630, alt: article.title };
 
       return {
         title: article.title,
-        description: article.summary || `Read the article about ${article.title}`,
+        description,
         keywords: article.tags || [],
         alternates: {
           canonical: canonicalUrl,
         },
         openGraph: {
           title: article.title,
-          description: article.summary || '',
+          description,
           url: canonicalUrl,
+          siteName: SITE_NAME,
           type: 'article',
-          images: imageUrl ? [{ url: imageUrl }] : [],
+          publishedTime: article.created_at,
+          modifiedTime: article.updated_at || article.created_at,
+          authors: ['Rollkey'],
+          section: article.category || undefined,
+          tags: article.tags || [],
+          images: [image],
         },
         robots: {
           index: true,
@@ -50,8 +70,8 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
         twitter: {
           card: 'summary_large_image',
           title: article.title,
-          description: article.summary || '',
-          images: imageUrl ? [imageUrl] : [],
+          description,
+          images: [image.url],
         },
       };
     }
@@ -70,8 +90,8 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
 
 // 服务器组件，用于获取数据
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
-  const { id } = await params;
-  const { t } = await getServerT();
+  const { locale, id } = await params;
+  const { t } = await getServerT(isLocale(locale) ? locale : undefined);
   
   if (!id) return notFound();
 
@@ -113,65 +133,55 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     error = err instanceof Error ? err.message : t('blog.error');
   }
   
-  // Build structured data for the article (JSON-LD)
-  const baseUrl = 'https://efortunetell.blog';
-  const articleUrl = `${baseUrl}/blog/${article?.id}`;
-
-  const breadcrumbLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${baseUrl}/blog` },
-      article?.title ? { '@type': 'ListItem', position: 3, name: article.title, item: articleUrl } : null,
-    ].filter(Boolean),
-  };
+  // Build structured data for the article (JSON-LD), rendered into the server HTML
+  const lang = article ? contentLocale(article.title) : 'zh';
+  const articleUrl = absoluteUrl(lang, `/blog/${article?.id}`);
+  const uiLocale: Locale = isLocale(locale) ? locale : 'en';
+  const authorName = article?.author_display_name;
+  const isSiteAuthor = !authorName || authorName === 'Rollkey' || authorName === '旭通' || authorName === '滚键Rollkey';
 
   const structuredData = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: article?.title,
-    description: article?.summary,
-    image: article?.cover_image_url ? [article.cover_image_url] : undefined,
-    author: {
-      '@type': 'Person',
-      name: article?.author_display_name || 'Rollkey',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Rollkey Divination Blog',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${baseUrl}/icon.png`,
+    '@graph': [
+      {
+        '@type': 'BlogPosting',
+        '@id': `${articleUrl}#article`,
+        headline: article?.title,
+        description: article?.summary || excerpt(article?.content_html),
+        image: [article?.cover_image_url || `${SITE_URL}${OG_IMAGES.default}`],
+        author: isSiteAuthor ? { '@id': AUTHOR_ID } : { '@type': 'Person', name: authorName },
+        publisher: { '@id': ORG_ID },
+        isPartOf: { '@id': WEBSITE_ID },
+        datePublished: article?.created_at,
+        // prefer updated_at when present
+        dateModified: (article as any)?.updated_at ?? article?.created_at,
+        inLanguage: localeHtmlLang[lang],
+        articleSection: article?.category || undefined,
+        keywords: article?.tags?.length ? article.tags.join(', ') : undefined,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
       },
-    },
-    datePublished: article?.created_at,
-    // prefer updated_at when present
-    dateModified: (article as any)?.updated_at ?? article?.created_at,
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': articleUrl,
-    },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${articleUrl}#breadcrumb`,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: t('common.blog'), item: absoluteUrl(uiLocale, '/') },
+          { '@type': 'ListItem', position: 2, name: article?.title, item: articleUrl },
+        ],
+      },
+    ],
   };
 
   return (
     <>
       {/* Structured data for SEO (only when article exists) */}
       {article && (
-        <>
-          <Script id="breadcrumb-ld-json" type="application/ld+json">
-            {JSON.stringify(breadcrumbLd)}
-          </Script>
-          <Script id="article-ld-json" type="application/ld+json">
-            {JSON.stringify(structuredData)}
-          </Script>
-        </>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }} />
       )}
 
       <div className="min-h-screen">
         <div className="max-w-5xl mx-auto">
           <Link 
-            href="/" 
+            href={`/${uiLocale}`} 
             className="inline-flex items-center hover:text-[#ff8a75] mb-6 px-6 pt-6 transition-colors"
             style={{ color: '#ff6f61' }}
           >

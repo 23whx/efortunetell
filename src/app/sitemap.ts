@@ -1,12 +1,16 @@
 import { MetadataRoute } from 'next';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { locales, defaultLocale, withLocale } from '@/lib/i18n/config';
+import { buildLanguageAlternates } from '@/lib/i18n/seo';
 import { todayDateKey, shiftDateKey } from '@/lib/paipan/almanac';
+import { articleContentLocale } from '@/lib/blog/locale';
+import { PILLARS } from '@/lib/seo/pillars';
+import { SITE_URL } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 
-const baseUrl = 'https://efortunetell.blog';
+const baseUrl = SITE_URL;
 
 function localized(
   path: string,
@@ -18,9 +22,7 @@ function localized(
     changeFrequency: opts.changeFrequency,
     priority: opts.priority,
     alternates: {
-      languages: Object.fromEntries(
-        locales.map((l) => [l === 'zh' ? 'zh-CN' : l, `${baseUrl}${withLocale(l, path)}`])
-      ),
+      languages: buildLanguageAlternates(path),
     },
   }));
 }
@@ -28,7 +30,6 @@ function localized(
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPaths = [
     { path: '/', changeFrequency: 'daily' as const, priority: 1.0 },
-    { path: '/blog', changeFrequency: 'daily' as const, priority: 0.9 },
     { path: '/tools', changeFrequency: 'weekly' as const, priority: 0.95 },
     { path: '/tools/almanac', changeFrequency: 'daily' as const, priority: 0.95 },
     { path: '/tools/bazi', changeFrequency: 'weekly' as const, priority: 0.95 },
@@ -40,6 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/fortune', changeFrequency: 'weekly' as const, priority: 0.8 },
     { path: '/contact', changeFrequency: 'monthly' as const, priority: 0.6 },
     { path: '/donation', changeFrequency: 'monthly' as const, priority: 0.5 },
+    ...PILLARS.map((p) => ({ path: `/services/${p.slug}`, changeFrequency: 'weekly' as const, priority: 0.8 })),
   ];
 
   const staticPages = staticPaths.flatMap((p) =>
@@ -66,20 +68,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from('articles')
-      .select('id, updated_at, created_at')
+      .select('id, title, updated_at, created_at')
       .eq('status', 'published')
       .order('updated_at', { ascending: false })
       .limit(1000);
 
     if (!error && Array.isArray(data)) {
-      articlePages = data.flatMap((article) =>
-        locales.map((locale) => ({
-          url: `${baseUrl}${withLocale(locale, `/blog/${article.id}`)}`,
-          lastModified: new Date(article.updated_at || article.created_at),
-          changeFrequency: 'monthly' as const,
-          priority: 0.7,
-        }))
-      );
+      // One URL per article: the canonical content-language URL (other locales canonicalize to it)
+      articlePages = data.map((article) => ({
+        url: `${baseUrl}${withLocale(articleContentLocale(article.title), `/blog/${article.id}`)}`,
+        lastModified: new Date(article.updated_at || article.created_at),
+        changeFrequency: 'monthly' as const,
+        priority: 0.8,
+      }));
     } else if (error) {
       console.error('[sitemap] Failed to fetch articles:', error);
     }

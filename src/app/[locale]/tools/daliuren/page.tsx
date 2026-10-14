@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { buildPageMetadata } from '@/lib/i18n/seo';
+import ToolJsonLd from '@/components/seo/ToolJsonLd';
 import DaliurenClient from '@/components/tools/DaliurenClient';
 
 const META: Record<Locale, { title: string; description: string }> = {
@@ -40,6 +41,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: raw,
     path: '/tools/daliuren',
+    image: 'daliuren',
     title: m.title,
     description: m.description,
     keywords: ['Da Liu Ren', '大六壬', '四位', '月将', '贵神', '将神'],
@@ -53,5 +55,10 @@ export default async function DaliurenPage({
 }) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
-  return <DaliurenClient locale={raw} />;
+  return (
+    <>
+      <ToolJsonLd locale={raw} path="/tools/daliuren" name={META[raw].title} description={META[raw].description} image="daliuren" />
+      <DaliurenClient locale={raw} />
+    </>
+  );
 }

@@ -1,6 +1,0 @@
-# Allow all robots
-User-agent: *
-Allow: /
-
-# Sitemap
-Sitemap: https://efortunetell.blog/sitemap.xml

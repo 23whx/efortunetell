@@ -1,40 +1,46 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { getPillarBySlug } from '@/lib/seo/pillars';
+import { getPillarBySlug, type PillarKey } from '@/lib/seo/pillars';
 import { getServerT } from '@/lib/i18n/server';
+import { isLocale, localeHtmlLang, type Locale } from '@/lib/i18n/config';
+import { absoluteUrl, buildPageMetadata } from '@/lib/i18n/seo';
+import { WEBSITE_ID, jsonLd, type OgImageKey } from '@/lib/site';
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ locale: string; slug: string }> };
+
+const PILLAR_OG: Record<PillarKey, OgImageKey> = {
+  bazi: 'bazi',
+  'qimen-yinpan': 'qimen',
+  daliuren: 'daliuren',
+  fengshui: 'default',
+  naming: 'naming',
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const pillar = getPillarBySlug(slug);
-  if (!pillar) return { title: 'Pillar not found' };
+  if (!pillar || !isLocale(locale)) return { title: 'Pillar not found' };
 
-  const canonical = `https://efortunetell.blog/services/${pillar.slug}`;
-  return {
-    title: `${pillar.enTitle} Pillar Page`,
-    description: pillar.enDesc,
+  const zh = locale === 'zh';
+  return buildPageMetadata({
+    locale,
+    path: `/services/${pillar.slug}`,
+    title: zh ? `${pillar.zhTitle}专题：文章与学习路径` : `${pillar.enTitle}: Articles & Study Guide`,
+    description: zh ? pillar.zhDesc : pillar.enDesc,
     keywords: pillar.keywords,
-    alternates: { canonical },
-    openGraph: {
-      title: `${pillar.enTitle} Pillar Page`,
-      description: pillar.enDesc,
-      url: canonical,
-      type: 'website',
-      images: [{ url: '/icon.png', width: 512, height: 512, alt: 'Rollkey Divination Blog' }],
-    },
-  };
+    image: PILLAR_OG[pillar.key],
+  });
 }
 
 export default async function PillarPage({ params }: Props) {
-  const { slug } = await params;
+  const { locale: rawLocale, slug } = await params;
   const pillar = getPillarBySlug(slug);
-  if (!pillar) return notFound();
+  if (!pillar || !isLocale(rawLocale)) return notFound();
+  const locale: Locale = rawLocale;
 
-  const { language, t } = await getServerT();
+  const { language, t } = await getServerT(locale);
   const supabase = await createSupabaseServerClient();
   const baseArticlesQuery = supabase
     .from('articles')
@@ -62,7 +68,7 @@ export default async function PillarPage({ params }: Props) {
           .limit(50)
       : { data: null };
 
-  const canonical = `https://efortunetell.blog/services/${pillar.slug}`;
+  const canonical = absoluteUrl(locale, `/services/${pillar.slug}`);
   
   // Normalize key for translation (liuren/qimen instead of daliuren/qimen-yinpan)
   const translationKey = pillar.key.replace('daliuren', 'liuren').replace('qimen-yinpan', 'qimen');
@@ -79,18 +85,22 @@ export default async function PillarPage({ params }: Props) {
     name: `${title} ${t('services.title')}`,
     description: desc,
     url: canonical,
-    isPartOf: {
-      '@type': 'WebSite',
-      name: 'Rollkey Divination Blog',
-      url: 'https://efortunetell.blog',
+    inLanguage: localeHtmlLang[locale],
+    isPartOf: { '@id': WEBSITE_ID },
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: [...(articles || []), ...(baziTheoryArticles || [])].map((a, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: absoluteUrl('zh', `/blog/${a.id}`),
+        name: a.title,
+      })),
     },
   };
 
   return (
     <div className="min-h-screen bg-[#faf9f6]">
-      <Script id={`pillar-ld-${pillar.slug}`} type="application/ld+json">
-        {JSON.stringify(ld)}
-      </Script>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(ld) }} />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
         <div className="mb-10">
@@ -119,7 +129,7 @@ export default async function PillarPage({ params }: Props) {
         <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
           <h2 className="text-xl font-black text-gray-900">{t('services.latestArticles')}</h2>
           <Link
-            href="/blog"
+            href={`/${locale}`}
             className="text-sm font-black text-[#FF6F61] hover:text-[#ff8a75] transition-colors"
           >
             {t('services.viewAllBlog')} →
@@ -138,7 +148,7 @@ export default async function PillarPage({ params }: Props) {
             {(articles || []).map((a) => (
               <Link
                 key={a.id}
-                href={`/blog/${a.id}`}
+                href={`/${locale}/blog/${a.id}`}
                 className="group bg-white rounded-[32px] border border-gray-100 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-500"
               >
                 <div className="relative aspect-[16/10] bg-gray-100">
@@ -188,7 +198,7 @@ export default async function PillarPage({ params }: Props) {
                 {(baziTheoryArticles || []).map((a) => (
                   <Link
                     key={a.id}
-                    href={`/blog/${a.id}`}
+                    href={`/${locale}/blog/${a.id}`}
                     className="group bg-white rounded-[32px] border border-gray-100 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-500"
                   >
                     <div className="relative aspect-[16/10] bg-gray-100">

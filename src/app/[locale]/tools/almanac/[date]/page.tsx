@@ -31,6 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale: raw,
     path: `/tools/almanac/${date}`,
+    image: 'almanac',
     title: titles[raw],
     description: descs[raw],
     keywords: [date, '万年历', '老黄历', day.pillars.day.ganZhi, ...day.yi.slice(0, 5)],

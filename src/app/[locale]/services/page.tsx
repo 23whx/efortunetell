@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import { PILLARS } from '@/lib/seo/pillars';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLocalePath } from '@/hooks/useLocalePath';
 
 export default function ServicesIndexPage() {
   const { t, language } = useLanguage();
+  const lp = useLocalePath();
 
   return (
     <div className="min-h-screen bg-[#faf9f6]">
@@ -24,7 +26,7 @@ export default function ServicesIndexPage() {
           {PILLARS.map((p) => (
             <Link
               key={p.key}
-              href={`/services/${p.slug}`}
+              href={lp(`/services/${p.slug}`)}
               className="group bg-white rounded-2xl border border-[#f0ece3] p-8 hover:border-[#FF6F61]/30 hover:shadow-md transition-all duration-300"
             >
               <div className="flex items-start justify-between gap-4">
