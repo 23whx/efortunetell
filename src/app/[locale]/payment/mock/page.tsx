@@ -1,167 +1,34 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
-import Button from '@/components/ui/button';
-import { CheckCircle, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { Mail } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useLocalePath } from '@/hooks/useLocalePath';
+import { CONTACT_EMAIL } from '@/lib/site';
 
-function MockPaymentInner() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get('orderId');
-  
-  const [loading, setLoading] = useState(false);
-  const [paid, setPaid] = useState(false);
-  const [order, setOrder] = useState<any>(null);
-  
-  useEffect(() => {
-    if (orderId) {
-      loadOrder();
-    }
-  }, [orderId]);
-  
-  const loadOrder = async () => {
-    try {
-      const response = await fetch(`/api/payment/check-status?orderId=${orderId}`);
-      const data = await response.json();
-      setOrder(data);
-      if (data.status === 'paid') {
-        setPaid(true);
-      }
-    } catch (error) {
-      console.error('Failed to load order:', error);
-    }
-  };
-  
-  const handleMockPayment = async () => {
-    setLoading(true);
-    try {
-      // 模拟支付：直接更新订单状态为已支付
-      const supabase = createSupabaseBrowserClient();
-      const { error } = await supabase
-        .from('payment_orders')
-        .update({
-          payment_status: 'paid',
-          paid_at: new Date().toISOString(),
-          trade_no: `MOCK_${Date.now()}`,
-        })
-        .eq('id', orderId);
-      
-      if (error) throw error;
-      
-      setPaid(true);
-      
-      // 3秒后跳转
-      setTimeout(() => {
-        router.push('/ai-chat');
-      }, 3000);
-    } catch (error) {
-      console.error('Payment failed:', error);
-      alert('支付失败，请重试');
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  if (!orderId) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <p className="text-gray-600">订单ID缺失</p>
-          <Button onClick={() => router.push('/')} className="mt-4">
-            返回首页
-          </Button>
-        </div>
-      </div>
-    );
-  }
-  
-  if (paid) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50">
-        <div className="text-center bg-white p-12 rounded-3xl shadow-2xl max-w-md">
-          <div className="flex justify-center mb-6">
-            <CheckCircle className="w-24 h-24 text-green-500" />
-          </div>
-          <h1 className="text-3xl font-black text-gray-900 mb-4">
-            支付成功！
-          </h1>
-          <p className="text-gray-600 mb-2">订单号：{order?.orderNo}</p>
-          <p className="text-gray-600 mb-6">支付金额：¥{order?.amount}</p>
-          <p className="text-sm text-gray-500">
-            即将跳转到AI咨询页面...
-          </p>
-        </div>
-      </div>
-    );
-  }
-  
+// 支付通道暂时关闭（原模拟支付页会在浏览器里直接把订单改为已支付）。
+export default function PaymentClosedPage() {
+  const { t } = useLanguage();
+  const lp = useLocalePath();
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-pink-50 p-4">
-      <div className="bg-white p-8 md:p-12 rounded-3xl shadow-2xl max-w-md w-full">
-        <h1 className="text-3xl font-black text-gray-900 mb-6 text-center">
-          模拟支付
-        </h1>
-        
-        <div className="bg-gray-50 p-6 rounded-2xl mb-6">
-          <p className="text-sm text-gray-500 mb-2">订单号</p>
-          <p className="text-lg font-bold text-gray-900 mb-4">{order?.orderNo}</p>
-          
-          <p className="text-sm text-gray-500 mb-2">支付金额</p>
-          <p className="text-3xl font-black text-[#FF6F61] mb-4">
-            ¥{order?.amount}
-          </p>
-          
-          <p className="text-xs text-gray-400">
-            * 这是模拟支付环境，点击按钮即可完成支付
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-[#faf9f6] px-4">
+      <div className="bg-white rounded-3xl border border-[#f0ece3] p-10 max-w-md text-center">
+        <Mail className="w-12 h-12 text-[#FF6F61] mx-auto mb-4" />
+        <h1 className="text-2xl font-bold text-gray-900 mb-3">{t('payment.closedTitle')}</h1>
+        <p className="text-gray-600 mb-6">{t('payment.closedMessage')}</p>
+        <a
+          href={`mailto:${CONTACT_EMAIL}`}
+          className="inline-block bg-[#FF6F61] hover:bg-[#FF5A4D] text-white rounded-xl px-6 py-3 font-medium"
+        >
+          {CONTACT_EMAIL}
+        </a>
+        <div className="mt-6">
+          <Link href={lp('/fortune')} className="text-sm text-gray-500 hover:text-[#FF6F61]">
+            {t('fortune.booking.backToList')}
+          </Link>
         </div>
-        
-        <div className="space-y-3">
-          <Button
-            onClick={handleMockPayment}
-            disabled={loading}
-            className="w-full py-4 text-lg"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                处理中...
-              </>
-            ) : (
-              '确认支付'
-            )}
-          </Button>
-          
-          <button
-            onClick={() => router.back()}
-            className="w-full py-4 text-gray-600 hover:text-gray-900 transition-colors"
-            disabled={loading}
-          >
-            取消支付
-          </button>
-        </div>
-        
-        <p className="text-xs text-gray-400 text-center mt-6">
-          真实环境将使用支付宝/微信支付
-        </p>
       </div>
     </div>
   );
 }
-
-export default function MockPaymentPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-[#FF6F61]" />
-        </div>
-      }
-    >
-      <MockPaymentInner />
-    </Suspense>
-  );
-}
-

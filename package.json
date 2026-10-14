@@ -8,7 +8,7 @@
     "build": "next build",
     "build:force": "next build",
     "start": "next start -p 14761",
-    "lint": "next lint",
+    "lint": "eslint .",
     "clean-port": "node scripts/clean-port.js",
     "test:paipan": "npx --yes tsx scripts/paipan-full-14round-test.ts",
     "verify:paipan": "npx --yes tsx scripts/paipan-full-14round-test.ts"

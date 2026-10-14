@@ -33,7 +33,7 @@ export async function GET() {
 
 - Tools are free and compute in the browser; no sign-up needed.
 - The UI is available in English (/en), Simplified Chinese (/zh), Japanese (/ja), Korean (/ko) and Arabic (/ar). Articles are written in Chinese; their canonical URLs are under /zh.
-- Author: Rollkey — X/Twitter @Rollkey4, email wanghongxiang23@gmail.com.
+- Author: Rollkey — X/Twitter @Rollkey4, email wyh93829@gmail.com.
 
 ## Free tools
 - [BaZi chart / 八字排盘](${SITE_URL}/zh/tools/bazi): four pillars, hidden stems, Ten Gods, Na Yin, void, luck cycles (大运) and solar terms.
@@ -52,7 +52,9 @@ ${articles || `- [All articles](${SITE_URL}/zh)`}
 ## Optional
 - [RSS feed](${SITE_URL}/rss.xml)
 - [Sitemap](${SITE_URL}/sitemap.xml)
+- [About the author](${SITE_URL}/en/about)
 - [Contact](${SITE_URL}/en/contact)
+- [Privacy policy](${SITE_URL}/en/privacy)
 `;
 
   return new Response(body, {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { generateBaziConsultation } from '@/lib/ai/bazi-consultant';
+import { consumeAiQuota, quotaExceededResponse } from '@/lib/ai/quota';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +32,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Consultation not found' }, { status: 404 });
     }
     
-    // 2. 免费试用，不需要支付验证
+    // 2. 免费试用，不需要支付验证；每日限额
+    if (!(await consumeAiQuota(supabase))) {
+      return quotaExceededResponse();
+    }
     
     // 3. 生成AI回复
     const birthDate = new Date(consultation.birth_date).toISOString().split('T')[0];

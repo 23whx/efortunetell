@@ -1,14 +1,22 @@
 /**
  * API: RAG 智能问答
  * POST /api/rag/chat
- * 所有用户可用
+ * 仅登录用户可用，受每日 AI 调用限额约束
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { ragQueryAnswer } from '@/lib/rag/search';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { consumeAiQuota, quotaExceededResponse } from '@/lib/ai/quota';
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { question, language = 'zh', stream: useStream = false } = await request.json();
     
     if (!question || typeof question !== 'string') {
@@ -25,6 +33,10 @@ export async function POST(request: NextRequest) {
       );
     }
     
+    if (!(await consumeAiQuota(supabase))) {
+      return quotaExceededResponse();
+    }
+
     // 非流式响应
     if (!useStream) {
       const result = await ragQueryAnswer(question, {
@@ -84,10 +96,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('RAG chat error:', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to process question',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: 'Failed to process question' },
       { status: 500 }
     );
   }

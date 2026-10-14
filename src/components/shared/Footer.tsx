@@ -94,6 +94,22 @@ export default function Footer() {
                   💖 {t('footer.donation')}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href={lp('/about')}
+                  className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
+                >
+                  {t('footer.about')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={lp('/privacy')}
+                  className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
+                >
+                  {t('footer.privacy')}
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -106,10 +122,10 @@ export default function Footer() {
               <li className="text-gray-400">
                 <span className="font-semibold text-white">{t('footer.email')}:</span>{' '}
                 <a
-                  href="mailto:wanghongxiang23@gmail.com"
+                  href="mailto:wyh93829@gmail.com"
                   className="hover:text-[#FF6F61] transition-colors"
                 >
-                  wanghongxiang23@gmail.com
+                  wyh93829@gmail.com
                 </a>
               </li>
               <li className="text-gray-400">

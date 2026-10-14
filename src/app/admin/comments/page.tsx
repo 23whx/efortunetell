@@ -243,7 +243,7 @@ export default function AdminCommentsPage() {
                       </span>
                     </div>
                     <Link
-                      href={`/articles/${comment.article_slug}`}
+                      href={`/blog/${comment.article_id}`}
                       className="flex items-center gap-2 text-sm text-[#FF6F61] hover:text-[#FF5A4D] group"
                       target="_blank"
                     >

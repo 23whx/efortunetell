@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { buildPageMetadata } from '@/lib/i18n/seo';
-import { SITE_NAME } from '@/lib/site';
+import { SITE_NAME, SITE_NAME_ZH } from '@/lib/site';
 
 type Copy = { title: string; description: string };
 
@@ -49,8 +49,9 @@ export function pageMetadata(page: keyof typeof PAGES) {
     const { locale } = await params;
     if (!isLocale(locale)) return {};
     const meta = buildPageMetadata({ locale, path: `/${page}`, ...PAGES[page][locale] });
-    // These live in layout.tsx: re-declare the template so nested pages (e.g. /services/[slug]) keep the site suffix
-    return { ...meta, title: { default: `${PAGES[page][locale].title} | ${SITE_NAME}`, template: `%s | ${SITE_NAME}` } };
+    // These live in layout.tsx: the root template already suffixes `default`; re-declare the template so
+    // nested pages (e.g. /services/[slug]) keep the site suffix too
+    return { ...meta, title: { default: PAGES[page][locale].title, template: `%s | ${locale === 'zh' ? SITE_NAME_ZH : SITE_NAME}` } };
   };
 }
 

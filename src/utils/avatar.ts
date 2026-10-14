@@ -11,8 +11,11 @@ interface User {
 
 export const getAvatarPath = (user: User): string => {
   if (user.avatar) {
-    // 如果是完整的URL，直接返回
-    if (user.avatar.startsWith('http://') || user.avatar.startsWith('https://')) {
+    // 完整 URL：http 升级为 https，避免 HTTPS 页面出现混合内容（浏览器"连接不安全"警告）
+    if (user.avatar.startsWith('http://')) {
+      return `https://${user.avatar.slice('http://'.length)}`;
+    }
+    if (user.avatar.startsWith('https://')) {
       return user.avatar;
     }
     // 确保路径以 / 开头

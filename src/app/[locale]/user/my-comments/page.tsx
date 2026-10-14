@@ -7,6 +7,7 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MessageSquare, Reply, ArrowLeft, Trash2, ExternalLink } from 'lucide-react';
 import Button from '@/components/ui/button';
+import { useLocalePath } from '@/hooks/useLocalePath';
 
 interface CommentWithArticle {
   id: string;
@@ -25,6 +26,7 @@ interface CommentWithArticle {
 export default function MyCommentsPage() {
   const router = useRouter();
   const { t } = useLanguage();
+  const lp = useLocalePath();
   const [comments, setComments] = useState<CommentWithArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
@@ -161,7 +163,7 @@ export default function MyCommentsPage() {
                 {/* Article Info */}
                 <div className="flex items-start justify-between mb-4">
                   <Link
-                    href={`/articles/${comment.article_slug}`}
+                    href={lp(`/blog/${comment.article_id}`)}
                     className="flex items-center gap-2 text-[#FF6F61] hover:text-[#FF5A4D] font-bold group"
                   >
                     <ExternalLink size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

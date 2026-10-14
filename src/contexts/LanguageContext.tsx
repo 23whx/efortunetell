@@ -25,6 +25,7 @@ export function LanguageProvider({
     if (typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('language') as Language;
       if (savedLanguage && ['zh', 'en', 'ja', 'ko', 'ar'].includes(savedLanguage)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is only readable after hydration
         setLanguageState(savedLanguage);
       }
     }

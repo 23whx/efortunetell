@@ -42,7 +42,6 @@ export default function BlogList({ initialArticles }: { initialArticles: Article
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDisplayCategory, setSelectedDisplayCategory] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'date' | 'likes' | 'bookmarks'>('date');
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [loading, setLoading] = useState(false);
   // Server already supplied the unfiltered list; only refetch once the user picks a category
@@ -369,24 +368,6 @@ export default function BlogList({ initialArticles }: { initialArticles: Article
               </div>
             </div>
 
-            {/* Sort Dropdown */}
-            <div className="shrink-0 w-full md:w-auto">
-              <div className="relative group min-w-[160px]">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'date' | 'likes' | 'bookmarks')}
-                  className="appearance-none w-full bg-white text-gray-700 font-semibold border border-[#f0ece3] rounded-full pl-6 pr-12 py-2.5 text-sm focus:outline-none focus:border-[#FF6F61] cursor-pointer transition-all duration-300"
-                >
-                  <option value="date">{t('sort.byDate')}</option>
-                  <option value="likes">{t('sort.byLikes')}</option>
-                  <option value="bookmarks">{t('sort.byBookmarks')}</option>
-                </select>
-                <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none flex flex-col gap-0.5 opacity-40 group-hover:opacity-100 transition-opacity">
-                  <div className="w-1.5 h-1.5 bg-[#FF6F61] rounded-full" />
-                  <div className="w-1.5 h-1.5 bg-gray-300 rounded-full" />
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -416,12 +397,7 @@ export default function BlogList({ initialArticles }: { initialArticles: Article
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
             {articles
               .slice()
-              .sort((a, b) => {
-                if (sortBy === 'date') {
-                  return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-                }
-                return 0;
-              })
+              .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
               .map((article, index) => (
                 <Link
                   href={lp(`/blog/${article.id}`)}

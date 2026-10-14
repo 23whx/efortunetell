@@ -13,8 +13,9 @@ export async function POST(request: NextRequest) {
     const supabase = await createSupabaseServerClient();
     
     // 验证用户身份
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    // getUser() verifies the JWT with Supabase; getSession() only trusts the cookie
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single();
     
     if (profile?.role !== 'admin') {

@@ -16,6 +16,21 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          // Auto-upgrade any http:// image/script (e.g. in article HTML or avatars) so pages never show
+          // the browser's "connection not secure" mixed-content warning
+          { key: 'Content-Security-Policy', value: 'upgrade-insecure-requests' },
+          { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       // Legacy tool URLs → locale-prefixed almanac / tools (default en)

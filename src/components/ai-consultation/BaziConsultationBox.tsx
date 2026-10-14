@@ -162,6 +162,8 @@ export default function BaziConsultationBox() {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const prevMessagesLength = useRef(0);
+  // 每个会话+语言只请求一次走势报告：失败（含每日限额 429）时不再自动重试，避免请求死循环
+  const trendAttempted = useRef('');
   
   useEffect(() => {
     checkUser();
@@ -181,6 +183,9 @@ export default function BaziConsultationBox() {
     if (step !== 'chatting' || !consultationId) return;
     if (trendLoading) return;
     if (trendReport && trendLang === language) return;
+    const attemptKey = `${consultationId}:${language}`;
+    if (trendAttempted.current === attemptKey) return;
+    trendAttempted.current = attemptKey;
 
     const run = async () => {
       setTrendLoading(true);
@@ -357,6 +362,15 @@ export default function BaziConsultationBox() {
         }),
       });
       
+      if (response.status === 429) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: t('rag.quotaExceeded'),
+          timestamp: new Date().toISOString(),
+        }]);
+        return;
+      }
+
       const data = await response.json();
       if (data.reply) {
         const aiMessage: Message = {

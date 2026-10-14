@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { generateBaziTrendReport } from '@/lib/ai/bazi-trend';
 import type { Gender } from '@/lib/bazi/luck';
+import { consumeAiQuota, quotaExceededResponse } from '@/lib/ai/quota';
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,6 +43,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ report: consultation.trend_report });
     }
 
+    if (!(await consumeAiQuota(supabase))) {
+      return quotaExceededResponse();
+    }
+
     const birthDate = new Date(consultation.birth_date).toISOString().split('T')[0];
     const birthTime = consultation.birth_time as string;
     const gender = (consultation.gender || 'female') as Gender; // 默认 female，避免空值导致 API 失败
@@ -64,10 +69,10 @@ export async function POST(request: NextRequest) {
       .eq('id', consultationId);
 
     return NextResponse.json({ report });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Trend report error:', error);
     return NextResponse.json(
-      { error: error?.message || 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

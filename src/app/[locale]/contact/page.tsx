@@ -147,8 +147,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h4 className="text-xl font-black text-gray-900 tracking-tight">{t('contact.email')}</h4>
-                  <a href="mailto:wanghongxiang23@gmail.com" className="text-sm text-gray-500 hover:text-[#FF6F61] transition-colors font-medium">
-                    wanghongxiang23@gmail.com
+                  <a href="mailto:wyh93829@gmail.com" className="text-sm text-gray-500 hover:text-[#FF6F61] transition-colors font-medium">
+                    wyh93829@gmail.com
                   </a>
                 </div>
               </div>

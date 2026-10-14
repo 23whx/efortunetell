@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useLocalePath } from '@/hooks/useLocalePath';
 import { Input } from '@/components/ui/input';
 import Button from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -9,6 +11,7 @@ import { ensureMyProfile, getMyProfile } from '@/lib/supabase/profile';
 
 export default function UserLoginPage() {
   const { t } = useLanguage();
+  const lp = useLocalePath();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -107,7 +110,7 @@ export default function UserLoginPage() {
             >
               {isLoading ? t('common.loading') : t('user.login.submit')}
             </Button>
-            <a href="/user/forgot-password" className="text-[#FF6F61] text-sm hover:underline whitespace-nowrap">{t('user.login.forgotPassword')}</a>
+            <Link href={lp('/user/forgot-password')} className="text-[#FF6F61] text-sm hover:underline whitespace-nowrap">{t('user.login.forgotPassword')}</Link>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
             <Button

@@ -4,6 +4,9 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://fortunetel
 export const SITE_NAME = 'Rollkey Divination Blog';
 export const SITE_NAME_ZH = '滚键Rollkey命理博客';
 
+/** Public contact / consultation inbox (payments are closed; consultations are arranged by email). */
+export const CONTACT_EMAIL = 'wyh93829@gmail.com';
+
 export const ADSENSE_CLIENT = 'ca-pub-4880646654838411';
 export const ADSENSE_SRC = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
 

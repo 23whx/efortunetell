@@ -36,16 +36,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/tools/qimen', changeFrequency: 'weekly' as const, priority: 0.95 },
     { path: '/tools/daliuren', changeFrequency: 'weekly' as const, priority: 0.95 },
     { path: '/tools/naming', changeFrequency: 'weekly' as const, priority: 0.95 },
-    { path: '/ai-chat', changeFrequency: 'weekly' as const, priority: 0.8 },
     { path: '/services', changeFrequency: 'weekly' as const, priority: 0.8 },
     { path: '/fortune', changeFrequency: 'weekly' as const, priority: 0.8 },
     { path: '/contact', changeFrequency: 'monthly' as const, priority: 0.6 },
-    { path: '/donation', changeFrequency: 'monthly' as const, priority: 0.5 },
     ...PILLARS.map((p) => ({ path: `/services/${p.slug}`, changeFrequency: 'weekly' as const, priority: 0.8 })),
   ];
 
   const staticPages = staticPaths.flatMap((p) =>
     localized(p.path, { changeFrequency: p.changeFrequency, priority: p.priority })
+  );
+
+  // About + privacy are written in zh + en only (ja/ko/ar canonicalize to /en/...)
+  const privacyPages: MetadataRoute.Sitemap = (['/about', '/privacy'] as const).flatMap((path) =>
+    (['en', 'zh'] as const).map((locale) => ({
+      url: `${baseUrl}${withLocale(locale, path)}`,
+      lastModified: new Date('2026-10-14'),
+      changeFrequency: 'yearly' as const,
+      priority: path === '/about' ? 0.6 : 0.3,
+    }))
   );
 
   // Near-term almanac day pages (SEO long-tail) — default locale + zh
@@ -88,5 +96,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('[sitemap] Exception while fetching articles:', err);
   }
 
-  return [...staticPages, ...almanacDays, ...articlePages];
+  return [...staticPages, ...privacyPages, ...almanacDays, ...articlePages];
 }
