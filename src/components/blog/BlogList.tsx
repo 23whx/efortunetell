@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { Calendar } from "lucide-react";
 import Button from '@/components/ui/button';
+import InkHero from '@/components/home/InkHero';
 import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatDate } from '@/utils/date';
@@ -271,13 +272,10 @@ export default function BlogList({ initialArticles }: { initialArticles: Article
   return (
     <div className="min-h-screen bg-[#faf9f6] pb-20">
       {/* Hero Section */}
-      <div className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-4 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#FF6F61]/5 rounded-full blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-[#ffb347]/5 rounded-full blur-[100px]" />
-        </div>
-        
-        <div className="max-w-4xl mx-auto text-center">
+      <div className="relative isolate pt-[256px] pb-32 md:pt-[340px] md:pb-44 px-4 overflow-hidden">
+        <InkHero />
+
+        <div className="ink-copy-glow relative max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight leading-tight">
             {t('home.hero.title').split(t('home.hero.easternWisdom')).map((part, i, arr) => (
               <span key={i}>
