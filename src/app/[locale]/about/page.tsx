@@ -11,9 +11,9 @@ type About = { title: string; description: string; intro: string; sections: Sect
 /** Written in Chinese and English; ja/ko/ar show the English text and canonicalize to /en/about (same as /privacy). */
 const ABOUT: Record<'zh' | 'en', About> = {
   zh: {
-    title: '关于滚键Rollkey',
-    description: `${SITE_NAME_ZH}由命理研究者滚键（Rollkey）创办，专注八字、阴盘奇门遁甲、大六壬与择日起名，提供免费排盘工具和原创命理文章。`,
-    intro: `${SITE_NAME_ZH}由滚键（Rollkey）创办和撰写。本站专注于中国传统术数中的八字命理、阴盘奇门遁甲、大六壬、择日与起名，所有文章均为原创中文内容，所有排盘工具免费、无需注册。`,
+    title: '关于卧烟居士',
+    description: `${SITE_NAME_ZH}由命理研究者卧烟居士创办，专注八字、阴盘奇门遁甲、大六壬与择日起名，提供免费排盘工具和原创命理文章。`,
+    intro: `${SITE_NAME_ZH}由卧烟居士创办和撰写。本站专注于中国传统术数中的八字命理、阴盘奇门遁甲、大六壬、择日与起名，所有文章均为原创中文内容，所有排盘工具免费、无需注册。`,
     sections: [
       {
         h: '我们提供什么',
@@ -40,9 +40,9 @@ const ABOUT: Record<'zh' | 'en', About> = {
     contact: '联系方式',
   },
   en: {
-    title: 'About Rollkey',
-    description: `${SITE_NAME} is run by Chinese metaphysics practitioner Rollkey (滚键), covering BaZi, Yin Pan Qimen Dunjia, Da Liu Ren, date and name selection, with free calculators and original articles.`,
-    intro: `${SITE_NAME} is founded and written by Rollkey (滚键). It focuses on traditional Chinese metaphysics — BaZi (Four Pillars of Destiny), Yin Pan Qimen Dunjia, Da Liu Ren, date selection and name selection. Articles are original and written in Chinese; every calculator is free and needs no sign-up.`,
+    title: 'About 卧烟居士 (Wo Yan Ju Shi)',
+    description: `${SITE_NAME} is run by Chinese metaphysics practitioner 卧烟居士 (Wo Yan Ju Shi), covering BaZi, Yin Pan Qimen Dunjia, Da Liu Ren, date and name selection, with free calculators and original articles.`,
+    intro: `${SITE_NAME} is founded and written by 卧烟居士 (Wo Yan Ju Shi). It focuses on traditional Chinese metaphysics — BaZi (Four Pillars of Destiny), Yin Pan Qimen Dunjia, Da Liu Ren, date selection and name selection. Articles are original and written in Chinese; every calculator is free and needs no sign-up.`,
     sections: [
       {
         h: 'What you will find here',

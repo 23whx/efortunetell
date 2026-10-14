@@ -1,3 +1,5 @@
+import { AUTHOR_NAME } from '@/lib/site';
+
 /**
  * 根据用户角色和信息获取头像路径
  * @param user 用户信息对象
@@ -39,9 +41,9 @@ export const getAvatarPath = (user: User): string => {
 export const getDisplayName = (user: User): string => {
   let displayName = user.username;
   
-  // 特殊处理：admin用户显示为Rollkey
+  // 特殊处理：admin用户显示为站点作者
   if (user.username === 'admin' || user.role === 'admin') {
-    displayName = 'Rollkey';
+    displayName = AUTHOR_NAME;
   }
   
   // 根据角色添加标识

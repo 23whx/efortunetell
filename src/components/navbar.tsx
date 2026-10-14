@@ -150,25 +150,15 @@ export default function Navbar() {
               <div className="relative w-7 h-7 md:w-9 md:h-9 flex-shrink-0">
                 <Image
                   src="/icon.png"
-                  alt="Rollkey Divination Blog Icon"
+                  alt="旭通命理小站"
                   fill
                   className="rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow"
                 />
               </div>
-              {language === 'en' ? (
-                <div className="flex flex-col justify-center -space-y-0.5 md:-space-y-1">
-                  <span className="text-[10px] md:text-xs xl:text-sm font-bold text-gray-900 font-display tracking-tight uppercase whitespace-nowrap">
-                    Rollkey's
-                  </span>
-                  <span className="text-[6px] md:text-[7px] xl:text-[8px] font-semibold text-gray-500 font-sans tracking-tighter uppercase whitespace-nowrap opacity-70">
-                    Metaphysical Destiny Station
-                  </span>
-                </div>
-              ) : (
-                <span className="text-lg md:text-xl xl:text-2xl font-bold text-gray-900 font-display tracking-[0.05em] xl:tracking-[0.15em] uppercase whitespace-nowrap overflow-hidden text-ellipsis">
-                  {t('common.siteTitle')}
-                </span>
-              )}
+              {/* Brand is 旭通命理小站 in every language */}
+              <span className="text-lg md:text-xl xl:text-2xl font-bold text-gray-900 font-display tracking-[0.05em] xl:tracking-[0.15em] uppercase whitespace-nowrap overflow-hidden text-ellipsis">
+                {t('common.siteTitle')}
+              </span>
             </Link>
           </div>
           

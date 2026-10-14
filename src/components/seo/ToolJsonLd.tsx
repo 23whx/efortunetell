@@ -1,6 +1,6 @@
 import { localeHtmlLang, type Locale } from '@/lib/i18n/config';
 import { absoluteUrl } from '@/lib/i18n/seo';
-import { OG_IMAGES, ORG_ID, SITE_URL, WEBSITE_ID, jsonLd, type OgImageKey } from '@/lib/site';
+import { OG_IMAGES, ORG_ID, SITE_NAME, SITE_URL, WEBSITE_ID, jsonLd, type OgImageKey } from '@/lib/site';
 
 const TOOLS_LABEL: Record<Locale, string> = {
   en: 'Tools',
@@ -47,7 +47,7 @@ export default function ToolJsonLd({
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Rollkey', item: absoluteUrl(locale, '/') },
+          { '@type': 'ListItem', position: 1, name: SITE_NAME, item: absoluteUrl(locale, '/') },
           { '@type': 'ListItem', position: 2, name: TOOLS_LABEL[locale], item: absoluteUrl(locale, '/tools') },
           { '@type': 'ListItem', position: 3, name, item: url },
         ],

@@ -1,8 +1,29 @@
 /** Canonical public origin. Every canonical / sitemap / OG / JSON-LD URL derives from this. */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://fortunetell.oumashu.top').replace(/\/$/, '');
 
-export const SITE_NAME = 'Rollkey Divination Blog';
-export const SITE_NAME_ZH = '滚键Rollkey命理博客';
+export const SITE_NAME = '旭通命理小站';
+/** Same brand in every language (kept as a separate export for call sites that distinguish zh) */
+export const SITE_NAME_ZH = SITE_NAME;
+
+/** Site author. Simplified form on the (Simplified-Chinese) site; Traditional form listed as an alternate name. */
+export const AUTHOR_NAME = '卧烟居士';
+export const AUTHOR_NAME_ALT = '臥煙居士';
+
+/** Former names of the admin account; articles by these profiles are shown as AUTHOR_NAME */
+const LEGACY_AUTHOR_NAMES = new Set(['Rollkey', '旭通', '滚键Rollkey', '滚键', '关键Rollkey', AUTHOR_NAME_ALT]);
+
+export function displayAuthor(name: string | null | undefined): string {
+  return !name || LEGACY_AUTHOR_NAMES.has(name) ? AUTHOR_NAME : name;
+}
+
+/** For names that are always present (e.g. comment authors): only rename the legacy admin names */
+export function renameLegacyAuthor(name: string): string {
+  return LEGACY_AUTHOR_NAMES.has(name) ? AUTHOR_NAME : name;
+}
+
+export function isSiteAuthor(name: string | null | undefined): boolean {
+  return displayAuthor(name) === AUTHOR_NAME;
+}
 
 /** Public contact / consultation inbox (payments are closed; consultations are arranged by email). */
 export const CONTACT_EMAIL = 'wyh93829@gmail.com';

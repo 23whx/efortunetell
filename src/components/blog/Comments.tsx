@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { MessageSquare, Reply, Trash2, Send, LogIn } from 'lucide-react';
 import Button from '../ui/button';
 import { useRouter } from 'next/navigation';
+import { renameLegacyAuthor } from '@/lib/site';
 
 interface Comment {
   id: string;
@@ -238,7 +239,7 @@ export default function Comments({ articleId }: CommentsProps) {
       <div className="bg-white rounded-2xl p-6 border border-gray-100">
         <div className="flex items-start justify-between mb-3">
           <div>
-            <span className="font-bold text-gray-900">{comment.author_name}</span>
+            <span className="font-bold text-gray-900">{renameLegacyAuthor(comment.author_name)}</span>
             <span className="text-sm text-gray-400 ml-3">{formatTimeAgo(comment.created_at)}</span>
           </div>
           {currentUserId === comment.user_id && (
@@ -282,7 +283,7 @@ export default function Comments({ articleId }: CommentsProps) {
           <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm text-gray-600">
-                {t('comment.replyPlaceholder').replace('{name}', comment.author_name)}
+                {t('comment.replyPlaceholder').replace('{name}', renameLegacyAuthor(comment.author_name))}
               </span>
               <button
                 onClick={() => {

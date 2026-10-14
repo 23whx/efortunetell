@@ -719,11 +719,11 @@ export const translations = {
 
     // 联系页面
     'contact.title': '联系我们',
-    'contact.subtitle': '联系Rollkey获取算命服务',
+    'contact.subtitle': '联系卧烟居士获取算命服务',
     'contact.description': '专业算命师及中国古代占卜专家',
     'contact.specialization': '精通八字、奇门遁甲、大六壬等经典中国玄学',
     'contact.thankYou': '感谢您的关注！我会尽快回复您。',
-    'contact.name': 'Rollkey',
+    'contact.name': '卧烟居士',
     'contact.email': '邮箱',
     'contact.website': '主页',
     'contact.twitter': 'X账号',
@@ -960,7 +960,7 @@ export const translations = {
     'common.articles': 'Articles',
     'common.comments': 'Comments',
     'common.settings': 'Settings',
-    'common.siteTitle': "Rollkey's Metaphysical Destiny Station",
+    'common.siteTitle': '旭通命理小站',
     'common.searchNoResults': 'No matching results found',
     'common.locale': 'en',
     'search.results': 'Search Results',
@@ -1173,7 +1173,7 @@ export const translations = {
 
 
     // Home
-    'home.title': "Rollkey's Metaphysical Destiny Station",
+    'home.title': '旭通命理小站',
     'home.subtitle': 'Explore the mysteries of destiny and guide your life',
     'home.welcome': 'Welcome to the World of Metaphysics',
     'home.description': 'We provide professional fortune-telling consultation services, including BaZi, Qimen Dunjia, Da Liuren and other traditional divination methods.',
@@ -1494,7 +1494,7 @@ export const translations = {
     'share.wechatHint': 'WeChat share link copied to clipboard, please paste in WeChat',
     'share.wechatMomentsHint': 'WeChat Moments share link copied to clipboard, please paste in WeChat Moments',
     'share.xiaohongshuHint': 'XiaoHongShu share link copied to clipboard, please share in XiaoHongShu app',
-    'share.defaultText': 'I read an interesting article on Rollkey\'s Metaphysical Destiny Station: "{title}", sharing it with you~',
+    'share.defaultText': 'I read an interesting article on 旭通命理小站: "{title}", sharing it with you~',
 
     // Comment Management
     'admin.comments.title': 'Comment & Reply Management',
@@ -1631,11 +1631,11 @@ export const translations = {
 
     // Contact
     'contact.title': 'Contact Us',
-    'contact.subtitle': 'Connect with Rollkey for Fortune Telling Services',
+    'contact.subtitle': 'Connect with 卧烟居士 for Fortune Telling Services',
     'contact.description': 'Professional Fortune Teller & Ancient Chinese Divination Expert',
     'contact.specialization': 'Specializing in Bazi, Qimen Dunjia, Da Liu Ren, and classical Chinese metaphysics.',
     'contact.thankYou': 'Thank you for your interest! I\'ll get back to you as soon as possible.',
-    'contact.name': 'Rollkey',
+    'contact.name': '卧烟居士',
     'contact.email': 'Email',
     'contact.website': 'Website',
     'contact.twitter': 'X Account',
@@ -1871,7 +1871,7 @@ export const translations = {
     'common.articles': '記事管理',
     'common.comments': 'コメント管理',
     'common.settings': '設定',
-    'common.siteTitle': 'Rollkey 玄学命理',
+    'common.siteTitle': '旭通命理小站',
     'common.searchNoResults': '一致する結果が見つかりませんでした',
     'common.locale': 'ja',
     'search.results': '検索結果',
@@ -2077,7 +2077,7 @@ export const translations = {
     'tools.naming.field.structure': '構造',
 
 
-    'home.title': 'Rollkey 玄学命理',
+    'home.title': '旭通命理小站',
     'home.subtitle': '運命の神秘を探り、人生の指針を提案します',
     'home.welcome': '玄学の世界へようこそ',
     'home.description': '八字、奇門遁甲、大六壬などの伝統的な術数を用いた、専門的な運命鑑定サービスを提供しています。',
@@ -2384,7 +2384,7 @@ export const translations = {
     'share.wechatHint': 'WeChatシェアリンクをクリップボードにコピーしました。WeChatに貼り付けてください',
     'share.wechatMomentsHint': 'WeChat Momentsシェアリンクをクリップボードにコピーしました。WeChat Momentsに貼り付けてください',
     'share.xiaohongshuHint': '小紅書シェアリンクをクリップボードにコピーしました。小紅書アプリでシェアしてください',
-    'share.defaultText': 'Rollkey 玄学命理で面白い記事を見つけました：「{title}」。シェアします〜',
+    'share.defaultText': '旭通命理小站で面白い記事を見つけました：「{title}」。シェアします〜',
 
     'admin.comments.title': 'コメント・返信管理',
     'admin.comments.search': '記事タイトル、コメント内容、またはユーザー名で検索',
@@ -2509,11 +2509,11 @@ export const translations = {
     'comment.edit': '編集',
 
     'contact.title': 'お問い合わせ',
-    'contact.subtitle': '鑑定サービスについてはRollkeyまでご連絡ください',
+    'contact.subtitle': '鑑定サービスについては卧烟居士までご連絡ください',
     'contact.description': 'プロの鑑定士・中国占術のエキスパート',
     'contact.specialization': '八字、奇门遁甲、大六壬など、伝統的な中国玄学を専門としています。',
     'contact.thankYou': '興味を持っていただきありがとうございます。できるだけ早く返信いたします。',
-    'contact.name': 'Rollkey',
+    'contact.name': '卧烟居士',
     'contact.email': 'メール',
     'contact.website': 'ウェブサイト',
     'contact.twitter': 'Xアカウント',
@@ -2738,7 +2738,7 @@ export const translations = {
     'common.articles': '게시물 관리',
     'common.comments': '댓글 관리',
     'common.settings': '설정',
-    'common.siteTitle': 'Rollkey 명리 블로그',
+    'common.siteTitle': '旭通命理小站',
     'common.searchNoResults': '검색 결과가 없습니다',
     'common.locale': 'ko',
     'search.results': '검색 결과',
@@ -2944,7 +2944,7 @@ export const translations = {
     'tools.naming.field.structure': '구조',
 
 
-    'home.title': 'Rollkey 명리 블로그',
+    'home.title': '旭通命理小站',
     'home.subtitle': '운명의 신비를 탐구하고 삶의 방향을 제시합니다',
     'home.welcome': '현학의 세계에 오신 것을 환영합니다',
     'home.description': '사주, 기문둔갑, 대육임 등 전통 술수를 이용한 전문적인 운세 상담 서비스를 제공합니다.',
@@ -3251,7 +3251,7 @@ export const translations = {
     'share.wechatHint': 'WeChat 공유 링크가 클립보드에 복사되었습니다. WeChat에 붙여넣어 주세요.',
     'share.wechatMomentsHint': 'WeChat Moments 공유 링크가 클립보드에 복사되었습니다. WeChat Moments에 붙여넣어 주세요.',
     'share.xiaohongshuHint': '샤오홍슈 공유 링크가 클립보드에 복사되었습니다. 샤오홍슈 앱에서 공유해 주세요.',
-    'share.defaultText': 'Rollkey 명리 블로그에서 흥미로운 글을 읽었습니다: "{title}", 공유해 드립니다~',
+    'share.defaultText': '旭通命理小站에서 흥미로운 글을 읽었습니다: "{title}", 공유해 드립니다~',
 
     'admin.comments.title': '댓글 및 답글 관리',
     'admin.comments.search': '게시물 제목, 댓글 내용 또는 사용자 이름으로 검색',
@@ -3376,11 +3376,11 @@ export const translations = {
     'comment.edit': '편집',
 
     'contact.title': '문의하기',
-    'contact.subtitle': '운세 상담 서비스를 위해 Rollkey에게 문의하세요',
+    'contact.subtitle': '운세 상담 서비스를 위해 卧烟居士에게 문의하세요',
     'contact.description': '전문 상담사 및 중국 고전 점술 전문가',
     'contact.specialization': '사주, 기문둔갑, 대육임 등 정통 중국 현학을 전문으로 합니다.',
     'contact.thankYou': '관심을 가져주셔서 감사합니다! 최대한 빨리 답변해 드리겠습니다.',
-    'contact.name': 'Rollkey',
+    'contact.name': '卧烟居士',
     'contact.email': '이메일',
     'contact.website': '웹사이트',
     'contact.twitter': 'X 계정',
@@ -3605,7 +3605,7 @@ export const translations = {
     'common.articles': 'المقالات',
     'common.comments': 'التعليقات',
     'common.settings': 'الإعدادات',
-    'common.siteTitle': 'محطة Rollkey للميتافيزيقا',
+    'common.siteTitle': '旭通命理小站',
     'common.searchNoResults': 'لم يتم العثور على نتائج مطابقة',
     'common.locale': 'ar',
     'search.results': 'نتائج البحث',
@@ -3811,7 +3811,7 @@ export const translations = {
     'tools.naming.field.structure': 'بنية',
 
 
-    'home.title': 'محطة Rollkey للميتافيزيقا',
+    'home.title': '旭通命理小站',
     'home.subtitle': 'استكشف أسرار القدر واهتدي في طريق حياتك',
     'home.welcome': 'مرحباً بك في عالم الميتافيزيقا',
     'home.description': 'نحن نقدم خدمات استشارية مهنية في علم الأعداد والقدر، بما في ذلك بازي، وكيمين دونجيا، ودا ليورين وغيرها من الأساليب التقليدية.',
@@ -4118,7 +4118,7 @@ export const translations = {
     'share.wechatHint': 'تم نسخ رابط مشاركة وي شات، يرجى لصقه في وي شات',
     'share.wechatMomentsHint': 'تم نسخ رابط مشاركة لحظات وي شات، يرجى لصقه في لحظات وي شات',
     'share.xiaohongshuHint': 'تم نسخ رابط مشاركة شياو هونغ شو، يرجى المشاركة في تطبيق شياو هونغ شو',
-    'share.defaultText': 'لقد قرأت مقالاً ممتعاً في مدونة Rollkey للميتافيزيقا: "{title}"، أود مشاركته معك~',
+    'share.defaultText': 'لقد قرأت مقالاً ممتعاً في 旭通命理小站: "{title}"، أود مشاركته معك~',
 
     'admin.comments.title': 'إدارة التعليقات والردود',
     'admin.comments.search': 'بحث عن عنوان المقالة، محتوى التعليق أو اسم المستخدم',
@@ -4243,11 +4243,11 @@ export const translations = {
     'comment.edit': 'تحرير',
 
     'contact.title': 'تواصل معنا',
-    'contact.subtitle': 'تواصل مع Rollkey للحصول على خدمات الاستشارة',
+    'contact.subtitle': 'تواصل مع 卧烟居士 للحصول على خدمات الاستشارة',
     'contact.description': 'مستشار قدر محترف وخبير في العرافة الصينية القديمة',
     'contact.specialization': 'متخصص في بازي، وكيمين دونجيا، ودا ليورين، والميتافيزيقا الصينية الكلاسيكية.',
     'contact.thankYou': 'شكراً لاهتمامكم! سأرد عليكم في أقرب وقت ممكن.',
-    'contact.name': 'Rollkey',
+    'contact.name': '卧烟居士',
     'contact.email': 'البريد الإلكتروني',
     'contact.website': 'الموقع الإلكتروني',
     'contact.twitter': 'حساب X',

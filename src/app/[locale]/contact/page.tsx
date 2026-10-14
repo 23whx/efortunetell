@@ -56,7 +56,7 @@ export default function ContactPage() {
                 <div className="w-full h-full rounded-full overflow-hidden">
                   <Image 
                     src="/admin_img.jpg" 
-                    alt="Rollkey"
+                    alt="卧烟居士"
                     width={200}
                     height={200}
                     className="w-full h-full object-cover scale-110"
@@ -70,7 +70,7 @@ export default function ContactPage() {
             </div>
 
             <div className="text-center max-w-2xl">
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4 tracking-tight">Rollkey</h2>
+              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4 tracking-tight">卧烟居士</h2>
               <p className="text-lg text-gray-600 font-medium leading-relaxed mb-6">
                 {t('contact.description')}
               </p>

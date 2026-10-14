@@ -10,7 +10,7 @@ import { getServerT } from '@/lib/i18n/server';
 import { isLocale, localeHtmlLang, type Locale } from '@/lib/i18n/config';
 import { absoluteUrl } from '@/lib/i18n/seo';
 import { articleContentLocale as contentLocale, articlePath } from '@/lib/blog/locale';
-import { AUTHOR_ID, OG_IMAGES, ORG_ID, SITE_NAME, SITE_URL, WEBSITE_ID, jsonLd } from '@/lib/site';
+import { AUTHOR_ID, AUTHOR_NAME, OG_IMAGES, ORG_ID, SITE_NAME, SITE_URL, WEBSITE_ID, isSiteAuthor as isOwnAuthor, jsonLd } from '@/lib/site';
 
 interface BlogDetailPageProps {
   params: Promise<{ locale: string; id: string }>
@@ -72,7 +72,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
           type: 'article',
           publishedTime: article.created_at,
           modifiedTime: article.updated_at || article.created_at,
-          authors: ['Rollkey'],
+          authors: [AUTHOR_NAME],
           section: article.category || undefined,
           tags: article.tags || [],
           images: [image],
@@ -154,7 +154,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const articleUrl = absoluteUrl(lang, articlePath({ slug: articleSlug, id: article?.id ?? id }));
   const uiLocale: Locale = isLocale(locale) ? locale : 'en';
   const authorName = article?.author_display_name;
-  const isSiteAuthor = !authorName || authorName === 'Rollkey' || authorName === '旭通' || authorName === '滚键Rollkey';
+  const isSiteAuthor = isOwnAuthor(authorName);
 
   const structuredData = {
     '@context': 'https://schema.org',

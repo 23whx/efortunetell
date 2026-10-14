@@ -10,6 +10,7 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useLocalePath } from '@/hooks/useLocalePath';
 import { articlePath } from '@/lib/blog/locale';
+import { displayAuthor, isSiteAuthor } from '@/lib/site';
 
 // 文章接口定义
 interface Article {
@@ -181,7 +182,7 @@ function SearchResults() {
                     <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-100">
                       <Image
                         src={
-                          (article.author_display_name === 'Rollkey' || article.author_display_name === '旭通' || !article.author_display_name)
+                          isSiteAuthor(article.author_display_name)
                             ? '/admin_img.jpg'
                             : '/user_img.png'
                         }
@@ -193,7 +194,7 @@ function SearchResults() {
                       />
                     </div>
                     <span className="text-[10px] font-bold text-gray-400">
-                      {article.author_display_name || 'Rollkey'}
+                      {displayAuthor(article.author_display_name)}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">

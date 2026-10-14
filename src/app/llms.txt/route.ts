@@ -27,13 +27,13 @@ export async function GET() {
     console.error('[llms.txt] Failed to load articles:', e);
   }
 
-  const body = `# Rollkey Divination Blog (滚键Rollkey命理博客)
+  const body = `# 旭通命理小站 (Xu Tong Ming Li Xiao Zhan)
 
-> Chinese metaphysics site by Rollkey (滚键): free online BaZi (Four Pillars of Destiny / 八字排盘), Yin Pan Qimen Dunjia (阴盘奇门遁甲), Da Liu Ren (大六壬) and Chinese almanac (万年历 / 老黄历) calculators, plus original Chinese-language articles on Ten Gods (十神), chart structures (格局), useful gods (用神), date selection (择日) and name selection (起名).
+> Chinese metaphysics site by 卧烟居士 (Wo Yan Ju Shi): free online BaZi (Four Pillars of Destiny / 八字排盘), Yin Pan Qimen Dunjia (阴盘奇门遁甲), Da Liu Ren (大六壬) and Chinese almanac (万年历 / 老黄历) calculators, plus original Chinese-language articles on Ten Gods (十神), chart structures (格局), useful gods (用神), date selection (择日) and name selection (起名).
 
 - Tools are free and compute in the browser; no sign-up needed.
 - The UI is available in English (/en), Simplified Chinese (/zh), Japanese (/ja), Korean (/ko) and Arabic (/ar). Articles are written in Chinese; their canonical URLs are under /zh.
-- Author: Rollkey — X/Twitter @Rollkey4, email wyh93829@gmail.com.
+- Author: 卧烟居士 (Traditional: 臥煙居士) — X/Twitter @Rollkey4, email wyh93829@gmail.com.
 
 ## Free tools
 - [BaZi chart / 八字排盘](${SITE_URL}/zh/tools/bazi): four pillars, hidden stems, Ten Gods, Na Yin, void, luck cycles (大运) and solar terms.

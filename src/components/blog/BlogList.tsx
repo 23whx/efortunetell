@@ -10,6 +10,7 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { useLocalePath } from '@/hooks/useLocalePath';
 import type { ArticleListItem as Article } from '@/lib/blog/list';
 import { articlePath } from '@/lib/blog/locale';
+import { displayAuthor, isSiteAuthor } from '@/lib/site';
 
 /** Article list; initialArticles are fetched on the server so the list is in the HTML for crawlers. */
 export default function BlogList({ initialArticles }: { initialArticles: Article[] }) {
@@ -447,11 +448,11 @@ export default function BlogList({ initialArticles }: { initialArticles: Article
                       <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm flex-shrink-0 bg-gray-100">
                         <Image
                           src={
-                            (article.author_display_name === 'Rollkey' || article.author_display_name === '旭通' || !article.author_display_name)
+                            isSiteAuthor(article.author_display_name)
                               ? '/admin_img.jpg'
                               : (article.author_avatar_url || '/user_img.png')
                           }
-                          alt={article.author_display_name || 'Author'}
+                          alt={displayAuthor(article.author_display_name)}
                           width={32}
                           height={32}
                           className="object-cover w-full h-full"
@@ -460,7 +461,7 @@ export default function BlogList({ initialArticles }: { initialArticles: Article
                       </div>
                       <div className="flex flex-col">
                         <span className="text-xs font-semibold text-gray-900 leading-none">
-                          {article.author_display_name || 'Rollkey'}
+                          {displayAuthor(article.author_display_name)}
                         </span>
                         <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mt-1" suppressHydrationWarning>
                           {formatDate(article.created_at, t('common.locale') || 'en-US')}

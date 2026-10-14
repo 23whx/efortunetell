@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Rollkey Divination Blog',
-    short_name: 'Rollkey',
+    name: '旭通命理小站',
+    short_name: '旭通命理',
     description:
       'Chinese metaphysics: BaZi (Four Pillars), Qimen Dunjia, Da Liu Ren, and AI destiny consultation.',
     start_url: '/',

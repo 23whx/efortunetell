@@ -7,6 +7,7 @@ import { formatDate } from '@/utils/date';
 import ShareModal from '@/components/ui/ShareModal';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { articleContentLocale } from '@/lib/blog/locale';
+import { displayAuthor, isSiteAuthor } from '@/lib/site';
 
 export type BlogArticle = {
   id: string;
@@ -37,7 +38,7 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
   }, [article.content_html]);
 
   const coverImageUrl = article.cover_image_url || null;
-  const authorName = article.author_display_name || 'Rollkey';
+  const authorName = displayAuthor(article.author_display_name);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffacd' }}>
@@ -95,7 +96,7 @@ export default function BlogDetails({ article }: { article: BlogArticle }) {
                   <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden">
                     <Image
                       src={
-                        (authorName === 'Rollkey' || authorName === '旭通' || authorName === null)
+                        isSiteAuthor(authorName)
                           ? '/admin_img.jpg'
                           : '/user_img.png'
                       }
