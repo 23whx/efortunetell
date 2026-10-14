@@ -14,15 +14,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const day = getAlmanacDay(date);
   if (!day) return {};
 
+  const enDate = new Date(`${date}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   const titles: Record<Locale, string> = {
-    en: `Chinese Almanac ${date} — ${day.lunar.full}`,
+    en: `${enDate} Chinese Calendar: Lunar ${day.lunar.month}/${day.lunar.day}, Auspicious Days`,
     zh: `${date} 老黄历 · ${day.lunar.full}`,
     ja: `${date} 万年暦 · ${day.lunar.full}`,
     ko: `${date} 만년력 · ${day.lunar.full}`,
     ar: `التقويم ${date} — ${day.lunar.full}`,
   };
   const descs: Record<Locale, string> = {
-    en: `${date}: yi ${day.yi.slice(0, 5).join(', ')}; ji ${day.ji.slice(0, 3).join(', ')}. Pillars ${day.pillars.year.ganZhi} ${day.pillars.month.ganZhi} ${day.pillars.day.ganZhi}.`,
+    en: `Chinese almanac (Tong Shu) for ${enDate}: lunar month ${day.lunar.month}${day.lunar.isLeap ? ' (leap)' : ''}, day ${day.lunar.day}; day pillar ${day.pillars.day.ganZhi}. Auspicious and inauspicious activities, clashing zodiac and lucky hours.`,
     zh: `${date}（${day.lunar.full}）宜${day.yi.slice(0, 6).join('、')}；忌${day.ji.slice(0, 4).join('、')}。日柱${day.pillars.day.ganZhi}，冲${day.chong}。`,
     ja: `${date} ${day.lunar.full} の吉凶・干支情報。`,
     ko: `${date} ${day.lunar.full} 길흉·간지 정보.`,

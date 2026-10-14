@@ -41,6 +41,10 @@ export async function GET() {
 - [Da Liu Ren / 大六壬起课](${SITE_URL}/zh/tools/daliuren): four-position reading (人元 human stem, 贵神 noble spirit, 将神 general, 地分 earth branch) with moon general, void and stem-branch relations.
 - [Chinese almanac / 万年历·老黄历](${SITE_URL}/zh/tools/almanac): daily yi/ji (宜忌), clashes (冲煞), auspicious hours, 28 mansions. Per-day pages: ${SITE_URL}/zh/tools/almanac/YYYY-MM-DD
 - [Name selection / 八字起名](${SITE_URL}/zh/tools/naming): names balanced by the Five Elements.
+- [Chinese zodiac calculator](${SITE_URL}/en/chinese-zodiac): find your animal and element by birth date (Lunar New Year vs Li Chun), with a page for every year 1924 to 2043, e.g. ${SITE_URL}/en/chinese-zodiac/1990
+- [Chinese zodiac compatibility](${SITE_URL}/en/chinese-zodiac/compatibility): all 78 sign pairs rated by the classical trine, harmony, clash, harm, punishment and break relations
+- [Year of the Fire Horse 2026](${SITE_URL}/en/year-of-the-fire-horse-2026) and [Chinese New Year 2027](${SITE_URL}/en/chinese-new-year-2027): dates and Tai Sui outlook per sign
+- [BaZi glossary (English)](${SITE_URL}/en/terms): stems, branches, Ten Gods, solar terms, 60 Jia Zi
 - [All tools (English UI)](${SITE_URL}/en/tools)
 
 ## Topics

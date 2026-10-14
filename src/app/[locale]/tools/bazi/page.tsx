@@ -8,9 +8,9 @@ import BaziClient from '@/components/tools/BaziClient';
 
 const META: Record<Locale, { title: string; description: string }> = {
   en: {
-    title: 'BaZi Chart (Four Pillars of Destiny)',
+    title: 'Free BaZi Calculator: Chinese Birth Chart & Four Pillars of Destiny',
     description:
-      'Free BaZi calculator: four pillars, hidden stems, ten gods, na yin, void, si ling, luck cycles (qi yun / jiao yun) and solar terms. Aligned with classic Chinese metaphysics rules.',
+      'Free Chinese astrology calculator. Enter your birth date and time to get your BaZi chart (Four Pillars of Destiny): day master, hidden stems, Ten Gods, Na Yin and 10-year luck pillars, with exact solar-term boundaries and optional true solar time.',
   },
   zh: {
     title: '八字排盘（四柱）',
@@ -45,7 +45,9 @@ export async function generateMetadata({
     image: 'bazi',
     title: m.title,
     description: m.description,
-    keywords: ['BaZi', 'Four Pillars', '八字排盘', '四柱', '大运', '藏干', '十神'],
+    keywords: raw === 'en'
+      ? ['bazi calculator', 'chinese astrology calculator', 'bazi chart', 'four pillars of destiny calculator', 'chinese birth chart', 'day master']
+      : ['BaZi', 'Four Pillars', '八字排盘', '四柱', '大运', '藏干', '十神'],
   });
 }
 

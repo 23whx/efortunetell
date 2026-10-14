@@ -8,9 +8,9 @@ import QimenClient from '@/components/tools/QimenClient';
 
 const META: Record<Locale, { title: string; description: string }> = {
   en: {
-    title: 'Yin Pan Qi Men Dunjia Chart',
+    title: 'Qi Men Dun Jia Calculator: Free Yin Pan Qimen Chart',
     description:
-      'Free hour-based Yin Pan Qimen Dunjia charting: ju number, earth plate, value star/door, nine palaces with stars, doors and spirits. Chaibu method default.',
+      'Free Qi Men Dun Jia (Qimen Dunjia) calculator for any hour: Yin Pan or Chaibu ju number, earth and heaven plates, value star and door, and the nine palaces with stars, doors and deities.',
   },
   zh: {
     title: '阴盘奇门遁甲排盘',

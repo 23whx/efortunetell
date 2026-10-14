@@ -15,8 +15,8 @@ const COPY: Record<
   }
 > = {
   en: {
-    title: 'Metaphysics Tools',
-    desc: 'Traditional Chinese calendar and charting tools — free to use, built for accuracy.',
+    title: 'Free Chinese Astrology Tools',
+    desc: 'A BaZi calculator, Chinese calendar, Qi Men Dun Jia and Da Liu Ren charts, and a BaZi name generator. Free, no sign-up, calculated in your browser.',
     items: [
       {
         href: '/tools/almanac',
@@ -224,6 +224,14 @@ export default async function ToolsPage({
           </li>
         ))}
       </ul>
+      {locale === 'en' && (
+        <p className="mt-5 text-sm text-stone-600">
+          Just want your animal sign?{' '}
+          <Link href="/en/chinese-zodiac" className="font-medium text-[#c2483c] hover:underline underline-offset-2">
+            Chinese zodiac calculator
+          </Link>
+        </p>
+      )}
       <div className="mt-10 grid sm:grid-cols-6 gap-4 md:gap-5">
         {c.items.map((item, i) => {
           const Icon = ICONS[i % ICONS.length];

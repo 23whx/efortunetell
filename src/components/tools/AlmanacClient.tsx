@@ -12,6 +12,7 @@ import {
   type AlmanacDay,
 } from '@/lib/paipan/almanac';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { almanacTranslator } from '@/lib/paipan/almanac/en';
 
 const WEEK_HEADERS_ZH = ['日', '一', '二', '三', '四', '五', '六'];
 const WEEK_HEADERS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -32,9 +33,9 @@ function TagList({
         : 'bg-gray-50 text-gray-700 border-gray-100';
   return (
     <div className="flex flex-wrap gap-1.5">
-      {items.map((x) => (
+      {items.map((x, i) => (
         <span
-          key={x}
+          key={`${x}-${i}`}
           className={`inline-flex px-2 py-0.5 rounded-md text-xs border ${cls}`}
         >
           {x}
@@ -72,6 +73,8 @@ export default function AlmanacClient({
   initialDay: AlmanacDay;
 }) {
   const { t, language } = useLanguage();
+  // English / Arabic UI: show almanac terms in English (ja/ko readers know the Chinese terms)
+  const tr = useMemo(() => almanacTranslator(language === 'en' || language === 'ar'), [language]);
   const [date, setDate] = useState(initialDate);
   const [day, setDay] = useState<AlmanacDay>(initialDay);
   const [viewYear, setViewYear] = useState(initialDay.year);
@@ -213,7 +216,7 @@ export default function AlmanacClient({
                         selected ? 'text-white/70' : 'text-emerald-700'
                       }`}
                     >
-                      {cell.yiTop}
+                      {tr.yiJi(cell.yiTop)}
                     </div>
                   )}
                 </button>
@@ -295,11 +298,11 @@ export default function AlmanacClient({
           <div className="rounded-2xl bg-white border border-[#f0ece3] p-5 shadow-sm space-y-4">
             <div>
               <h3 className="text-sm font-bold text-emerald-700 mb-2">{t('almanac.yi')}</h3>
-              <TagList items={day.yi} tone="yi" />
+              <TagList items={day.yi.map(tr.yiJi)} tone="yi" />
             </div>
             <div>
               <h3 className="text-sm font-bold text-rose-700 mb-2">{t('almanac.ji')}</h3>
-              <TagList items={day.ji} tone="ji" />
+              <TagList items={day.ji.map(tr.yiJi)} tone="ji" />
             </div>
           </div>
 
@@ -308,26 +311,26 @@ export default function AlmanacClient({
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
               <div className="flex justify-between gap-2 border-b border-gray-50 py-1.5">
                 <dt className="text-gray-500">{t('almanac.chong')}</dt>
-                <dd className="font-medium text-right">{day.chong || '—'}</dd>
+                <dd className="font-medium text-right">{tr.chong(day.chong) || '—'}</dd>
               </div>
               <div className="flex justify-between gap-2 border-b border-gray-50 py-1.5">
                 <dt className="text-gray-500">{t('almanac.sha')}</dt>
-                <dd className="font-medium text-right">{day.sha || '—'}</dd>
+                <dd className="font-medium text-right">{tr.direction(day.sha) || '—'}</dd>
               </div>
               <div className="flex justify-between gap-2 border-b border-gray-50 py-1.5">
                 <dt className="text-gray-500">{t('almanac.jianChu')}</dt>
-                <dd className="font-medium text-right">{day.jianChu || '—'}</dd>
+                <dd className="font-medium text-right">{tr.jianChu(day.jianChu) || '—'}</dd>
               </div>
               <div className="flex justify-between gap-2 border-b border-gray-50 py-1.5">
                 <dt className="text-gray-500">{t('almanac.xiu')}</dt>
                 <dd className="font-medium text-right">
-                  {day.xiu} ({day.xiuLuck})
+                  {tr.xiu(day.xiu)} ({tr.luck(day.xiuLuck)})
                 </dd>
               </div>
               <div className="flex justify-between gap-2 border-b border-gray-50 py-1.5">
                 <dt className="text-gray-500">{t('almanac.tianShen')}</dt>
                 <dd className="font-medium text-right">
-                  {day.tianShen} · {day.tianShenType}
+                  {tr.tianShen(day.tianShen)} · {tr.tianShen(day.tianShenType)}
                 </dd>
               </div>
               <div className="flex justify-between gap-2 border-b border-gray-50 py-1.5">
@@ -344,8 +347,8 @@ export default function AlmanacClient({
                 <dt className="text-gray-500">{t('almanac.solarTerms')}</dt>
                 <dd className="font-medium text-right text-xs md:text-sm">
                   {day.solarTerms.current
-                    ? day.solarTerms.current
-                    : `${day.solarTerms.prevJie || '—'} → ${day.solarTerms.nextJie || '—'}`}
+                    ? tr.solarTerm(day.solarTerms.current)
+                    : `${tr.solarTerm(day.solarTerms.prevJie) || '—'} → ${tr.solarTerm(day.solarTerms.nextJie) || '—'}`}
                 </dd>
               </div>
             </dl>
@@ -370,7 +373,7 @@ export default function AlmanacClient({
                   className="flex justify-between gap-2 rounded-xl bg-amber-50/50 px-3 py-2"
                 >
                   <span className="text-gray-500">{t(`almanac.pos.${k}`)}</span>
-                  <span className="font-medium">{v || '—'}</span>
+                  <span className="font-medium">{tr.direction(v) || '—'}</span>
                 </div>
               ))}
             </div>
@@ -392,14 +395,14 @@ export default function AlmanacClient({
                   className="rounded-xl border border-gray-100 p-2.5 bg-gradient-to-b from-white to-amber-50/30"
                 >
                   <div className="font-bold text-gray-900">
-                    {h.zhi}时 <span className="text-xs font-normal text-gray-500">{h.ganZhi}</span>
+                    {tr.hour(h.zhi)} <span className="text-xs font-normal text-gray-500">{h.ganZhi}</span>
                   </div>
                   <div className="text-[10px] text-gray-400 mb-1">{h.label}</div>
                   <div className="text-[10px] text-emerald-700 truncate">
-                    宜 {h.yi.slice(0, 3).join('、') || '—'}
+                    {tr.en ? 'Good:' : '宜'} {h.yi.slice(0, 3).map(tr.yiJi).join(tr.en ? ', ' : '、') || '—'}
                   </div>
                   <div className="text-[10px] text-rose-700 truncate">
-                    忌 {h.ji.slice(0, 3).join('、') || '—'}
+                    {tr.en ? 'Avoid:' : '忌'} {h.ji.slice(0, 3).map(tr.yiJi).join(tr.en ? ', ' : '、') || '—'}
                   </div>
                 </div>
               ))}

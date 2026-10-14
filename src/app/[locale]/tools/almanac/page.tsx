@@ -12,9 +12,9 @@ export const revalidate = 3600;
 
 const META: Record<Locale, { title: string; description: string }> = {
   en: {
-    title: 'Chinese Almanac (Wan Nian Li / Tong Shu)',
+    title: 'Chinese Calendar Today: Lunar Date, Auspicious Days & Almanac (Tong Shu)',
     description:
-      'Free Chinese traditional almanac: lunar calendar, four pillars, yi and ji, chong-sha, twenty-eight mansions, jianchu, hour fortunes and solar terms.',
+      'Free Chinese lunar calendar and almanac (Tong Shu / Huang Li): today’s lunar date, auspicious and inauspicious activities, clashing zodiac, lucky hours, 28 mansions and solar terms for any day.',
   },
   zh: {
     title: '万年历 / 老黄历查询',

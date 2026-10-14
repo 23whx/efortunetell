@@ -7,7 +7,7 @@ import { ExternalLink } from 'lucide-react';
 import { useLocalePath } from '@/hooks/useLocalePath';
 
 export default function Footer() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const pathname = usePathname();
   const lp = useLocalePath();
   const currentYear = new Date().getFullYear();
@@ -70,9 +70,19 @@ export default function Footer() {
                   {t('tools.almanac')}
                 </Link>
               </li>
+              {language === 'en' && (
+                <li>
+                  <Link
+                    href="/en/chinese-zodiac"
+                    className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
+                  >
+                    Chinese Zodiac
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link
-                  href="/zh/terms"
+                  href={lp('/terms')}
                   className="text-gray-400 hover:text-[#FF6F61] transition-colors text-sm"
                 >
                   {t('footer.terms')}

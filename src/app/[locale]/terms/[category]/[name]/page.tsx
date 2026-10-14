@@ -22,6 +22,7 @@ import {
   termPath,
   type TermCategory,
 } from '@/lib/glossary';
+import TermPageEn, { headlineEn } from '@/components/glossary/TermPageEn';
 
 // Terms are written in Chinese; every other locale redirects to /zh
 export const revalidate = 86400;
@@ -30,7 +31,7 @@ type Props = { params: Promise<{ locale: string; category: string; name: string 
 
 export function generateStaticParams() {
   return (Object.keys(TERM_CATEGORIES) as TermCategory[]).flatMap((category) =>
-    TERM_CATEGORIES[category].names.map((name) => ({ locale: 'zh', category, name }))
+    TERM_CATEGORIES[category].names.flatMap((name) => [{ locale: 'zh', category, name }, { locale: 'en', category, name }])
   );
 }
 
@@ -69,16 +70,20 @@ function headline(category: TermCategory, name: string): { title: string; descri
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category, name: raw } = await params;
+  const { locale, category, name: raw } = await params;
   if (!isTermCategory(category)) return {};
   const name = decode(raw);
-  const h = headline(category, name);
+  const lang = locale === 'en' ? 'en' : 'zh';
+  const h = lang === 'en' ? headlineEn(category, name) : headline(category, name);
   if (!h) return {};
-  const url = absoluteUrl('zh', termPath(category, name));
+  const url = absoluteUrl(lang, termPath(category, name));
   return {
     title: h.title,
     description: h.description,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: { 'zh-CN': absoluteUrl('zh', termPath(category, name)), en: absoluteUrl('en', termPath(category, name)), 'x-default': absoluteUrl('en', termPath(category, name)) },
+    },
     openGraph: { type: 'article', title: h.title, description: h.description, url },
   };
 }
@@ -146,6 +151,10 @@ export default async function TermPage({ params }: Props) {
   const { locale, category, name: raw } = await params;
   if (!isTermCategory(category)) notFound();
   const name = decode(raw);
+  if (locale === 'en') {
+    if (!headlineEn(category, name)) notFound();
+    return <TermPageEn category={category} name={name} />;
+  }
   if (locale !== 'zh') permanentRedirect(`/zh${termPath(category, name)}`);
   const h = headline(category, name);
   if (!h) notFound();

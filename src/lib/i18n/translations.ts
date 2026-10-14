@@ -1574,7 +1574,7 @@ export const translations = {
     'fortune.emailConsult': 'Consult by Email',
     'fortune.emailNote': 'Online payment is not available yet. Please book a consultation by email:',
     'footer.privacy': 'Privacy Policy',
-    'footer.terms': 'Glossary (Chinese)',
+    'footer.terms': 'Glossary',
     'rag.consultation.loadingMessage': 'Xutong AI is clearing the mist for you, analyzing deeply...',
     'rag.consultation.loadingTip': 'Analyzing a natal chart requires significant computing power and logic, please wait for 10-30 seconds.',
     'rag.consultation.loadingDonation': '✨ Your support keeps our high-quality AI divination services running. Feel free to click "Appreciation" above.',

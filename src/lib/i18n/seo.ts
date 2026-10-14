@@ -5,10 +5,10 @@ import { OG_IMAGES, SITE_NAME, SITE_URL, type OgImageKey } from '@/lib/site';
 /** Home / site-wide title + description per locale (targets the main search terms in each language) */
 export const SITE_COPY: Record<Locale, { title: string; description: string; keywords: string[] }> = {
   en: {
-    title: 'Free BaZi Calculator, Qimen Dunjia & Chinese Almanac | 旭通命理小站',
+    title: 'Chinese Astrology: Free BaZi Calculator, Zodiac & Chinese Calendar | 旭通命理小站',
     description:
-      'Free online BaZi (Four Pillars of Destiny) charts, Yin Pan Qimen Dunjia, Da Liu Ren, a daily Chinese almanac (Tong Shu), name selection, and in-depth Chinese metaphysics articles.',
-    keywords: ['BaZi calculator', 'Four Pillars of Destiny', 'Chinese astrology', 'Qimen Dunjia', 'Da Liu Ren', 'Chinese almanac', 'Tong Shu', 'Chinese metaphysics', 'fortune telling'],
+      'Free Chinese astrology tools: a BaZi calculator (Four Pillars of Destiny), Chinese zodiac by birth year, a daily Chinese calendar with auspicious days, Yin Pan Qimen Dunjia and Da Liu Ren charts, plus Chinese metaphysics articles.',
+    keywords: ['chinese astrology calculator', 'BaZi calculator', 'four pillars of destiny', 'chinese zodiac calculator', 'chinese calendar', 'auspicious days', 'qimen dunjia', 'chinese metaphysics'],
   },
   zh: {
     title: '八字排盘·奇门遁甲·大六壬·老黄历 | 旭通命理小站',

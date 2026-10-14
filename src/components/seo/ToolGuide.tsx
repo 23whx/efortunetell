@@ -66,7 +66,7 @@ const GUIDES: Record<ToolKey, Record<'zh' | 'en', Guide>> = {
           ],
         },
       ],
-      related: [['/services/bazi', 'BaZi articles'], ['/tools/almanac', 'Chinese almanac'], ['/tools/naming', 'Name selection']],
+      related: [['/chinese-zodiac', 'Chinese zodiac by birth year'], ['/services/bazi', 'BaZi articles'], ['/tools/almanac', 'Chinese calendar'], ['/tools/naming', 'Name selection']],
     },
   },
   qimen: {

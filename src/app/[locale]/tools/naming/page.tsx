@@ -8,9 +8,9 @@ import NamingClient from '@/components/tools/NamingClient';
 
 const META: Record<Locale, { title: string; description: string }> = {
   en: {
-    title: 'Chinese Naming & Character Lookup',
+    title: 'Chinese Name Generator Based on Your BaZi',
     description:
-      'Smart Chinese baby names from BaZi xi-yong elements, plus Kangxi strokes, wuxing, radicals and structure lookup.',
+      'Generate Chinese names that balance the five elements of your BaZi chart, and look up any Chinese character’s Kangxi strokes, element, radical and structure.',
   },
   zh: {
     title: '起名改名 · 汉字查询',

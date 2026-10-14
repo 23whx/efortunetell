@@ -25,6 +25,9 @@ declare module 'lunar-javascript' {
   }
 
   export class Lunar {
+    static fromYmd(y: number, m: number, d: number): Lunar;
+    getSolar(): Solar;
+    getYear(): number;
     toString(): string;
     getYearInChinese(): string;
     getMonthInChinese(): string;

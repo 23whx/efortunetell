@@ -7,6 +7,8 @@ import { articleContentLocale, articlePath } from '@/lib/blog/locale';
 import { PILLARS } from '@/lib/seo/pillars';
 import { SITE_URL } from '@/lib/site';
 import { TERM_CATEGORIES, termPath, type TermCategory } from '@/lib/glossary';
+import { ZODIAC_YEARS } from '@/lib/zodiac/years';
+import { ALL_PAIRS } from '@/lib/zodiac/compat';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
@@ -49,15 +51,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Chinese terms library (zh only; other locales redirect to /zh)
   const termPages: MetadataRoute.Sitemap = [
-    { url: `${baseUrl}/zh/terms`, lastModified: new Date('2026-10-14'), changeFrequency: 'monthly', priority: 0.8 },
+    ...(['zh', 'en'] as const).map((l) => ({ url: `${baseUrl}/${l}/terms`, lastModified: new Date('2026-10-14'), changeFrequency: 'monthly' as const, priority: 0.8 })),
     ...(Object.keys(TERM_CATEGORIES) as TermCategory[]).flatMap((c) =>
-      TERM_CATEGORIES[c].names.map((n) => ({
-        url: `${baseUrl}/zh${termPath(c, n)}`,
+      TERM_CATEGORIES[c].names.flatMap((n) => (['zh', 'en'] as const).map((l) => ({
+        url: `${baseUrl}/${l}${termPath(c, n)}`,
         lastModified: new Date('2026-10-14'),
         changeFrequency: (c === 'jieqi' ? 'yearly' : 'monthly') as 'yearly' | 'monthly',
         priority: 0.6,
-      }))
+      })))
     ),
+  ];
+
+  // English Chinese-zodiac calculator + one page per year (en only)
+  const zodiacPages: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/en/chinese-zodiac`, lastModified: new Date('2026-10-14'), changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${baseUrl}/en/chinese-zodiac/compatibility`, lastModified: new Date('2026-10-14'), changeFrequency: 'monthly', priority: 0.8 },
+    ...ALL_PAIRS.map((p) => ({ url: `${baseUrl}/en/chinese-zodiac/compatibility/${p.slug}`, lastModified: new Date('2026-10-14'), changeFrequency: 'yearly' as const, priority: 0.6 })),
+    { url: `${baseUrl}/en/year-of-the-fire-horse-2026`, lastModified: new Date('2026-10-14'), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/en/chinese-new-year-2027`, lastModified: new Date('2026-10-14'), changeFrequency: 'monthly', priority: 0.8 },
+    ...ZODIAC_YEARS.map((y) => ({
+      url: `${baseUrl}/en/chinese-zodiac/${y}`,
+      lastModified: new Date('2026-10-14'),
+      changeFrequency: 'yearly' as const,
+      priority: 0.7,
+    })),
   ];
 
   // About + privacy are written in zh + en only (ja/ko/ar canonicalize to /en/...)
@@ -110,5 +127,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('[sitemap] Exception while fetching articles:', err);
   }
 
-  return [...staticPages, ...privacyPages, ...termPages, ...almanacDays, ...articlePages];
+  return [...staticPages, ...privacyPages, ...termPages, ...zodiacPages, ...almanacDays, ...articlePages];
 }
