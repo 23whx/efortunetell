@@ -85,11 +85,18 @@ next-env.d.ts
 *.class
 *.war
 
-# 环境变量文件
-.env
-.env.local
-.env.production
-.env.development
+# 环境变量文件（含 .env.*.local 等所有变体；示例模板除外）
+.env*
+!.env.example
+
+# 密钥与证书
+*.key
+*.p12
+*.pfx
+service-account*.json
+
+# 本地浏览器自动化日志
+.playwright-cli/
 
 # 备份文件
 *.bak

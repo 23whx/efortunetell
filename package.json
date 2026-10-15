@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "clean-port": "node scripts/clean-port.js",
     "test:paipan": "npx --yes tsx scripts/paipan-full-14round-test.ts",
-    "verify:paipan": "npx --yes tsx scripts/paipan-full-14round-test.ts"
+    "verify:paipan": "npx --yes tsx scripts/paipan-full-14round-test.ts",
+    "article": "npx -y tsx scripts/publish-article.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
@@ -61,6 +62,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^16.1.1",
+    "marked": "^15.0.12",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -1,7 +1,0 @@
-- generic [ref=e2]:
-  - img "蛙蛙工具" [ref=e3]
-  - heading "404" [level=2] [ref=e4]
-  - paragraph [ref=e5]:
-    - text: 抱歉没有找到您要访问的页面，请检查路径是否正确！
-    - link "返回首页" [ref=e6] [cursor=pointer]:
-      - /url: /
