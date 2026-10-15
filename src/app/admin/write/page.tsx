@@ -1,14 +1,14 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import AdminSidebar from '@/components/shared/AdminSidebar';
 import Button from '@/components/ui/button';
 import { createSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { attachDraftImagesToArticle, uploadArticleImage } from '@/lib/supabase/article-images';
+import { attachDraftImagesToArticle, deleteArticleImageByUrl, uploadArticleImage } from '@/lib/supabase/article-images';
 import { v4 as uuidv4 } from 'uuid';
 import dynamic from 'next/dynamic';
-import { ChevronLeft, Send, Save, Image as ImageIcon, X, Settings2, Info, Move, Minus, Plus, Grid, ChevronDown } from 'lucide-react';
+import { ChevronLeft, Send, Save, Image as ImageIcon, X, Settings2, Info, Move, Minus, Plus, Grid, ChevronDown, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -28,11 +28,44 @@ function slugify(input: string) {
     .replace(/^-|-$/g, '');
 }
 
+/** Remote image URLs in an HTML string */
+function imageUrls(html: string): Set<string> {
+  return new Set([...html.matchAll(/<img[^>]+src="(https?:[^"]+)"/g)].map((m) => m[1]));
+}
+
+/** Visible characters, the way Chinese editors count words */
+function countChars(html: string): number {
+  return html.replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, '').length;
+}
+
+type LocalDraft = {
+  title: string;
+  summary: string;
+  category: string;
+  tags: string;
+  coverImageUrl: string;
+  coverImagePos: { x: number; y: number; zoom: number };
+  contentHtml: string;
+  draftKey: string;
+  savedAt: number;
+};
+const localKey = (id: string | null) => `write-draft:${id ?? 'new'}`;
+
+function readLocal(id: string | null): LocalDraft | null {
+  try {
+    const raw = localStorage.getItem(localKey(id));
+    return raw ? (JSON.parse(raw) as LocalDraft) : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function AdminWritePage() {
   const router = useRouter();
   const { t } = useLanguage();
   const searchParams = useSearchParams();
-  const articleId = searchParams.get('id');
+  // the id is set in place after a new article's first save
+  const [articleId, setArticleId] = useState<string | null>(searchParams.get('id'));
 
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
@@ -48,6 +81,13 @@ export default function AdminWritePage() {
   const [uploadingCover, setUploadingCover] = useState(false);
   const [showSettings, setShowSettings] = useState(true);
   const [showPresets, setShowPresets] = useState(false);
+  const [savedSlug, setSavedSlug] = useState('');
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
+  const [dirty, setDirty] = useState(false);
+  const [restorable, setRestorable] = useState<LocalDraft | null>(null);
+  const [editorKey, setEditorKey] = useState(0);
+  // every remote image the article has referenced since it was opened; unused ones are deleted on save
+  const knownImages = useRef<Set<string>>(new Set());
 
   const presets = [
     { name: t('blog.category.bazi'), url: '/cover/bazi.webp' },
@@ -78,6 +118,10 @@ export default function AdminWritePage() {
           setCoverImageUrl(data.cover_image_url || '');
           setCoverImagePos(data.cover_image_pos || { x: 50, y: 50, zoom: 1 });
           setContentHtml(data.content_html || '');
+          setSavedSlug(data.slug || '');
+          knownImages.current = imageUrls(data.content_html || '');
+          const local = readLocal(articleId);
+          if (local && local.savedAt > new Date(data.updated_at || 0).getTime()) setRestorable(local);
         }
       } catch (e) {
         console.error('加载文章失败:', e);
@@ -88,17 +132,80 @@ export default function AdminWritePage() {
     };
 
     loadArticle();
-  }, [articleId, t]);
-
-  const draftKey = useMemo(() => {
-    try {
-      return globalThis.crypto?.randomUUID?.() ?? uuidv4();
-    } catch {
-      return uuidv4();
-    }
+    // load once per opened article; a new article receiving its id must not reload
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const slug = useMemo(() => slugify(title), [title]);
+  // a new article offers the local draft left from last time
+  useEffect(() => {
+    if (articleId) return;
+    const local = readLocal(null);
+    if (local) setRestorable(local);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const draftKeyRef = useRef<string>('');
+  if (!draftKeyRef.current) {
+    try {
+      draftKeyRef.current = globalThis.crypto?.randomUUID?.() ?? uuidv4();
+    } catch {
+      draftKeyRef.current = uuidv4();
+    }
+  }
+
+  // keep the published URL stable: only a new article derives its slug from the title
+  const slug = useMemo(() => savedSlug || slugify(title), [savedSlug, title]);
+  const charCount = useMemo(() => countChars(contentHtml), [contentHtml]);
+
+  // any edit marks the page dirty and is stashed locally after a short pause
+  const editSig = JSON.stringify({ title, summary, category, tags, coverImageUrl, coverImagePos, contentHtml });
+  const loadedSig = useRef<string | null>(null);
+  useEffect(() => {
+    if (loading) return;
+    if (loadedSig.current === null) {
+      loadedSig.current = editSig;
+      return;
+    }
+    if (editSig === loadedSig.current) return;
+    setDirty(true);
+    const timer = setTimeout(() => {
+      try {
+        const draft: LocalDraft = { ...JSON.parse(editSig), draftKey: draftKeyRef.current, savedAt: Date.now() };
+        localStorage.setItem(localKey(articleId), JSON.stringify(draft));
+      } catch {
+        /* storage full or blocked: the cloud save still works */
+      }
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [editSig, loading, articleId]);
+
+  // warn before leaving with unsaved changes
+  useEffect(() => {
+    if (!dirty) return;
+    const onLeave = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener('beforeunload', onLeave);
+    return () => window.removeEventListener('beforeunload', onLeave);
+  }, [dirty]);
+
+  const restoreLocal = () => {
+    if (!restorable) return;
+    setTitle(restorable.title);
+    setSummary(restorable.summary);
+    setCategory(restorable.category);
+    setTags(restorable.tags);
+    setCoverImageUrl(restorable.coverImageUrl);
+    setCoverImagePos(restorable.coverImagePos);
+    setContentHtml(restorable.contentHtml);
+    if (restorable.draftKey) draftKeyRef.current = restorable.draftKey;
+    imageUrls(restorable.contentHtml).forEach((u) => knownImages.current.add(u));
+    setEditorKey((k) => k + 1); // the editor only reads its content on mount
+    setRestorable(null);
+  };
+
+  const discardLocal = () => {
+    try { localStorage.removeItem(localKey(articleId)); } catch { /* ignore */ }
+    setRestorable(null);
+  };
 
   const handleCoverFile = async (file: File) => {
     setError(null);
@@ -108,7 +215,7 @@ export default function AdminWritePage() {
         file,
         kind: 'cover',
         articleId: null,
-        draftKey,
+        draftKey: draftKeyRef.current,
       });
       setCoverImageUrl(res.publicUrl);
       setCoverImagePos({ x: 50, y: 50, zoom: 1 }); // 重置位置
@@ -159,12 +266,14 @@ export default function AdminWritePage() {
       file,
       kind: 'inline',
       articleId: null,
-      draftKey,
+      draftKey: draftKeyRef.current,
     });
+    knownImages.current.add(res.publicUrl);
     return res.publicUrl;
   };
 
   const handleSave = async (targetStatus?: 'draft' | 'published') => {
+    if (saving) return;
     setError(null);
     if (!title.trim()) {
       setError(t('admin.write.message.titleRequired'));
@@ -172,6 +281,10 @@ export default function AdminWritePage() {
     }
     if (!contentHtml.trim() || contentHtml === '<p></p>') {
       setError(t('admin.write.message.contentRequired'));
+      return;
+    }
+    if (contentHtml.includes('src="blob:')) {
+      setError(t('admin.write.message.uploading'));
       return;
     }
 
@@ -219,9 +332,29 @@ export default function AdminWritePage() {
         if (error) throw error;
         if (!inserted?.id) throw new Error(t('admin.write.message.saveFailed'));
         resultId = inserted.id;
+        setArticleId(inserted.id);
+        setSavedSlug(articleData.slug);
+        // stay on the page; later saves update this article
+        window.history.replaceState(null, '', `/admin/write?id=${inserted.id}`);
       }
 
-      await attachDraftImagesToArticle(draftKey, resultId!);
+      await attachDraftImagesToArticle(draftKeyRef.current, resultId!);
+
+      // images removed from the text are deleted only now, so undo before saving never breaks them
+      const used = imageUrls(contentHtml);
+      for (const url of knownImages.current) {
+        if (!used.has(url)) deleteArticleImageByUrl(url).catch((err) => console.error('图片清理失败:', err));
+      }
+      knownImages.current = used;
+
+      setStatus(finalStatus);
+      setSavedAt(new Date());
+      setDirty(false);
+      loadedSig.current = editSig;
+      try {
+        localStorage.removeItem(localKey(null));
+        localStorage.removeItem(localKey(resultId));
+      } catch { /* ignore */ }
       
       // 如果文章已发布，自动触发向量化
       if (finalStatus === 'published') {
@@ -235,13 +368,35 @@ export default function AdminWritePage() {
         }
       }
       
-      router.push('/admin/articles');
     } catch (e) {
       setError(e instanceof Error ? e.message : t('admin.write.message.saveFailed'));
     } finally {
       setSaving(false);
     }
   };
+
+  const saveRef = useRef(handleSave);
+  useEffect(() => {
+    saveRef.current = handleSave;
+  });
+  const onShortcut = useCallback((e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault();
+      saveRef.current();
+    }
+  }, []);
+  useEffect(() => {
+    window.addEventListener('keydown', onShortcut);
+    return () => window.removeEventListener('keydown', onShortcut);
+  }, [onShortcut]);
+
+  const statusText = saving
+    ? t('admin.write.status.saving')
+    : dirty
+      ? t('admin.write.status.unsaved')
+      : savedAt
+        ? `${t('admin.write.status.saved')} ${savedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+        : '';
 
   if (loading) {
     return (
@@ -273,16 +428,30 @@ export default function AdminWritePage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-[10px] font-black text-gray-400 mr-4 uppercase tracking-widest">
-              {saving ? t('common.loading') : (t('admin.write.message.synced') || 'Synced to Cloud')}
-            </span>
+            <span className="text-xs text-gray-400 tabular-nums mr-1">{charCount} {t('admin.write.chars')}</span>
+            {statusText && (
+              <span className={`text-xs mr-2 ${dirty && !saving ? 'text-amber-600' : 'text-gray-400'}`} title={dirty ? t('admin.write.status.localHint') : undefined}>
+                {statusText}
+              </span>
+            )}
+            {articleId && status === 'published' && (
+              <a
+                href={`/zh/blog/${encodeURIComponent(slug || articleId)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#e25d50] mr-2"
+              >
+                {t('admin.write.viewArticle')}
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
             
             {status !== 'published' && (
               <Button 
                 variant="default" 
                 onClick={() => handleSave('draft')} 
                 disabled={saving}
-                className="rounded-xl shadow-none border-none bg-gray-50 hover:bg-gray-100 text-gray-500 font-bold"
+                className="inline-flex items-center whitespace-nowrap rounded-xl shadow-none border-none bg-gray-50 hover:bg-gray-100 text-gray-500 font-bold"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {t('admin.write.button.saveDraft')}
@@ -292,7 +461,7 @@ export default function AdminWritePage() {
         <Button
               onClick={() => handleSave('published')} 
               disabled={saving}
-              className="rounded-xl px-8 shadow-xl shadow-[#FF6F61]/20"
+              className="inline-flex items-center whitespace-nowrap rounded-xl px-6 shadow-xl shadow-[#FF6F61]/20"
         >
               <Send className="w-4 h-4 mr-2" />
               {status === 'published' ? t('common.save') : t('admin.write.button.publish')}
@@ -309,31 +478,61 @@ export default function AdminWritePage() {
 
         <div className="flex flex-1 overflow-hidden relative">
           <main className={`flex-1 overflow-y-auto transition-all duration-500 ease-in-out ${showSettings ? 'mr-80' : 'mr-0'} custom-scrollbar`}>
-            <div className="max-w-4xl mx-auto py-20 px-6 min-h-full">
+            <div className="max-w-3xl mx-auto pt-12 pb-10 px-6 min-h-full">
             {error && (
-              <div className="mb-12 p-5 bg-red-50 text-red-600 rounded-3xl border border-red-100 flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500 shadow-sm">
+              <div className="sticky top-14 z-40 mb-8 p-4 bg-red-50 text-red-600 rounded-2xl border border-red-100 flex items-center gap-4 shadow-sm">
                 <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
                   <Info className="w-5 h-5" />
                 </div>
-                <span className="font-bold">{error}</span>
+                <span className="font-medium flex-1">{error}</span>
+                <button type="button" onClick={() => setError(null)} className="text-red-400 hover:text-red-600" aria-label="Close"><X className="w-4 h-4" /></button>
               </div>
             )}
 
-            {/* 标题输入区 */}
-            <input
-              type="text"
+            {restorable && (
+              <div className="mb-8 flex flex-wrap items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm text-amber-800">
+                <span className="flex-1">
+                  {t('admin.write.restore.found')} · {new Date(restorable.savedAt).toLocaleString()}
+                </span>
+                <button type="button" onClick={restoreLocal} className="rounded-lg bg-amber-600 px-3 py-1.5 font-medium text-white hover:bg-amber-700">
+                  {t('admin.write.restore.apply')}
+                </button>
+                <button type="button" onClick={discardLocal} className="rounded-lg px-3 py-1.5 text-amber-700 hover:bg-amber-100">
+                  {t('admin.write.restore.discard')}
+                </button>
+              </div>
+            )}
+
+            {/* 标题输入区：自动换行，回车跳到正文 */}
+            <textarea
+              rows={1}
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder={t('admin.write.field.title') + '...'}
-              className="w-full text-5xl md:text-6xl font-black text-gray-900 placeholder:text-gray-100 border-none outline-none bg-transparent mb-12 tracking-tighter leading-[1.1]"
+              onChange={(e) => {
+                setTitle(e.target.value.replace(/\n/g, ''));
+                e.target.style.height = 'auto';
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
+              ref={(el) => {
+                if (el) { el.style.height = 'auto'; el.style.height = `${el.scrollHeight}px`; }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                  e.preventDefault();
+                  (document.querySelector('.tiptap') as HTMLElement | null)?.focus();
+                }
+              }}
+              placeholder={t('admin.write.field.titlePlaceholder')}
+              className="w-full resize-none overflow-hidden text-3xl md:text-4xl font-bold text-gray-900 placeholder:text-gray-300 border-none outline-none bg-transparent mb-6 leading-snug"
               autoFocus
             />
 
             {/* 编辑器主体 */}
-            <Editor 
-              content={contentHtml} 
+            <Editor
+              key={editorKey}
+              content={contentHtml}
               onChange={setContentHtml}
               onImageUpload={handleInlineImageUpload}
+              onError={setError}
             />
           </div>
           </main>
